@@ -18,7 +18,18 @@ export class LoginComponent {
   constructor(private authService: AuthService) { }
 
   login() {
-    console.log(this.email, this.password, this.stayedLogIn);
-    //this.authService.login(this.email, this.password);
+    this.authService.getUserData(this.email, this.password).subscribe(
+      response => {
+        if (response.status === 'success') {
+          console.log('Login successful:', response.user);
+          // További teendők a sikeres bejelentkezés után, pl. token mentése, átirányítás stb.
+        } else {
+          console.error('Login failed:', response.message);
+        }
+      },
+      error => {
+        console.error('Error:', error);
+      }
+    );
   }
 }
