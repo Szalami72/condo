@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+
   constructor(private cookieService: CookieService, private router: Router) { }
 
   logout() : void {
