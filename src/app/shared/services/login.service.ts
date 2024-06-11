@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { API_BASE_URL } from '../../constans/constans';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class LoginService {
 
-  private loginApi = 'http://localhost/condophp/loginapi.php';
+  private loginApi = API_BASE_URL + 'login.php';
 
   constructor(private http: HttpClient) { }
 

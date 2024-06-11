@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../../services/auth.service';
+import { LoginService } from '../../../services/login.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -15,8 +16,9 @@ export class LoginComponent implements OnInit {
   email: string = '';
   password: string = '';
   stayedLoggedIn: boolean = false;
+  errorMessage: string = '';
 
-  constructor(private authService: AuthService, 
+  constructor(private loginService: LoginService, 
               private router: Router) { }
 
   ngOnInit(): void {
@@ -28,17 +30,19 @@ export class LoginComponent implements OnInit {
 
   async login() {
     try {
-      this.authService.getUserData(this.email, this.password).subscribe(response => {
+      this.loginService.getUserData(this.email, this.password).subscribe(response => {
         if (response.status === 'success') {
           console.log('Sikeres bejelentkezés:', response.user);
           this.setUserData(response.user);
           this.redirectToUrl();
         } else {
           console.error('Sikertelen bejelentkezés:', response.message);
+          this.errorMessage = "Hibás bejelentkezési adatok!";
         }
       });
     } catch (error) {
       console.error('Hiba a bejelentkezés során:', error);
+      this.errorMessage = "Hiba a bejelentkezés során!";
     }
   }
 
@@ -73,5 +77,9 @@ export class LoginComponent implements OnInit {
   private getUserData(): any {
     const currentUser = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
     return currentUser ? JSON.parse(currentUser) : null;
+  }
+
+  forgotPassword(): void {
+    this.router.navigate(['/forgot-password']);
   }
 }
