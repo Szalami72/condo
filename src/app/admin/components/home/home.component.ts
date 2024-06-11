@@ -13,9 +13,11 @@ export class HomeComponent {
   constructor(private cookieService: CookieService, private router: Router) { }
 
   logout() : void {
-    this.cookieService.delete('currentUser');
-    console.log('Felhasználói adatok törölve a sütiből.');
+    // Törli a felhasználói adatokat mind a localStorage-ból, mind a sessionStorage-ból
+    localStorage.removeItem('currentUser');
+    sessionStorage.removeItem('currentUser');
+    console.log('Felhasználói adatok törölve.');
     this.router.navigate(['/login']);
-
   }
+  
 }

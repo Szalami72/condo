@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { FormsModule } from '@angular/forms';
-import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [FormsModule],
-  providers: [CookieService],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -19,26 +17,21 @@ export class LoginComponent implements OnInit {
   stayedLoggedIn: boolean = false;
 
   constructor(private authService: AuthService, 
-              private cookieService: CookieService,
               private router: Router) { }
-  
-              ngOnInit(): void {
-                console.log('Bejelentkezés oldal betöltve.');
-                if (this.cookieService.check('currentUser')) {
-                  this.redirectToUrl();
-                }
-              }
-              
+
+  ngOnInit(): void {
+    console.log('Bejelentkezés oldal betöltve.');
+    if (this.getUserData()) {
+      this.redirectToUrl();
+    }
+  }
 
   async login() {
     try {
       this.authService.getUserData(this.email, this.password).subscribe(response => {
         if (response.status === 'success') {
           console.log('Sikeres bejelentkezés:', response.user);
-
-          // További teendők a sikeres bejelentkezés után
-          this.setCookies(response.user);
-          // Ellenőrizze az adminszintet és irányítsa át a megfelelő URL-re
+          this.setUserData(response.user);
           this.redirectToUrl();
         } else {
           console.error('Sikertelen bejelentkezés:', response.message);
@@ -50,7 +43,7 @@ export class LoginComponent implements OnInit {
   }
 
   private redirectToUrl(): void {
-    const adminLevel = this.getAdminLevelFromCookie();
+    const adminLevel = this.getAdminLevelFromUserData();
     if (adminLevel < 2) {
       this.router.navigate(['/admin/home']);
     } else {
@@ -58,19 +51,27 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  private getAdminLevelFromCookie(): number {
-    const currentUser = this.cookieService.get('currentUser');
+  private getAdminLevelFromUserData(): number {
+    const currentUser = this.getUserData();
     if (currentUser) {
-      const userData = JSON.parse(currentUser);
-      return userData.adminLevel;
+      return currentUser.adminLevel;
     } else {
       return 0;
     }
   }
   
-  private setCookies(user: any): void {
+  private setUserData(user: any): void {
     const userData = { id: user.id, adminLevel: user.adminLevel, email: user.email, username: user.username };
-    this.cookieService.set('currentUser', JSON.stringify(userData));
-    console.log('Felhasználói adatok tárolva a sütiben.');
+    if (this.stayedLoggedIn) {
+      localStorage.setItem('currentUser', JSON.stringify(userData));
+    } else {
+      sessionStorage.setItem('currentUser', JSON.stringify(userData));
+    }
+    console.log('Felhasználói adatok tárolva.');
+  }
+
+  private getUserData(): any {
+    const currentUser = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+    return currentUser ? JSON.parse(currentUser) : null;
   }
 }
