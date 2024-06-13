@@ -8,7 +8,12 @@ import { API_BASE_URL } from '../../constans/constans';
 })
 export class ForgotPasswordService {
 
-  private loginApi = API_BASE_URL + 'forgotpassword.php';
+  private api = API_BASE_URL + 'forgotpassword.php';
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
+
+  checkAndSendEmail(email: string): Observable<any> {
+    const body = { email };
+    return this.http.post<any>(this.api, body);
+  }
 }

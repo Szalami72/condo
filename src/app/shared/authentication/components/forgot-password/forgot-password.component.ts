@@ -13,11 +13,26 @@ import { ForgotPasswordService } from '../../../services/forgotpassword.service'
 })
 export class ForgotPasswordComponent {
 
-  userEmail: string = '';
+  user: string = '';
   errorMessage: string = '';
 
 constructor(private passwordService: ForgotPasswordService) { }
-  sendEmail() {
-    console.log(this.userEmail);
+  async checkAndSendEmail() {
+    try
+    {
+      this.passwordService.checkAndSendEmail(this.user).subscribe(response => {
+        if (response.status === 'success') {
+          console.log('Létező felhasználó:', response.email);
+          this.errorMessage = '';
+        } else {
+          console.error('Ilyen email cím nincs az adatbázisban!:', response.message);
+          this.errorMessage = "Nem regisztrált email cím!";
+        }
+      });
+    } catch (error) {
+      this.errorMessage = "Hiba az email ellenőrzés során!";
+      console.log(this.errorMessage);
+    }
+   
   }
 }
