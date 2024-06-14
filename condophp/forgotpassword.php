@@ -2,11 +2,12 @@
 require 'vendor/autoload.php';
 require 'header.php';
 use PHPMailer\PHPMailer\PHPMailer;
+define('RESET_LINK', 'http://localhost:4200/reset-password?token=');
 
 class CheckUserByEmail {
     private $conn;
     private $mailer;
-
+   
     public function __construct($conn) {
         $this->conn = $conn;
         $this->mailer = new PHPMailer(true);
@@ -41,17 +42,26 @@ class CheckUserByEmail {
         $existingToken = $this->getTokenByUserId($userId);
     
         if ($existingToken) {
-            $sql = "UPDATE tokens SET token = ? WHERE userId = ?";
+            $sql = "UPDATE tokens SET token = ?, created_at = NOW() WHERE userId = ?";
             $stmt = $this->conn->prepare($sql);
+            if ($stmt === false) {
+                throw new Exception('Prepare failed: ' . $this->conn->error);
+            }
             $stmt->bind_param("si", $token, $userId);
-            $stmt->execute();
         } else {
-            $sql = "INSERT INTO tokens (userId, token) VALUES (?, ?)";
+            $sql = "INSERT INTO tokens (userId, token, created_at) VALUES (?, ?, NOW())";
             $stmt = $this->conn->prepare($sql);
+            if ($stmt === false) {
+                throw new Exception('Prepare failed: ' . $this->conn->error);
+            }
             $stmt->bind_param("is", $userId, $token);
-            $stmt->execute();
+        }
+        
+        if (!$stmt->execute()) {
+            throw new Exception('Execute failed: ' . $stmt->error);
         }
     }
+    
 
     public function getTokenByUserId($userId) {
         $sql = "SELECT token FROM tokens WHERE userId = ?";
@@ -83,7 +93,7 @@ class CheckUserByEmail {
 
     private function sendPasswordResetEmail($email, $token) {
         try {
-            $resetLink = "http://yourwebsite.com/reset_password.php?token=" . $token;
+            $resetLink = RESET_LINK . $token;
 
             // Email beállítások
             $this->mailer->setFrom('admin@mycondo.hu', 'MyCondo.hu');

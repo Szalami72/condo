@@ -25,7 +25,7 @@ constructor(private passwordService: ForgotPasswordService) { }
         if (response.status === 'success') {
           console.log('Létező felhasználó:', response.email);
           this.errorMessage = '';
-          this.message = 'Visszaállító link elküldve!';
+          this.message = 'Visszaállító link elküldve!\n Az email érvényessége 10 perc!';
           this.user = '';
         } else {
           console.error('Ilyen email cím nincs az adatbázisban!:', response.message);

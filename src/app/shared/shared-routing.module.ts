@@ -4,6 +4,7 @@ import { LoginComponent } from './authentication/components/login/login.componen
 
 const sharedRoutes: Routes = [
     { path: 'login', component: LoginComponent },
+    
 ];
 
 @NgModule({

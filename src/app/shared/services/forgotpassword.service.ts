@@ -8,12 +8,25 @@ import { API_BASE_URL } from '../../constans/constans';
 })
 export class ForgotPasswordService {
 
-  private api = API_BASE_URL + 'forgotpassword.php';
+  private checkEmailApi = API_BASE_URL + 'forgotpassword.php';
+  private checkTokenApi = API_BASE_URL + 'checktoken.php';
+  private saveNewPasswordApi = API_BASE_URL + 'savenewpassword.php';
+
 
   constructor(private http: HttpClient) { }
 
   checkAndSendEmail(email: string): Observable<any> {
     const body = { email };
-    return this.http.post<any>(this.api, body);
+    return this.http.post<any>(this.checkEmailApi, body);
+  }
+
+  checkToken(token: string): Observable<any> {
+    const body = { token };
+    return this.http.post<any>(this.checkTokenApi, body);
+  }
+
+  saveNewPassword(token: string, newPassword: string): Observable<any> {
+    const body = { token, newPassword };
+    return this.http.post<any>(this.saveNewPasswordApi, body);
   }
 }
