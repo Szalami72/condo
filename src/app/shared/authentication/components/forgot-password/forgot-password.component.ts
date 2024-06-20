@@ -23,12 +23,10 @@ constructor(private passwordService: ForgotPasswordService) { }
     {
       this.passwordService.checkAndSendEmail(this.user).subscribe(response => {
         if (response.status === 'success') {
-          console.log('Létező felhasználó:', response.email);
           this.errorMessage = '';
           this.message = 'Visszaállító link elküldve!\n Az email érvényessége 10 perc!';
           this.user = '';
         } else {
-          console.error('Ilyen email cím nincs az adatbázisban!:', response.message);
           this.errorMessage = "Nem regisztrált email cím!";
           this.message = '';
           this.user = '';
@@ -36,7 +34,6 @@ constructor(private passwordService: ForgotPasswordService) { }
       });
     } catch (error) {
       this.errorMessage = "Hiba az email ellenőrzés során!";
-      console.log(this.errorMessage);
       this.user = '';
     }
    

@@ -22,7 +22,6 @@ export class LoginComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit(): void {
-    console.log('Bejelentkezés oldal betöltve.');
     if (this.getUserData()) {
       this.redirectToUrl();
     }
@@ -32,16 +31,13 @@ export class LoginComponent implements OnInit {
     try {
       this.loginService.getUserData(this.email, this.password).subscribe(response => {
         if (response.status === 'success') {
-          console.log('Sikeres bejelentkezés:', response.user);
           this.setUserData(response.user);
           this.redirectToUrl();
         } else {
-          console.error('Sikertelen bejelentkezés:', response.message);
           this.errorMessage = "Hibás bejelentkezési adatok!";
         }
       });
     } catch (error) {
-      console.error('Hiba a bejelentkezés során:', error);
       this.errorMessage = "Hiba a bejelentkezés során!";
     }
   }
@@ -71,7 +67,6 @@ export class LoginComponent implements OnInit {
     } else {
       sessionStorage.setItem('currentUser', JSON.stringify(userData));
     }
-    console.log('Felhasználói adatok tárolva.');
   }
 
   private getUserData(): any {
