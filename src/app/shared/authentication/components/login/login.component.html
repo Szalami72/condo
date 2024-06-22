@@ -13,13 +13,13 @@
       <label for="password" class="form-label fw-bold">Jelszó</label>
       <input type="password" class="form-control" id="password" name="password" [(ngModel)]="password">
     </div>
-    <div class="mb-3 form-check">
+    <div class="mb-3 mt-2 form-check float-end">
       <input type="checkbox" class="form-check-input" id="stayedLogIn" name="stayedLoggedIn" [(ngModel)]="stayedLoggedIn">
       <label class="form-check-label" for="stayedLoggedIn">Maradjak bejelentkezve.</label>
     </div>
     <button type="submit" class="btn btn-primary">Belépés</button>
   </form>
-  <div (click)="forgotPassword()" class="mt-5 cursor-pointer">Elfelejtettem a jelszavam</div>
+  <div (click)="forgotPassword()" class="mt-5 cursor-pointer text-center">Elfelejtettem a jelszavam</div>
 </div>
 </div>
 </div>
