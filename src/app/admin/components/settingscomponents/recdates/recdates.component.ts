@@ -69,20 +69,4 @@ export class RecdatesComponent implements OnInit {
   }
 
 
-
-  // private showMessage(message: string) {
-  //   this.errorMessage = "";
-  //   this.message = message;
-  //   setTimeout(() => {
-  //     this.message = "";
-  //   }, 3000);
-  // }
-
-  // private showErrorMessage(errorMessage: string) {
-  //   this.errorMessage = errorMessage;
-  //   setTimeout(() => {
-  //     this.errorMessage = "";
-  //   }, 3000);
-  // }
-
 }

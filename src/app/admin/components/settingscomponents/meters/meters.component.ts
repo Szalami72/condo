@@ -21,16 +21,35 @@ export class MetersComponent implements OnInit {
   hot2 = false;
   heating = false;
 
-  constructor(public messageService: MessageService) { }
+  constructor(private metersService: MetersService, public messageService: MessageService) { }
 
   ngOnInit(): void {
+    this.metersService.getMeters().subscribe(
+      data => {
+        this.cold1 = data.cold1;
+        this.cold2 = data.cold2;
+        this.hot1 = data.hot1;
+        this.hot2 = data.hot2;
+        this.heating = data.heating;
+      },
+      error => {
+        this.messageService.setErrorMessage('Hiba történt az adatok letöltése során. Próbáld meg később!');
+      }
+    );
   }
 
   saveMeters() {  
-
+    this.metersService.saveMeters(this.cold1, this.cold2, this.hot1, this.hot2, this.heating).subscribe(
+      {
+        next: (response) => {
+          this.messageService.setMessage('Az adatok mentése sikeres.');
+        },
+        error: (error) => {
+          this.messageService.setErrorMessage('Hiba történt a mentés során. Próbáld meg később!');
+        }
+      }
+    )
   }
 
-  isValid(): boolean {
-    return this.cold1 || this.cold2 || this.hot1 || this.hot2 || this.heating;
-  }
+ 
 }
