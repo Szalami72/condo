@@ -16,3 +16,9 @@
 .settings-box {
     padding: 0 0.5rem 2.25rem 0.5rem;
 }
+  
+.unselectable {
+    background-color: #f1aeb5;
+    cursor: not-allowed;
+  }
+  

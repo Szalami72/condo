@@ -13,11 +13,9 @@ export class RecdatesComponent {
 
   days: number[] = [];
   startDay: number | null = 1;
-  endDay: number | null = 2;
-
+  endDay: number | null = null;
 
   message: string = '';
-  errorMessage: string = '';
 
   constructor() { 
     this.generateDays();
@@ -28,23 +26,37 @@ export class RecdatesComponent {
       this.days.push(i);
     }
   }
-
-  saveDates(): void {
- 
-    console.log(this.startDay, this.endDay);
-    if ((!this.startDay || !this.endDay) || (this.startDay > this.endDay)) {
-      this.message = '';
-      this.errorMessage = 'A kezdő dátum nem lehet nagyobb, mint a befejezés dátum!';
-      return;
+  updateEndDayOptions() {
+    if (this.endDay !== null && this.startDay !== null && this.endDay <= this.startDay) {
+      this.endDay = null;
     }
-    
+  }
 
-    if (this.startDay && this.endDay && this.startDay <= this.endDay) {
-      this.errorMessage = '';
-      this.message = 'A dátumok sikeresen mentve.';
-      return;
-      // TODO: save dates
+  isEndDaySelectable(day: number): boolean {
+    return this.startDay === null || day > this.startDay - 1;
+  }
+
+  isValid(): boolean {
+    return this.startDay !== null && this.endDay !== null;
+  }
+
+  saveDates() {
+    if (this.isValid()) {
+      console.log('Kezdő nap:', this.startDay, 'Befejező nap:', this.endDay);
+      if (this.startDay && this.endDay && this.startDay <= this.endDay) {
+            this.showMessage('A dátumok sikeresen mentve.');
+            return;
+            // TODO: save dates
     }
+  }
+
+}
+
+  private showMessage(message: string) {
+    this.message = message;
+    setTimeout(() => {
+      this.message = "";
+    }, 3000);
   }
 
 }
