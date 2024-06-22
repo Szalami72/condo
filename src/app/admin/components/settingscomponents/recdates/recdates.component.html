@@ -1,6 +1,7 @@
 <div class="settings-box">
 
     <ng-container *ngIf="!message; else showMessage"></ng-container>
+    <ng-container *ngIf="!errorMessage; else showErrorMessage"></ng-container>
 
 
     <p>válaszd ki a kezdő dátumot:</p>
@@ -23,7 +24,13 @@
 </div>
 
 <ng-template #showMessage>
-    <div class="alert alert-danger text-center" role="alert">
+    <div class="alert alert-success text-center" role="alert">
       {{message}}
+    </div>
+  </ng-template>
+
+<ng-template #showErrorMessage>
+    <div class="alert alert-danger text-center" role="alert">
+      {{errorMessage}}
     </div>
   </ng-template>

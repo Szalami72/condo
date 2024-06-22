@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RecdatesService } from '../../../services/recdates.service';
 
 @Component({
   selector: 'app-recdates',
@@ -9,18 +10,31 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './recdates.component.html',
   styleUrl: './recdates.component.css'
 })
-export class RecdatesComponent {
+export class RecdatesComponent implements OnInit {
 
   days: number[] = [];
-  startDay: number | null = 1;
+  startDay: number | null = null;
   endDay: number | null = null;
 
   message: string = '';
+  errorMessage: string = '';
+  
 
-  constructor() { 
+  constructor(private recdatesService: RecdatesService) {
     this.generateDays();
   }
 
+  ngOnInit() {
+    this.recdatesService.getRecordDates().subscribe(
+      data => {
+        this.startDay = data.startDay;
+        this.endDay = data.endDay;
+      },
+      error => {
+        this.showErrorMessage('Hiba történt az adatok letöltése során. Próbáld meg később!');
+      }
+    );
+  }
   private generateDays() {
     for (let i = 1; i <= 31; i++) {
       this.days.push(i);
@@ -42,20 +56,33 @@ export class RecdatesComponent {
 
   saveDates() {
     if (this.isValid()) {
-      console.log('Kezdő nap:', this.startDay, 'Befejező nap:', this.endDay);
       if (this.startDay && this.endDay && this.startDay <= this.endDay) {
+        this.recdatesService.saveRecordDates(this.startDay, this.endDay).subscribe({
+          next: (response) => {
             this.showMessage('A dátumok sikeresen mentve.');
-            return;
-            // TODO: save dates
+          },
+          error: (error) => {
+            this.showErrorMessage('Hiba történt a mentés során. Próbáld meg később!');
+          }
+        });
+      }
     }
   }
 
-}
+
 
   private showMessage(message: string) {
+    this.errorMessage = "";
     this.message = message;
     setTimeout(() => {
       this.message = "";
+    }, 3000);
+  }
+
+  private showErrorMessage(errorMessage: string) {
+    this.errorMessage = errorMessage;
+    setTimeout(() => {
+      this.errorMessage = "";
     }, 3000);
   }
 

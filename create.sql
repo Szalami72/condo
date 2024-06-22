@@ -88,14 +88,9 @@ CREATE TABLE loginHistory (
     );
 
     CREATE TABLE settings (
-        dictateDateStart int(11) NOT NULL,
-        dictateDateEnd int(11) NOT NULL,
-        commoncostPerSquareMeter int(11) NOT NULL,
-        heatingBaseCost int(11) NOT NULL,
-        heatingMultipleCost int(11) NOT NULL,
-        heatingWaterPerCubicMeter int(11) NOT NULL,
-        subDepositIfNoMeters int(11) NOT NULL,
-        numberOfMeters int(11) NOT NULL,
+        id int(11) NOT NULL AUTO_INCREMENT,
+        title varchar(255) NOT NULL,
+        value varchar(255) NOT NULL,
         PRIMARY KEY (id)
     );
 
