@@ -1,9 +1,6 @@
 <div class="settings-box">
 
-    <ng-container *ngIf="!message; else showMessage"></ng-container>
-    <ng-container *ngIf="!errorMessage; else showErrorMessage"></ng-container>
-
-
+  
     <p>válaszd ki a kezdő dátumot:</p>
 
     <div *ngFor="let day of days" class="form-check-inline">
@@ -23,7 +20,7 @@
 
 </div>
 
-<ng-template #showMessage>
+<!-- <ng-template #showMessage>
     <div class="alert alert-success text-center" role="alert">
       {{message}}
     </div>
@@ -33,4 +30,4 @@
     <div class="alert alert-danger text-center" role="alert">
       {{errorMessage}}
     </div>
-  </ng-template>
+  </ng-template> -->

@@ -10,8 +10,8 @@ import { API_BASE_URL } from '../../constans/constans';
 })
 export class RecdatesService {
 
-  private saveRecDatesApi = API_BASE_URL + 'saverecorddates.php';
-  private getRecDatesApi = API_BASE_URL + 'getrecorddates.php';
+  private saveRecDatesApi = API_BASE_URL + 'settings/saverecorddates.php';
+  private getRecDatesApi = API_BASE_URL + 'settings/getrecorddates.php';
 
   constructor(private http: HttpClient) { }
 

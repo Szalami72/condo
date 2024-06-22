@@ -5,6 +5,7 @@ import { AdminGuard } from '../shared/authguards/adminguard';
 import { SettingsComponent } from './components/settings/settings.component';
 import { PagenotfoundComponent } from '../shared/authentication/components/pagenotfound/pagenotfound.component';
 
+
 const adminRoutes: Routes = [
   {
       path: '',
@@ -12,6 +13,8 @@ const adminRoutes: Routes = [
       children: [
           { path: 'home', component: HomeComponent },
           { path: 'settings', component: SettingsComponent },
+        
+         
 
           { path: '**', component: PagenotfoundComponent }
 

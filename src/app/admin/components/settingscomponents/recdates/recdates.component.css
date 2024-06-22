@@ -1,3 +1,7 @@
+.settings-box {
+    padding: 0 0.5rem 2.25rem 0.5rem;
+}
+
 .form-check-inline {
     margin: 0 0.1rem 0.1rem 0;
 }
@@ -12,10 +16,6 @@
     background-color: #6C757D;
     color:#e2e3e5;
   }
-
-.settings-box {
-    padding: 0 0.5rem 2.25rem 0.5rem;
-}
   
 .unselectable {
     background-color: #f1aeb5;

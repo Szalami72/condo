@@ -8,9 +8,9 @@ import { API_BASE_URL } from '../../constans/constans';
 })
 export class ForgotPasswordService {
 
-  private checkEmailApi = API_BASE_URL + 'forgotpassword.php';
-  private checkTokenApi = API_BASE_URL + 'checktoken.php';
-  private saveNewPasswordApi = API_BASE_URL + 'savenewpassword.php';
+  private checkEmailApi = API_BASE_URL + 'auth/forgotpassword.php';
+  private checkTokenApi = API_BASE_URL + 'auth/checktoken.php';
+  private saveNewPasswordApi = API_BASE_URL + 'auth/savenewpassword.php';
 
 
   constructor(private http: HttpClient) { }

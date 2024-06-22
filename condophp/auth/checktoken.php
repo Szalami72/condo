@@ -1,5 +1,5 @@
 <?php 
-require 'header.php';
+require '../config/header.php';
 
 class ResetPassword  {
     private $conn;

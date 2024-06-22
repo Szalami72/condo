@@ -1,6 +1,6 @@
 <?php
-require 'vendor/autoload.php';
-require 'header.php';
+require '../vendor/autoload.php';
+require '../config/header.php';
 use PHPMailer\PHPMailer\PHPMailer;
 define('RESET_LINK', 'http://localhost:4200/reset-password?token=');
 

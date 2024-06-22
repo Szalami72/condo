@@ -8,7 +8,7 @@ import { API_BASE_URL } from '../../constans/constans';
 })
 export class LoginService {
 
-  private loginApi = API_BASE_URL + 'login.php';
+  private loginApi = API_BASE_URL + 'auth/login.php';
 
   constructor(private http: HttpClient) { }
 
