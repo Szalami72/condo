@@ -12,76 +12,62 @@ class SaveRecordDates
 
     public function saveDates($startDate, $endDate) {
         $query = "SELECT title FROM settings WHERE title IN ('startDate', 'endDate')";
-        $result = $this->conn->query($query);
-
-        if (!$result) {
-            die("Query failed: " . $this->conn->error);
-        }
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $existingTitles = [];
-        while ($row = $result->fetch_assoc()) {
+        foreach ($result as $row) {
             $existingTitles[] = $row['title'];
         }
 
         if (in_array('startDate', $existingTitles)) {
-            $updateQuery = "UPDATE settings SET value = ? WHERE title = 'startDate'";
+            $updateQuery = "UPDATE settings SET value = :value WHERE title = 'startDate'";
             $stmt = $this->conn->prepare($updateQuery);
-            if (!$stmt) {
-                die("Prepare failed: " . $this->conn->error);
-            }
-            $stmt->bind_param("s", $startDate);
+            $stmt->bindParam(':value', $startDate);
             $stmt->execute();
-            $stmt->close();
         } else {
-            $insertQuery = "INSERT INTO settings (title, value) VALUES ('startDate', ?)";
+            $insertQuery = "INSERT INTO settings (title, value) VALUES ('startDate', :value)";
             $stmt = $this->conn->prepare($insertQuery);
-            if (!$stmt) {
-                die("Prepare failed: " . $this->conn->error);
-            }
-            $stmt->bind_param("s", $startDate);
+            $stmt->bindParam(':value', $startDate);
             $stmt->execute();
-            $stmt->close();
         }
 
         if (in_array('endDate', $existingTitles)) {
-            $updateQuery = "UPDATE settings SET value = ? WHERE title = 'endDate'";
+            $updateQuery = "UPDATE settings SET value = :value WHERE title = 'endDate'";
             $stmt = $this->conn->prepare($updateQuery);
-            if (!$stmt) {
-                die("Prepare failed: " . $this->conn->error);
-            }
-            $stmt->bind_param("s", $endDate);
+            $stmt->bindParam(':value', $endDate);
             $stmt->execute();
-            $stmt->close();
         } else {
-            $insertQuery = "INSERT INTO settings (title, value) VALUES ('endDate', ?)";
+            $insertQuery = "INSERT INTO settings (title, value) VALUES ('endDate', :value)";
             $stmt = $this->conn->prepare($insertQuery);
-            if (!$stmt) {
-                die("Prepare failed: " . $this->conn->error);
-            }
-            $stmt->bind_param("s", $endDate);
+            $stmt->bindParam(':value', $endDate);
             $stmt->execute();
-            $stmt->close();
         }
     }
 }
 
-$saveRecordDates = new SaveRecordDates($conn);
-$data = json_decode(file_get_contents("php://input"), true);
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-if (json_last_error() === JSON_ERROR_NONE) {
-    // Check if the data contains the expected keys
-    if (isset($data['startDay']) && isset($data['endDay'])) {
-        $startDate = $data['startDay'];
-        $endDate = $data['endDay'];
-        $saveRecordDates->saveDates($startDate, $endDate);
-        echo json_encode(['status' => 'success']);
+    $saveRecordDates = new SaveRecordDates($conn);
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (json_last_error() === JSON_ERROR_NONE) {
+        if (isset($data['startDay']) && isset($data['endDay'])) {
+            $startDate = $data['startDay'];
+            $endDate = $data['endDay'];
+            $saveRecordDates->saveDates($startDate, $endDate);
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+        }
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+        echo json_encode(['status' => 'error', 'message' => 'JSON decode error']);
     }
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'JSON decode error']);
+} catch(PDOException $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Connection failed: ' . $e->getMessage()]);
 }
-
-$conn->close();
 
 ?>

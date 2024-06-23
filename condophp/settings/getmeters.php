@@ -12,10 +12,12 @@ class GetMeters
 
     public function getMeters() {
         $query = "SELECT title, value FROM settings WHERE title IN ('cold1', 'cold2', 'hot1', 'hot2', 'heating')";
-        $result = $this->conn->query($query);
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (!$result) {
-            die("Query failed: " . $this->conn->error);
+            die("Query failed");
         }
 
         $meters = [
@@ -26,7 +28,7 @@ class GetMeters
             'heating' => false
         ];
 
-        while ($row = $result->fetch_assoc()) {
+        foreach ($result as $row) {
             $meters[$row['title']] = $row['value'];
         }
 
@@ -34,10 +36,14 @@ class GetMeters
     }
 }
 
-$getMeters = new GetMeters($conn);
-$meters = $getMeters->getMeters();
-echo json_encode(['status' => 'success', 'data' => $meters]);
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$conn->close();
-
+    $getMeters = new GetMeters($conn);
+    $meters = $getMeters->getMeters();
+    echo json_encode(['status' => 'success', 'data' => $meters]);
+} catch(PDOException $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Connection failed: ' . $e->getMessage()]);
+}
 ?>

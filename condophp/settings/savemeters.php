@@ -11,7 +11,6 @@ class SaveMeters
     }
 
     public function saveMeterSettings($cold1, $cold2, $hot1, $hot2, $heating) {
-        // Mapping the input values to their respective titles in settings table
         $meterSettings = [
             'cold1' => $cold1,
             'cold2' => $cold2,
@@ -20,16 +19,12 @@ class SaveMeters
             'heating' => $heating
         ];
 
-        // Check which settings already exist in the database
         $existingTitles = $this->getExistingTitles();
 
-        // Iterate through meterSettings and insert or update accordingly
         foreach ($meterSettings as $title => $value) {
             if (in_array($title, $existingTitles)) {
-                // Update existing record
                 $this->updateSetting($title, $value);
             } else {
-                // Insert new record
                 $this->insertSetting($title, $value);
             }
         }
@@ -37,10 +32,12 @@ class SaveMeters
 
     private function getExistingTitles() {
         $query = "SELECT title FROM settings WHERE title IN ('cold1', 'cold2', 'hot1', 'hot2', 'heating')";
-        $result = $this->conn->query($query);
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $existingTitles = [];
-        while ($row = $result->fetch_assoc()) {
+        foreach ($result as $row) {
             $existingTitles[] = $row['title'];
         }
 
@@ -48,23 +45,22 @@ class SaveMeters
     }
 
     private function updateSetting($title, $value) {
-        $updateQuery = "UPDATE settings SET value = ? WHERE title = ?";
+        $updateQuery = "UPDATE settings SET value = :value WHERE title = :title";
         $stmt = $this->conn->prepare($updateQuery);
-        $stmt->bind_param("ss", $value, $title);
+        $stmt->bindParam(':value', $value);
+        $stmt->bindParam(':title', $title);
         $stmt->execute();
-        $stmt->close();
     }
 
     private function insertSetting($title, $value) {
-        $insertQuery = "INSERT INTO settings (title, value) VALUES (?, ?)";
+        $insertQuery = "INSERT INTO settings (title, value) VALUES (:title, :value)";
         $stmt = $this->conn->prepare($insertQuery);
-        $stmt->bind_param("ss", $title, $value);
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':value', $value);
         $stmt->execute();
-        $stmt->close();
     }
 }
 
-// Usage example
 $data = json_decode(file_get_contents("php://input"), true);
 
 $cold1 = $data['cold1'];
@@ -73,10 +69,15 @@ $hot1 = $data['hot1'];
 $hot2 = $data['hot2'];
 $heating = $data['heating'];
 
-$saveMeters = new SaveMeters($conn);
-$saveMeters->saveMeterSettings($cold1, $cold2, $hot1, $hot2, $heating);
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-echo json_encode(['status' => 'success']);
-$conn->close();
+    $saveMeters = new SaveMeters($conn);
+    $saveMeters->saveMeterSettings($cold1, $cold2, $hot1, $hot2, $heating);
 
+    echo json_encode(['status' => 'success']);
+} catch(PDOException $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Connection failed: ' . $e->getMessage()]);
+}
 ?>

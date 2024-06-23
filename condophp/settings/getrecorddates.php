@@ -12,14 +12,20 @@ class GetRecordDates
 
     public function getDates() {
         $query = "SELECT title, value FROM settings WHERE title IN ('startDate', 'endDate')";
-        $result = $this->conn->query($query);
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (!$result) {
-            die("Query failed: " . $this->conn->error);
+            die("Query failed");
         }
 
-        $dates = [];
-        while ($row = $result->fetch_assoc()) {
+        $dates = [
+            'startDate' => null,
+            'endDate' => null
+        ];
+
+        foreach ($result as $row) {
             $dates[$row['title']] = $row['value'];
         }
 
@@ -27,10 +33,14 @@ class GetRecordDates
     }
 }
 
-$getRecordDates = new GetRecordDates($conn);
-$dates = $getRecordDates->getDates();
-echo json_encode(['status' => 'success', 'data' => $dates]);
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$conn->close();
-
+    $getRecordDates = new GetRecordDates($conn);
+    $dates = $getRecordDates->getDates();
+    echo json_encode(['status' => 'success', 'data' => $dates]);
+} catch(PDOException $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Connection failed: ' . $e->getMessage()]);
+}
 ?>
