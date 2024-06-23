@@ -4,7 +4,10 @@ import { MenuComponent } from '../../components/menu/menu.component';
 import { FormsModule } from '@angular/forms';
 import { RecdatesComponent } from '../settingscomponents/recdates/recdates.component';
 import { MetersComponent } from '../settingscomponents/meters/meters.component';
+import { CostsComponent } from '../settingscomponents/costs/costs.component';
+import { InfosectionComponent } from '../settingscomponents/infosection/infosection.component';
 import { MessageService } from '../../../shared/services/message.service';
+import { DescriptionService } from '../../services/description.service';
 
 @Component({
     selector: 'app-settings',
@@ -15,10 +18,30 @@ import { MessageService } from '../../../shared/services/message.service';
             CommonModule,
             FormsModule,
             RecdatesComponent,
-            MetersComponent]
+            MetersComponent,
+            CostsComponent,
+            InfosectionComponent]
 })
 export class SettingsComponent {
+  showInfo: boolean = false;
 
-  constructor(public messageService: MessageService) { }
-  
+  constructor(public messageService: MessageService, public descriptionService: DescriptionService) { }
+
+  toggleInfo(infoSection: InfosectionComponent) {
+    infoSection.toggleInfo(); // hívja meg a toggleInfo metódust
+  }
+
+  getRecDatesDescription(): string {
+    return this.descriptionService.getRecDatesDescription();
+  }
+
+  getMetersDescription(): string {
+    return this.descriptionService.getMetersDescription();
+  }
+
+  getCostsDescription(): string {
+    return this.descriptionService.getCostsDescription();
+  }
+
+
 }

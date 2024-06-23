@@ -14,20 +14,8 @@
       <label [ngClass]="{'selected-label': endDay === day, 'unselectable': !isEndDaySelectable(day)}" class="label-day" [for]="'endDay-' + day">{{ day }}</label>
     </div>
     
-    <button class="btn btn-primary btn-sm float-end mt-4" (click)="saveDates()" [disabled]="!isValid()">Mentés</button>
+    <button class="btn btn-primary btn-sm float-end mt-4 me-2" (click)="saveDates()" [disabled]="!isValid()">Mentés</button>
     
 
 
 </div>
-
-<!-- <ng-template #showMessage>
-    <div class="alert alert-success text-center" role="alert">
-      {{message}}
-    </div>
-  </ng-template>
-
-<ng-template #showErrorMessage>
-    <div class="alert alert-danger text-center" role="alert">
-      {{errorMessage}}
-    </div>
-  </ng-template> -->
