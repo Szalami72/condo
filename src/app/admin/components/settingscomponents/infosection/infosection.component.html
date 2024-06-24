@@ -1,14 +1,14 @@
-<div class="text-bg-light mb-4">
+<div class="card h-100 box-content">
     <h6 class="mb-3 p-2 text-bg-secondary">
         {{title}}
         <button class="info-icon float-end" (click)="toggleInfo()">
-            <i class="fa fa-info-circle fa-lg"></i>
+            <i class="fa fa-info fa-lg"></i>
         </button>
     </h6>
-    <div class="ps-2" *ngIf="!showInfo">
+    <div *ngIf="!showInfo">
         <ng-content select="[defaultContent]"></ng-content>
     </div>
-    <div class="ps-2" *ngIf="showInfo">
+    <div *ngIf="showInfo">
         <ng-content select="[infoContent]"></ng-content>
     </div>
 </div>

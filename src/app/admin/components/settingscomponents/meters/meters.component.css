@@ -1,7 +1,4 @@
-.settings-box {
-    padding: 0 0.5rem 2.25rem 0.5rem;
-    height: 15.5rem;
-}
+
 
 label {
     cursor: pointer;
@@ -41,5 +38,5 @@ label {
 }
 
 button {
-    margin-top: 3.8rem;
+    margin-top: 4.6rem;
 }
