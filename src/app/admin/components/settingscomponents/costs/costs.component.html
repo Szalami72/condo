@@ -1,6 +1,17 @@
 <div class="settings-box">
+    <p>közös költség fizetésének módja:</p>
 
-    <p>költségadatok beállítása</p>
+    <div class="form-inline">
+        <label for="smeter" class="label-cost" [class.selected-label]="commonCost === 'smeter'">m<sup>2</sup> alapján</label>
+        <input class="visually-hidden" type="radio" id="smeter" name="commoncost" [(ngModel)]="commonCost" value="smeter">
 
+        <label for="perflat" class="label-cost" [class.selected-label]="commonCost === 'perflat'">Lakásonként</label>
+        <input class="visually-hidden" type="radio" id="perflat" name="commoncost" [(ngModel)]="commonCost" value="perflat">
 
-    
+        <label for="fix" class="label-cost" [class.selected-label]="commonCost === 'fix'">Fix összeg</label>
+        <input class="visually-hidden" type="radio" id="fix" name="commoncost" [(ngModel)]="commonCost" value="fix">
+    </div>
+
+    <button class="btn btn-primary btn-sm float-end mt-2">Mentés</button>
+</div>
+

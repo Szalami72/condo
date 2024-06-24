@@ -6,11 +6,15 @@ import { MessageService } from '../../../../shared/services/message.service';
 @Component({
   selector: 'app-costs',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, FormsModule],
   templateUrl: './costs.component.html',
   styleUrl: './costs.component.css'
 })
 export class CostsComponent {
 
-  constructor(public messageService: MessageService) { }
+  commonCost: string | undefined;
+
+  constructor(public messageService: MessageService) { 
+    
+  }
 }

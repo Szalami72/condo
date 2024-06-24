@@ -7,7 +7,7 @@ export class DescriptionService {
 
   recDatesDescription: string = "A lakók a kezdő és a befejezés dátum közötti időszakban " +
    "adhatják le az óraállásaikat az online felületen.<br>" + 
-   "Ezután már csak az adminisztrátor tudja rögzíteni a más módon leadott óraállásokat." +
+   "A befejezés dátum után már csak az adminisztrátor tudja rögzíteni a más módon leadott óraállásokat." +
    "<br><br>Ha beállítottad az értékeket, a <b>Mentés</b> gombra kattintva véglegesítheted.";
 
   metersDescription: string = "Válaszd ki azokat a mérőórákat, amelyeknek az értékeit a lakók leadhatják " +
