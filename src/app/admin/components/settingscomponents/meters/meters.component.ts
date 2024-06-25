@@ -7,11 +7,9 @@ import { MetersService } from '../../../services/meters.service';
 @Component({
   selector: 'app-meters',
   standalone: true,
-  imports: [CommonModule,
-            FormsModule,
-          ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './meters.component.html',
-  styleUrl: './meters.component.css'
+  styleUrls: ['./meters.component.css']
 })
 export class MetersComponent implements OnInit {
 
@@ -38,18 +36,23 @@ export class MetersComponent implements OnInit {
     );
   }
 
-  saveMeters() {  
-    this.metersService.saveMeters(this.cold1, this.cold2, this.hot1, this.hot2, this.heating).subscribe(
-      {
-        next: (response) => {
-          this.messageService.setMessage('Az adatok mentése sikeres.');
-        },
-        error: (error) => {
-          this.messageService.setErrorMessage('Hiba történt a mentés során. Próbáld meg később!');
-        }
+  saveMeters(): void {
+    const metersData = {
+      cold1: this.cold1 || false,
+      cold2: this.cold2 || false,
+      hot1: this.hot1 || false,
+      hot2: this.hot2 || false,
+      heating: this.heating || false
+    };
+
+    this.metersService.saveMeters(metersData).subscribe({
+      next: (response) => {
+        this.messageService.setMessage('Az adatok mentése sikeres.');
+      },
+      error: (error) => {
+        this.messageService.setErrorMessage('Hiba történt a mentés során. Próbáld meg később!');
       }
-    )
+    });
   }
 
- 
 }

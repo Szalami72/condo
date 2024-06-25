@@ -12,3 +12,19 @@
     background-color: #ffc107;
     color:#333;
 }
+.amount {
+    width: 8rem;
+}
+
+.amount-fix {
+    margin-left: 17rem;
+}
+
+.amount-input {
+    width: 100%;
+}
+
+.deleteSelected {
+    color: #f1aeb5;
+    cursor: pointer;
+}

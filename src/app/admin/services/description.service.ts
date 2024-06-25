@@ -19,7 +19,9 @@ export class DescriptionService {
   costsDescription: string = "A közös költség lehet m<sup>2</sup> alapú, lakásonként beállított vagy fix összeg.<br><br>" +
   "A lakásonként beállított összeget általában olyan társasházakban érdemes használni, ahol csak 3 - 5 féle lakás van. (pl.: 33, 44 vagy 60 lakásos lépcsőházaknál)<br>" +
   "Ez esetben a lakók/lakások adatainak rögzítésénél ki lehet választani a közös költség összegét.<br>" +
-  "A vízóra nélküli lakások albetéti díjának megadása a közös költséghez hasonló.";
+  "A fix összeg azt jelenti hogy minden lakásnak ugyanannyi a közös költsége.<br>" +
+  "A vízóra nélküli lakások albetéti díjának megadása a közös költséghez hasonló." +
+  "<br><br>Ha beállítottad az értékeket, a <b>Mentés</b> gombra kattintva véglegesítheted.";
   
 
   constructor() { }

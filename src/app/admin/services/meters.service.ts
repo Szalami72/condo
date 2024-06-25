@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { API_BASE_URL } from '../../constans/constans';
 
@@ -14,29 +15,29 @@ export class MetersService {
 
   constructor(private http: HttpClient) { }
 
-
-  saveMeters(cold1: boolean, cold2: boolean, hot1: boolean, hot2: boolean, heating: boolean): Observable<any> {
-    const body = { cold1, cold2, hot1, hot2, heating };
-    return this.http.post(this.saveMetersApi, body);
+  saveMeters(metersData: { cold1: boolean, cold2: boolean, hot1: boolean, hot2: boolean, heating: boolean }): Observable<any> {
+    return this.http.post(this.saveMetersApi, metersData);
   }
 
-  getMeters(): Observable<{ cold1: boolean, cold2: boolean, hot1: boolean, hot2: boolean, heating: boolean }> {
+  getMeters(): Observable<any> {
     return this.http.get<any>(this.getMetersApi).pipe(
       map(response => {
-        if (response.status === 'success') {
+        if (response && response.status === 'success' && response.data) {
           return {
-            cold1: response.data.cold1,
-            cold2: response.data.cold2,
-            hot1: response.data.hot1,
-            hot2: response.data.hot2,
-            heating: response.data.heating
+            cold1: response.data.cold1 || false,
+            cold2: response.data.cold2 || false,
+            hot1: response.data.hot1 || false,
+            hot2: response.data.hot2 || false,
+            heating: response.data.heating || false
           };
         } else {
-          throw new Error('Sikertelen adatkérés.');
+          throw new Error('Sikertelen adatkérés vagy hiányzó adatok.');
         }
+      }),
+      catchError(error => {
+        throw new Error('Sikertelen adatkérés vagy hiányzó adatok.');
       })
     );
   }
-
 
 }
