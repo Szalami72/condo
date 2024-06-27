@@ -2,3 +2,7 @@
 .card {
     border: none;
 }
+
+.container {
+    margin-top: 5rem;
+}

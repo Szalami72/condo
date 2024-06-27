@@ -1,0 +1,15 @@
+.title-input,
+.data-input {
+    width: 49%;
+    padding-left: 0.5rem;
+    color: #666;
+    font-weight: bold;
+}
+
+.data-input {
+    margin-left: 2%;
+}
+
+.card {
+    border: none;
+}

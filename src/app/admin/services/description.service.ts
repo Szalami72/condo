@@ -22,6 +22,13 @@ export class DescriptionService {
   "A fix összeg azt jelenti hogy minden lakásnak ugyanannyi a közös költsége.<br>" +
   "A vízóra nélküli lakások albetéti díjának megadása a közös költséghez hasonló." +
   "<br><br>Ha beállítottad az értékeket, a <b>Mentés</b> gombra kattintva véglegesítheted.";
+
+  datasDescription: string = "A társasház adatait rögzítheted, pl.: gondnok neve, telefonszámok, ...<br>" +
+  "Az első oszlop tartalmazhatja az új adat nevét, pl.:Közös képviselő neve, a második oszlop pedig a nevet.<br>" +
+  "Egy sor törléséhez töröld ki mind a két értéket és nyomd meg a <b>Mentés</b> gombot.<br>" +
+  "Módosításhoz írd át a rögzített adatokat, majd nyomd meg a <b>Mentés</b> gombot. " +
+  "<br><br>Ha beállítottad az értékeket, a <b>Mentés</b> gombra kattintva véglegesítheted.";
+  
   
 
   constructor() { }
@@ -35,5 +42,9 @@ export class DescriptionService {
 
   getMetersDescription(): string {
     return this.metersDescription;
+  }
+
+  getDatasDescription(): string {
+    return this.datasDescription;
   }
 }

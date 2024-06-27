@@ -1,0 +1,19 @@
+<div class="card h-100">
+
+<div class="settings-box mt-5">
+    <p>a társasház adatai:</p>
+
+    <div class="form-inline mb-3" *ngFor="let data of condoDatas">
+        <input class="title-input" type="text" name="title" [(ngModel)]="data.title" [readonly]="!data.isEditable">
+        <input class="data-input" type="text" name="data" [(ngModel)]="data.data">
+    </div>
+
+    <div class="form-inline mb-3">
+        <input class="title-input" type="text" name="newtitle" [(ngModel)]="newTitle">
+        <input class="data-input" type="text" name="newData" [(ngModel)]="newData">
+    </div>
+
+<button class="btn btn-primary btn-sm float-end mt-2" (click)="saveDatas()">Mentés</button>
+
+</div>
+</div>

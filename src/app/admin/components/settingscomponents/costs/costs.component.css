@@ -6,11 +6,13 @@
     text-align: center;
     border: 1px solid #666;
     cursor: pointer;
+    color: #666;
+    font-weight: bold;
 }
 
 .selected-label {
     background-color: #ffc107;
-    color:#333;
+    color:#666;
 }
 .amount {
     width: 8rem;
@@ -27,4 +29,8 @@
 .deleteSelected {
     color: #f1aeb5;
     cursor: pointer;
+}
+
+.settings-box {
+    padding-bottom: 2rem;
 }

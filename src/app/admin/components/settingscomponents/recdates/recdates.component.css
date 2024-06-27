@@ -11,6 +11,8 @@
     width: 1.5rem;
     text-align: center;
     border: 1px solid #666;
+    color: #666;
+    font-weight: bold;
 }
 
 .selected-label {
