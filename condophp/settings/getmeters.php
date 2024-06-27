@@ -11,23 +11,33 @@ class GetMeters
     }
 
     public function getMeters() {
+        $metersToFetch = ['cold1', 'cold2', 'hot1', 'hot2', 'heating'];
+
         $query = "SELECT title, value FROM settings WHERE title IN ('cold1', 'cold2', 'hot1', 'hot2', 'heating')";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if (!$result) {
-            die("Query failed");
-        }
+$meters = [
+    'cold1' => false,
+    'cold2' => false,
+    'hot1' => false,
+    'hot2' => false,
+    'heating' => false
+];
 
-        $meters = [
-            'cold1' => false,
-            'cold2' => false,
-            'hot1' => false,
-            'hot2' => false,
-            'heating' => false
-        ];
+if (!$result) {
+    echo json_encode(['status' => 'success', 'data' => $meters]);
+    exit; 
+}
 
+foreach ($result as $row) {
+    $meters[$row['title']] = $row['value'];
+}
+
+        
+
+        // Update existing meters with values from database
         foreach ($result as $row) {
             $meters[$row['title']] = $row['value'];
         }

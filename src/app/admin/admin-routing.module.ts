@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { AdminGuard } from '../shared/authguards/adminguard';
 import { SettingsComponent } from './components/settings/settings.component';
+import { ResidentsComponent } from './components/residents/residents.component';
 import { PagenotfoundComponent } from '../shared/authentication/components/pagenotfound/pagenotfound.component';
 
 
@@ -13,6 +14,7 @@ const adminRoutes: Routes = [
       children: [
           { path: 'home', component: HomeComponent },
           { path: 'settings', component: SettingsComponent },
+          { path: 'residents', component: ResidentsComponent },
         
          
 

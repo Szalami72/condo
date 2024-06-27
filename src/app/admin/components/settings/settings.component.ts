@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RecdatesComponent } from '../settingscomponents/recdates/recdates.component';
 import { MetersComponent } from '../settingscomponents/meters/meters.component';
 import { CostsComponent } from '../settingscomponents/costs/costs.component';
-import { DatasComponent } from './datas/datas.component';
+import { DatasComponent } from '../settingscomponents/datas/datas.component';
 import { InfosectionComponent } from '../settingscomponents/infosection/infosection.component';
 import { MessageService } from '../../../shared/services/message.service';
 import { DescriptionService } from '../../services/description.service';
