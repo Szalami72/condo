@@ -9,15 +9,13 @@ class UserAuthentication {
     }
 
     public function authenticate($email, $password) {
-        $sql = "SELECT * FROM users WHERE email = ?";
+        $sql = "SELECT * FROM users WHERE email = :email";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("s", $email);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
-        $result = $stmt->get_result();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($result->num_rows > 0) {
-            $user = $result->fetch_assoc();
-
+        if ($user) {
             if (password_verify($password, $user['password'])) {
                 return ['status' => 'success', 'message' => 'Sikeres bejelentkezés!', 'user' => $user];
             } else {
@@ -29,12 +27,17 @@ class UserAuthentication {
     }
 }
 
-$userAuth = new UserAuthentication($conn);
-$data = json_decode(file_get_contents("php://input"), true);
-$email = $data['email'];
-$password = $data['password'];
-$response = $userAuth->authenticate($email, $password);
-echo json_encode($response);
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$conn->close();
+    $userAuth = new UserAuthentication($conn);
+    $data = json_decode(file_get_contents("php://input"), true);
+    $email = $data['email'];
+    $password = $data['password'];
+    $response = $userAuth->authenticate($email, $password);
+    echo json_encode($response);
+} catch (PDOException $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Connection failed: ' . $e->getMessage()]);
+}
 ?>

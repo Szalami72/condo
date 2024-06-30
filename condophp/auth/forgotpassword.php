@@ -15,14 +15,13 @@ class CheckUserByEmail {
     }
 
     public function checkUserByEmail($email) {
-        $sql = "SELECT * FROM users WHERE email = ?";
+        $sql = "SELECT * FROM users WHERE email = :email";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("s", $email);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
-        $result = $stmt->get_result();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($result->num_rows > 0) {
-            $user = $result->fetch_assoc();
+        if ($user) {
             $token = $this->generateToken();
             $userId = $user['id'];
             $this->saveTokenToDatabase($userId, $token);
@@ -33,46 +32,46 @@ class CheckUserByEmail {
         }
     }
 
-    public function generateToken(){
-        $token = bin2hex(random_bytes(16));
-        return $token;
+    public function generateToken() {
+        return bin2hex(random_bytes(16));
     }
 
     public function saveTokenToDatabase($userId, $token) {
         $existingToken = $this->getTokenByUserId($userId);
     
         if ($existingToken) {
-            $sql = "UPDATE tokens SET token = ?, created_at = NOW() WHERE userId = ?";
+            $sql = "UPDATE tokens SET token = :token, created_at = NOW() WHERE userId = :userId";
             $stmt = $this->conn->prepare($sql);
             if ($stmt === false) {
-                throw new Exception('Prepare failed: ' . $this->conn->error);
+                throw new Exception('Prepare failed: ' . $this->conn->errorInfo());
             }
-            $stmt->bind_param("si", $token, $userId);
+            $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+            $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         } else {
-            $sql = "INSERT INTO tokens (userId, token, created_at) VALUES (?, ?, NOW())";
+            $sql = "INSERT INTO tokens (userId, token, created_at) VALUES (:userId, :token, NOW())";
             $stmt = $this->conn->prepare($sql);
             if ($stmt === false) {
-                throw new Exception('Prepare failed: ' . $this->conn->error);
+                throw new Exception('Prepare failed: ' . $this->conn->errorInfo());
             }
-            $stmt->bind_param("is", $userId, $token);
+            $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':token', $token, PDO::PARAM_STR);
         }
         
         if (!$stmt->execute()) {
-            throw new Exception('Execute failed: ' . $stmt->error);
+            throw new Exception('Execute failed: ' . $stmt->errorInfo());
         }
     }
     
 
     public function getTokenByUserId($userId) {
-        $sql = "SELECT token FROM tokens WHERE userId = ?";
+        $sql = "SELECT token FROM tokens WHERE userId = :userId";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $userId);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
-        $result = $stmt->get_result();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
     
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            return $row['token'];
+        if ($result) {
+            return $result['token'];
         } else {
             return null;
         }
@@ -105,16 +104,22 @@ class CheckUserByEmail {
 
             $this->mailer->send();
         } catch (Exception $e) {
-            
             error_log("Email could not be sent. Mailer Error: {$this->mailer->ErrorInfo}");
         }
     }
 }
 
-$emailSender = new CheckUserByEmail($conn);
-$data = json_decode(file_get_contents("php://input"), true);
-$email = $data['email'];
-$response = $emailSender->checkUserByEmail($email);
-echo json_encode($response);
-$conn->close();
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $emailSender = new CheckUserByEmail($conn);
+    $data = json_decode(file_get_contents("php://input"), true);
+    $email = $data['email'];
+    $response = $emailSender->checkUserByEmail($email);
+    echo json_encode($response);
+} catch (PDOException $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Connection failed: ' . $e->getMessage()]);
+}
+$conn = null;
 ?>
