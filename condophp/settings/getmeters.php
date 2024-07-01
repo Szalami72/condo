@@ -11,7 +11,6 @@ class GetMeters
     }
 
     public function getMeters() {
-        $metersToFetch = ['cold1', 'cold2', 'hot1', 'hot2', 'heating'];
 
         $query = "SELECT title, value FROM settings WHERE title IN ('cold1', 'cold2', 'hot1', 'hot2', 'heating')";
         $stmt = $this->conn->prepare($query);

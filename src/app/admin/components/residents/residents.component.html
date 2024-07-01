@@ -11,11 +11,41 @@
       <div class="alert text-center fixed-top" [ngClass]="{'alert-success': messageService.message, 'alert-danger': messageService.errorMessage}" role="alert">
         {{ messageService.message || messageService.errorMessage }}
       </div>
-
     </ng-template>
 
-    <!-- <ngb-pagination [collectionSize]="filteredUsers.length" [(page)]="page" [pageSize]="pageSize" [maxSize]="3" [rotate]="false" [ellipses]="true" [boundaryLinks]="false">
-    </ngb-pagination> -->
+<div class="new-resident mt-2 mb-4">
+    <button class="btn btn-primary" (click)="addNewResident()">Új lakó felvétele</button>
+</div>
 
-    
+<div class="row row-cols-auto justify-content-between">
+
+<div class="col h-100 header-items">
+    <ngb-pagination [collectionSize]="filteredUsers.length" [(page)]="page" [pageSize]="pageSize" [maxSize]="3" [rotate]="false" [ellipses]="true" [boundaryLinks]="false">
+    </ngb-pagination>
+  </div>
+
+  <div class="col h-100 header-items">
+      <span>Lakó/oldal:</span>
+      <select class="form-select-sm ms-2" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+      </select>
+  </div>
+
+  <div class="col h-100 header-items">
+    <div class="col h-100 header-items justify-content-end">
+      <input type="text" class="search-input" placeholder="keresés..." [(ngModel)]="searchTerm" (input)="filterUsers()">
+    </div>
+  </div>
+
+</div>
+
+
+<div class="resident-list mt-4">
+
+
+</div>
+lakók: {{ filteredUsers }}
 </div>
