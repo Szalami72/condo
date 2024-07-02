@@ -2,6 +2,8 @@
 body {
     background-color: #ddd;
     min-width: 400px;
+    font-family: 'Space Mono', monospace;
+
 }
 .cursor-pointer{
     cursor: pointer;

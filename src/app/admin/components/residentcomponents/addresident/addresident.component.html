@@ -1,1 +1,107 @@
-<p>addresident works!</p>
+<div class="container">
+
+    <div class="modal-header">
+        <div class="text-center mt-2">
+            <h2>Lakó hozzáadása</h2>
+        </div>
+        <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="closeModal()"></button>
+    </div>
+
+    <ng-container *ngIf="!errorMessage; else error"></ng-container>
+
+    <ng-template #error>
+        <div class="alert alert-danger text-center mt-2" role="alert">
+            {{ errorMessage }}
+          </div>
+      </ng-template>
+
+      <div class="mt-4 m-2 addSection">
+
+        <div class="row input-field mb-2">
+            <div class="col-3">
+                <label for="name" class="form-label mt-2">Név:</label>
+            </div>
+            <div class="col-9">
+                <input type="text" class="form-control" id="name" name="name" [(ngModel)]="name">
+            </div>
+        </div>
+
+        <div class="row input-field mb-2">
+            <div class="col-3">
+                <label for="email" class="form-label mt-2">Email cím:</label>
+            </div>
+            <div class="col-9">
+                <input type="text" class="form-control" id="email" name="email" [(ngModel)]="email">
+            </div>
+        </div>
+
+        <div class="row input-field mb-2">
+            <div class="col-3">
+                <label for="phone" class="form-label mt-2">Telefonszám:</label>
+            </div>
+            <div class="col-9">
+                <input type="text" class="form-control" id="phone" name="phone" [(ngModel)]="phone">
+            </div>
+        </div>
+
+        <div class="row row-cols-auto justify-content-between input-field mb-2">
+            <div class="col row">
+                <div class="col-6">
+                    <label for="building" class="form-label mt-2">Épület:</label>
+                </div>
+                <div class="col-6">
+                    <select name="building" id="building" class="form-select-sm mt-1" [(ngModel)]="building">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col row">
+                <div class="col-6">
+                    <label for="floor" class="form-label mt-2">Emelet:</label>
+                </div>
+                <div class="col-6">
+                    <select name="floor" id="phone" class="form-select-sm mt-1" [(ngModel)]="floor">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col row">
+                <div class="col-6">
+                    <label for="door" class="form-label mt-2 me-3">Ajtó:</label>
+                </div>
+                <div class="col-6">
+                    <select name="door" id="door" class="form-select-sm mt-1" [(ngModel)]="door">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </div>
+            </div>
+
+      </div>
+
+      <div class="row footer mt-4 mb-2">
+        <div class="col-6 d-flex justify-content-start">
+            <button class="btn btn-secondary" (click)="closeModal()">
+                Mentés
+            </button>
+        </div>
+        <div class="col-6 d-flex justify-content-end">
+            <button class="btn btn-primary" (click)="onSave()">
+                Mégse
+            </button>
+        </div>
+      </div>
+
+</div>
+  

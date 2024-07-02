@@ -42,6 +42,7 @@ export class ResidentsComponent implements OnInit {
   hot2 = false;
   heating = false;
 
+
   constructor(public messageService: MessageService, 
     private costsService: CostsService,
     private metersService: MetersService,
@@ -98,9 +99,19 @@ export class ResidentsComponent implements OnInit {
     );
   }
 
-  addNewResident() {    
-    const modalRef = this.modalService.open(AddresidentComponent);
-  
+  addNewResident() {
+    const modalRef = this.modalService.open(AddresidentComponent, { size: 'lg' });
+    modalRef.componentInstance.commonCost = this.commonCost;
+    modalRef.componentInstance.amountSmeter = this.amountSmeter;
+    modalRef.componentInstance.amountFix = this.amountFix;
+    modalRef.componentInstance.subDepSmeter = this.subDepSmeter;
+    modalRef.componentInstance.subDepFix = this.subDepFix;
+    modalRef.componentInstance.cold1 = this.cold1;
+    modalRef.componentInstance.cold2 = this.cold2;
+    modalRef.componentInstance.hot1 = this.hot1;
+    modalRef.componentInstance.hot2 = this.hot2;
+    modalRef.componentInstance.heating = this.heating;
   }
+  
 
 }
