@@ -48,45 +48,102 @@
             </div>
         </div>
 
-        <div class="row row-cols-auto justify-content-between input-field mb-2">
-            <div class="col row">
-                <div class="col-6">
-                    <label for="building" class="form-label mt-2">Épület:</label>
-                </div>
-                <div class="col-6">
-                    <select name="building" id="building" class="form-select-sm mt-1" [(ngModel)]="building">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                    </select>
-                </div>
+        <div class="input-field mb-2">
+           <div class="row">
+            <div class="col-3">
+                <label class="form-label mt-2">Épület:</label>
             </div>
+            <div class="col-9">
 
-            <div class="col row">
-                <div class="col-6">
-                    <label for="floor" class="form-label mt-2">Emelet:</label>
-                </div>
-                <div class="col-6">
-                    <select name="floor" id="phone" class="form-select-sm mt-1" [(ngModel)]="floor">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                    </select>
-                </div>
-            </div>
+                <input 
+                    type="text" 
+                    id="newBuilding" 
+                    class="new-data-input me-2"
+                    placeholder="új" 
+                    [(ngModel)]="newBuilding">
 
-            <div class="col row">
-                <div class="col-6">
-                    <label for="door" class="form-label mt-2 me-3">Ajtó:</label>
-                </div>
-                <div class="col-6">
-                    <select name="door" id="door" class="form-select-sm mt-1" [(ngModel)]="door">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                    </select>
-                </div>
+                <label 
+                *ngFor="let buildingOption of buildingOptions" 
+                class="form-check-label radio-label" 
+                [ngClass]="{'checked-label': building === buildingOption.value}">
+                <input 
+                    type="radio" 
+                    name="building" 
+                    [id]="'building' + buildingOption.value" 
+                    class="form-check-input visually-hidden" 
+                    [value]="buildingOption.value" 
+                    [(ngModel)]="building">
+                {{ buildingOption.typeOfBuildings }}
+                </label>
             </div>
+            </div>
+        </div>
+
+        <div class="input-field mb-2">
+            <div class="row">
+             <div class="col-3">
+                 <label class="form-label mt-2">Emelet:</label>
+             </div>
+             <div class="col-9">
+
+                <input 
+                    type="text" 
+                    id="newFloor" 
+                    class="new-data-input me-2"
+                    placeholder="új" 
+                    [(ngModel)]="newFloor">
+
+                 <label 
+                 *ngFor="let floorOption of floorOptions" 
+                 class="form-check-label radio-label" 
+                 [ngClass]="{'checked-label': floor === floorOption.value}">
+                 <input 
+                     type="radio" 
+                     name="floor" 
+                     [id]="'floor' + floorOption.value" 
+                     class="form-check-input visually-hidden" 
+                     [value]="floorOption.value" 
+                     [(ngModel)]="floor">
+                 {{ floorOption.typeOfFloors }}
+                 </label>
+             </div>
+             </div>
+         </div>
+
+         <div class="input-field mb-2">
+            <div class="row">
+             <div class="col-3">
+                 <label class="form-label mt-2">Ajtó:</label>
+             </div>
+             <div class="col-9">
+
+                <input 
+                    type="text" 
+                    id="newDoor" 
+                    class="new-data-input me-2"
+                    placeholder="új" 
+                    [(ngModel)]="newDoor">
+
+                 <label 
+                 *ngFor="let doorOption of doorOptions" 
+                 class="form-check-label radio-label" 
+                 [ngClass]="{'checked-label': door === doorOption.value}">
+                 <input 
+                     type="radio" 
+                     name="door" 
+                     [id]="'door' + doorOption.value" 
+                     class="form-check-input visually-hidden" 
+                     [value]="doorOption.value" 
+                     [(ngModel)]="door">
+                 {{ doorOption.typeOfDoors }}
+                 </label>
+             </div>
+             </div>
+         </div>
+
+
+            
+            
 
       </div>
 

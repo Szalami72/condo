@@ -1,0 +1,21 @@
+.radio-label {
+    padding: 0 0.5rem;
+    text-align: center;
+    border: 1px solid #666;
+    color: #666;
+    font-weight: bold;
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+.checked-label {
+    background-color: #6C757D;
+    color:#e2e3e5;
+  }
+
+  .new-data-input {
+    width: 4rem;
+    padding: 0 0.5rem;
+    text-align: center;
+  }
+  

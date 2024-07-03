@@ -27,19 +27,19 @@ CREATE TABLE residences (
 
 CREATE TABLE buildings (
     id int(11) NOT NULL AUTO_INCREMENT,
-    typeOfBuilding varchar(32) NOT NULL,
+    typeOfBuildings varchar(32) NOT NULL,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE floors (
     id int(11) NOT NULL AUTO_INCREMENT,
-    typeOfFloor varchar(32) NOT NULL,
+    typeOfFloors varchar(32) NOT NULL,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE doors (
     id int(11) NOT NULL AUTO_INCREMENT,
-    typeOfDoor varchar(32) NOT NULL,
+    typeOfDoors varchar(32) NOT NULL,
     PRIMARY KEY (id)
 );
 
