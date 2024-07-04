@@ -1,19 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
-import { from } from 'rxjs';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+
 import { MessageService } from '../../../../shared/services/message.service';
 import { ResidentsService } from '../../../services/residents.service';
-
-
-
 
 
 @Component({
   selector: 'app-addresident',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   providers: [],
   templateUrl: './addresident.component.html',
   styleUrl: './addresident.component.css'
@@ -26,6 +23,7 @@ export class AddresidentComponent implements OnInit {
   @Input() subDepSmeter: number | undefined;
   @Input() subDepFix: number | undefined;
   
+  form: FormGroup | undefined;
 
   errorMessage: string | undefined;
 
@@ -71,8 +69,29 @@ export class AddresidentComponent implements OnInit {
     this.loadDoors();
     this.loadCommonCosts();
     this.loadSquareMeters();
+    
    }
 
+   setForm() {
+    this.form = new FormGroup({
+      name: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      phone: new FormControl(''),
+      building: new FormControl(''),
+      newBuilding: new FormControl(''),
+      floor: new FormControl(''),
+      newFloor: new FormControl(''),
+      door: new FormControl(''),
+      newDoor: new FormControl(''),
+      squareMeter: new FormControl(''),
+      newSquareMeter: new FormControl(''),
+      commoncostBase: new FormControl(''),
+      newCommoncost: new FormControl(''),
+      balance: new FormControl(''),
+      isMeter: new FormControl(''),
+      adminLevel: new FormControl('2') // Default value for adminLevel
+    });
+   }
    loadBuildings(): void {
     this.residentsService.getBuildings().subscribe({
       next: (response) => {
@@ -153,6 +172,8 @@ export class AddresidentComponent implements OnInit {
   }
 
   onSave() {
+    this.errorMessage = '';
+    if (this.validateForm()) {
     console.log(
       `name: ${this.name}\n` +
       `email: ${this.email}\n` +
@@ -169,11 +190,33 @@ export class AddresidentComponent implements OnInit {
       'newCommoncost: ' + this.newCommoncost + '\n' +
       `balance: ${this.balance}\n` +
       `adminLevel: ${this.adminLevel}\n` +
-      `isMeter: ${this.isMeter}`
+      `isMeter: ${this.isMeter}`,
+      this.activeModal.close()
     );
-    this.activeModal.close();
+  }
+   
+
   }
   
+    validateForm(): boolean {
+      if (!this.name) {
+        this.errorMessage = 'Név mező kitöltése kötelező!';
+        return false;
+      }
 
+      if(!this.email) {
+        this.errorMessage = 'Email címet kötelező megadni!';
+        return false;
+        } 
 
+        if (!this.isValidEmail(this.email)) {
+          this.errorMessage = 'Érvénytelen email cím!';
+          return false;
+        }
+      return true;
+    }
+
+    isValidEmail(email: string): boolean {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
 }
