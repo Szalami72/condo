@@ -43,9 +43,15 @@ CREATE TABLE doors (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE commonCosts (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    typeOfCommoncost varchar(32) NOT NULL,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE squareMeters (
     id int(11) NOT NULL AUTO_INCREMENT,
-    numberOfSquareMeter int(4) NOT NULL,
+    typeOfSquareMeters int(4) NOT NULL,
     PRIMARY KEY (id)
 );
 

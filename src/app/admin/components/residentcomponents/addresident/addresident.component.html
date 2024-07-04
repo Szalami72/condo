@@ -65,11 +65,11 @@
                 <label 
                 *ngFor="let buildingOption of buildingOptions" 
                 class="form-check-label radio-label" 
-                [ngClass]="{'checked-label': building === buildingOption.value}">
+                [ngClass]="{'checked-label': building === buildingOption.typeOfBuildings}">
                 <input 
                     type="radio" 
                     name="building" 
-                    [id]="'building' + buildingOption.value" 
+                    [id]="'building' + buildingOption.typeOfBuildings" 
                     class="form-check-input visually-hidden" 
                     [value]="buildingOption.value" 
                     [(ngModel)]="building">
@@ -100,9 +100,9 @@
                  <input 
                      type="radio" 
                      name="floor" 
-                     [id]="'floor' + floorOption.value" 
+                     [id]="'floor' + floorOption.typeOfFloors" 
                      class="form-check-input visually-hidden" 
-                     [value]="floorOption.value" 
+                     [value]="floorOption.typeOfFloors" 
                      [(ngModel)]="floor">
                  {{ floorOption.typeOfFloors }}
                  </label>
@@ -127,13 +127,13 @@
                  <label 
                  *ngFor="let doorOption of doorOptions" 
                  class="form-check-label radio-label" 
-                 [ngClass]="{'checked-label': door === doorOption.value}">
+                 [ngClass]="{'checked-label': door === doorOption.typeOfDoors}">
                  <input 
                      type="radio" 
                      name="door" 
                      [id]="'door' + doorOption.value" 
                      class="form-check-input visually-hidden" 
-                     [value]="doorOption.value" 
+                     [value]="doorOption.typeOfDoors " 
                      [(ngModel)]="door">
                  {{ doorOption.typeOfDoors }}
                  </label>
@@ -141,7 +141,102 @@
              </div>
          </div>
 
+         <div class="input-field mb-2">
+            <div class="row">
+             <div class="col-3">
+                 <label class="form-label mt-2">Négyzetméter:</label>
+             </div>
+             <div class="col-9">
 
+                <input 
+                    type="text" 
+                    id="newSquareMeter" 
+                    class="new-data-input me-2"
+                    placeholder="új" 
+                    [(ngModel)]="newSquareMeter">
+
+                 <label 
+                 *ngFor="let squareMeterOption of squareMeterOptions" 
+                 class="form-check-label radio-label" 
+                 [ngClass]="{'checked-label': door === squareMeterOption.typeOfSquareMeters}">
+                 <input 
+                     type="radio" 
+                     name="squareMeter" 
+                     [id]="'squareMeter' + squareMeterOption.typeOfSquareMeters" 
+                     class="form-check-input visually-hidden" 
+                     [value]="squareMeterOption.value" 
+                     [(ngModel)]="squareMeter">
+                 {{ squareMeterOption.typeOfSquareMeters }}
+                 </label>
+             </div>
+             </div>
+         </div>
+
+         <div class="input-field mb-2" *ngIf="commonCost === 'perflat'">
+            <div class="row">
+             <div class="col-3">
+                 <label class="form-label mt-2">Közös költség:</label>
+             </div>
+             <div class="col-9">
+
+                <input 
+                    type="text" 
+                    id="newCommoncost" 
+                    class="new-data-input me-2"
+                    placeholder="új" 
+                    [(ngModel)]="newCommoncost">
+
+                 <label 
+                 *ngFor="let commoncostOption of commoncostOptions" 
+                 class="form-check-label radio-label" 
+                 [ngClass]="{'checked-label': commoncostBase === commoncostOption.typeOfCommoncosts}">
+                 <input 
+                     type="radio" 
+                     name="commoncostBase"
+                     [id]="'commoncostBase' + commoncostOption.typeOfCommoncosts" 
+                     class="form-check-input visually-hidden" 
+                     [value]="commoncostOption.typeOfCommoncosts" 
+                     [(ngModel)]="commoncostBase">
+                 {{ commoncostOption.typeOfCommoncosts }}
+                 </label>
+             </div>
+             </div>
+         </div>
+
+         <div class="row input-field mb-2">
+            <div class="col-3">
+                <label for="balance" class="form-label mt-2">Egyenleg:</label>
+            </div>
+            <div class="col-9 w-25">
+                <input type="text" class="form-control" id="balance" name="balance" [(ngModel)]="balance">
+            </div>
+        </div>
+
+        <div class="row input-field mb-2">
+            <div class="col-3">
+                <label for="isMeter" class="form-label mt-2">Vízóra:</label>
+            </div>
+            <div class="col-9 w-25">
+                <select id="isMeter" class="form-select" [(ngModel)]="isMeter">
+                    <option value="1">Van</option>
+                    <option value="0">Nincs</option>
+                </select>
+            </div>
+        </div>
+
+        
+        <div class="row input-field mb-2">
+            <div class="col-3">
+                <label for="adminLevel" class="form-label mt-2">Admin jogok:</label>
+            </div>
+            <div class="col-9 w-50">
+                <select id="adminLevel" class="form-select" [(ngModel)]="adminLevel">
+                    <option value="2">Nincs - lakó</option>
+                    <option value="1">Csak óraállás rögzítés</option>
+                    <option value="0">Minden jogosultság</option>
+                </select>
+            </div>
+        </div>
             
             
 
@@ -150,12 +245,12 @@
       <div class="row footer mt-4 mb-2">
         <div class="col-6 d-flex justify-content-start">
             <button class="btn btn-secondary" (click)="closeModal()">
-                Mentés
+                Mégse
             </button>
         </div>
         <div class="col-6 d-flex justify-content-end">
             <button class="btn btn-primary" (click)="onSave()">
-                Mégse
+                Mentés
             </button>
         </div>
       </div>

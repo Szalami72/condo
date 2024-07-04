@@ -29,4 +29,12 @@ export class ResidentsService {
   getDoors(): Observable<any> {
     return this.getData('Doors');
   }
+
+  getCommoncosts(): Observable<any> {
+    return this.getData('Commoncosts');
+  }
+
+  getSquareMeters(): Observable<any> {
+    return this.getData('Squaremeters');
+  }
 }

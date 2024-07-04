@@ -25,11 +25,7 @@ export class AddresidentComponent implements OnInit {
   @Input() amountFix: number | undefined;
   @Input() subDepSmeter: number | undefined;
   @Input() subDepFix: number | undefined;
-  @Input() cold1: number | undefined;
-  @Input() cold2: number | undefined;
-  @Input() hot1: number | undefined;
-  @Input() hot2: number | undefined;
-  @Input() heating: number | undefined;
+  
 
   errorMessage: string | undefined;
 
@@ -49,6 +45,20 @@ export class AddresidentComponent implements OnInit {
   doorOptions : any[] = [];
   newDoor: string | undefined;
 
+  commoncostBase: string | undefined;
+  commoncostOptions : any[] = [];
+  newCommoncost: string | undefined;
+
+  squareMeter: string | undefined;
+  squareMeterOptions : any[] = [];
+  newSquareMeter: string | undefined;
+
+  balance: number = 0;
+
+  adminLevel: number = 2;
+
+  isMeter: number = 1;
+
 
   constructor(private activeModal: NgbActiveModal,
     private residentsService: ResidentsService,
@@ -59,6 +69,8 @@ export class AddresidentComponent implements OnInit {
     this.loadBuildings();
     this.loadFloors();
     this.loadDoors();
+    this.loadCommonCosts();
+    this.loadSquareMeters();
    }
 
    loadBuildings(): void {
@@ -106,13 +118,62 @@ export class AddresidentComponent implements OnInit {
     });
   }
 
+  loadCommonCosts(): void {
+    this.residentsService.getCommoncosts().subscribe({
+      next: (response) => {
+        if (response.status === 'success') {
+          this.commoncostOptions = response.data;
+        } else {
+          this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        }
+      },
+      error: (error) => {
+        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+      }
+    });
+  }
+
+  loadSquareMeters(): void {
+    this.residentsService.getSquareMeters().subscribe({
+      next: (response) => {
+        if (response.status === 'success') {
+          this.squareMeterOptions = response.data;
+        } else {
+          this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        }
+      },
+      error: (error) => {
+        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+      }
+    });
+  }
+
   closeModal() {
     this.activeModal.close();
   }
 
   onSave() {
+    console.log(
+      `name: ${this.name}\n` +
+      `email: ${this.email}\n` +
+      `phone: ${this.phone}\n` +
+      `building: ${this.building}\n` +
+      'newBuilding: ' + this.newBuilding + '\n' +
+      `floor: ${this.floor}\n` +
+      'newFloor: ' + this.newFloor + '\n' +
+      `door: ${this.door}\n` +
+      'newDoor: ' + this.newDoor + '\n' +
+      `squareMeter: ${this.squareMeter}\n` +
+      'newSquareMeter: ' + this.newSquareMeter + '\n' +
+      `commoncostBase: ${this.commoncostBase}\n` +
+      'newCommoncost: ' + this.newCommoncost + '\n' +
+      `balance: ${this.balance}\n` +
+      `adminLevel: ${this.adminLevel}\n` +
+      `isMeter: ${this.isMeter}`
+    );
     this.activeModal.close();
   }
+  
 
 
 }
