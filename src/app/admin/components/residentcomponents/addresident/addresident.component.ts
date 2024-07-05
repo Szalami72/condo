@@ -22,14 +22,20 @@ export class AddresidentComponent implements OnInit {
   @Input() amountFix: number | undefined;
   @Input() subDepSmeter: number | undefined;
   @Input() subDepFix: number | undefined;
+  @Input() cold1: number | undefined;
+  @Input() cold2: number | undefined;
+  @Input() hot1: number | undefined;
+  @Input() hot2: number | undefined;
+  @Input() heating: string | undefined;
   
   form: FormGroup | undefined;
 
   errorMessage: string | undefined;
+  message: string | undefined;
 
-  name: string | undefined;
+  username: string | undefined;
   email: string | undefined;
-  phone: string | undefined;
+  phone: string = '';
 
   building: string | undefined;
   buildingOptions : any[] = [];
@@ -56,6 +62,8 @@ export class AddresidentComponent implements OnInit {
   adminLevel: number = 2;
 
   isMeter: number = 1;
+
+  phoneAreaNum: number = 1;
 
 
   constructor(private activeModal: NgbActiveModal,
@@ -172,34 +180,65 @@ export class AddresidentComponent implements OnInit {
   }
 
   onSave() {
+    // this.errorMessage = '';
+    // if (this.validateForm()) {
+    // console.log(
+    //   `name: ${this.name}\n` +
+    //   `email: ${this.email}\n` +
+    //   `phone: ${this.phoneAreaNum} ${this.phone}\n` +
+    //   `building: ${this.building}\n` +
+    //   'newBuilding: ' + this.newBuilding + '\n' +
+    //   `floor: ${this.floor}\n` +
+    //   'newFloor: ' + this.newFloor + '\n' +
+    //   `door: ${this.door}\n` +
+    //   'newDoor: ' + this.newDoor + '\n' +
+    //   `squareMeter: ${this.squareMeter}\n` +
+    //   'newSquareMeter: ' + this.newSquareMeter + '\n' +
+    //   `commoncostBase: ${this.commoncostBase}\n` +
+    //   'newCommoncost: ' + this.newCommoncost + '\n' +
+    //   `balance: ${this.balance}\n` +
+    //   `adminLevel: ${this.adminLevel}\n` +
+    //   `isMeter: ${this.isMeter}`,
+    //   this.activeModal.close()
+    // );
     this.errorMessage = '';
-    if (this.validateForm()) {
-    console.log(
-      `name: ${this.name}\n` +
-      `email: ${this.email}\n` +
-      `phone: ${this.phone}\n` +
-      `building: ${this.building}\n` +
-      'newBuilding: ' + this.newBuilding + '\n' +
-      `floor: ${this.floor}\n` +
-      'newFloor: ' + this.newFloor + '\n' +
-      `door: ${this.door}\n` +
-      'newDoor: ' + this.newDoor + '\n' +
-      `squareMeter: ${this.squareMeter}\n` +
-      'newSquareMeter: ' + this.newSquareMeter + '\n' +
-      `commoncostBase: ${this.commoncostBase}\n` +
-      'newCommoncost: ' + this.newCommoncost + '\n' +
-      `balance: ${this.balance}\n` +
-      `adminLevel: ${this.adminLevel}\n` +
-      `isMeter: ${this.isMeter}`,
-      this.activeModal.close()
-    );
+  if (this.validateForm()) {
+    const data = {
+      name: this.username,
+      email: this.email,
+      phone: `${this.phoneAreaNum} ${this.phone}`,
+      building: this.building,
+      newBuilding: this.newBuilding,
+      floor: this.floor,
+      newFloor: this.newFloor,
+      door: this.door,
+      newDoor: this.newDoor,
+      squareMeter: this.squareMeter,
+      newSquareMeter: this.newSquareMeter,
+      commoncostBase: this.commoncostBase,
+      newCommoncost: this.newCommoncost,
+      balance: this.balance,
+      adminLevel: this.adminLevel,
+      isMeter: this.isMeter
+    };
+
+    this.residentsService.saveData(data)
+      .subscribe(
+        response => {
+          this.messageService.setMessage('Lakó sikeresen mentve.');
+          this.activeModal.close();
+        },
+        error => {
+          this.messageService.setErrorMessage('Hiba történt a mentés során. Próbáld meg később!');
+          this.errorMessage = 'Hiba történt a mentés során.';
+        }
+      );
+  }
   }
    
-
-  }
   
     validateForm(): boolean {
-      if (!this.name) {
+      if (!this.username) {
         this.errorMessage = 'Név mező kitöltése kötelező!';
         return false;
       }
@@ -219,4 +258,94 @@ export class AddresidentComponent implements OnInit {
     isValidEmail(email: string): boolean {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
+
+    capitalizeName() {
+      if (this.username) {
+        this.username = this.username
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      }
+    }
+
+    allowOnlyLetters(event: KeyboardEvent) {
+      const charCode = event.which ? event.which : event.keyCode;
+      // Engedélyezzük a magyar ábécé betűit (a-z, A-Z, é, á, í, ó, ö, ő, ú, ü, ű, É, Á, Í, Ó, Ö, Ő, Ú, Ü, Ű) és a szóközt (32)
+      if (
+        (charCode < 65 || charCode > 90) &&
+        (charCode < 97 || charCode > 122) &&
+        (charCode !== 32) &&
+        (charCode !== 233) && // é
+        (charCode !== 225) && // á
+        (charCode !== 237) && // í
+        (charCode !== 243) && // ó
+        (charCode !== 246) && // ö
+        (charCode !== 337) && // ő
+        (charCode !== 250) && // ú
+        (charCode !== 252) && // ü
+        (charCode !== 369) && // ű
+        (charCode !== 201) && // É
+        (charCode !== 193) && // Á
+        (charCode !== 205) && // Í
+        (charCode !== 211) && // Ó
+        (charCode !== 214) && // Ö
+        (charCode !== 336) && // Ő
+        (charCode !== 218) && // Ú
+        (charCode !== 220) && // Ü
+        (charCode !== 368)    // Ű
+      ) {
+        event.preventDefault();
+      }
+    }
+    
+    
+    formatPhone(event: any) {
+      const cleaned = event.replace(/\D/g, '');
+  
+      if (cleaned.length <= 3) {
+        this.phone = cleaned;
+      } else if (cleaned.length <= 5) {
+        this.phone = `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`;
+      } else {
+        this.phone = `${cleaned.slice(0, 3)} ${cleaned.slice(3, 5)} ${cleaned.slice(5, 7)}`;
+      }
+
+    }
+  
+    allowOnlyNumbers(event: KeyboardEvent) {
+      const charCode = event.which ? event.which : event.keyCode;
+      if (charCode < 48 || charCode > 57) {
+        event.preventDefault();
+      }
+    }
+
+    resetRadioSelection(groupName: string) {
+      switch (groupName) {
+          case 'building':
+              this.building = '';
+              break;
+          case 'door':
+              this.door = '';
+              break;
+          case 'floor':
+              this.floor = '';
+              break;
+          case 'commonCost':
+              this.commoncostBase = '';
+              break;
+          case 'squareMeter':
+              this.squareMeter = '';
+              break;
+              default:
+              break;
+      }
+  }
+  
+  
+    
 }
+
+// TODO
+// vízórák szériaszám rögzítése
+// ha négyzetméterre kattint akkor ha van hozzátartozó közös költség akkor jelölje a radio gombokon
+// jelszó generálás, email küldés

@@ -23,12 +23,22 @@
 
         <div class="row input-field mb-2">
             <div class="col-3">
-                <label for="name" class="form-label mt-2">Név:</label>
+              <label for="name" class="form-label mt-2">Név:</label>
             </div>
             <div class="col-9">
-                <input type="text" class="form-control" id="name" name="name" [(ngModel)]="name">
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                name="name"
+                [(ngModel)]="username"
+                (ngModelChange)="capitalizeName()"
+                (keypress)="allowOnlyLetters($event)"
+              >
             </div>
-        </div>
+          </div>
+          
+          
 
         <div class="row input-field mb-2">
             <div class="col-3">
@@ -43,8 +53,20 @@
             <div class="col-3">
                 <label for="phone" class="form-label mt-2">Telefonszám:</label>
             </div>
-            <div class="col-9">
-                <input type="text" class="form-control" id="phone" name="phone" [(ngModel)]="phone">
+            <div class="col-1">
+                <input type="text" class="form-control phone-prefix" value="+36">
+            </div>
+            <div class="col-1">
+                <select id="phone-area-num" class="form-select phone-area-num" [(ngModel)]="phoneAreaNum">
+                    <option value="1">1</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="50">50</option>
+                    <option value="50">70</option>
+                </select>
+            </div>
+            <div class="col-7">
+                <input type="text" class="form-control phone-num" id="phone" name="phone" maxlength="9" [(ngModel)]="phone" (ngModelChange)="formatPhone($event)" (keypress)="allowOnlyNumbers($event)">
             </div>
         </div>
 
@@ -60,7 +82,9 @@
                     id="newBuilding" 
                     class="new-data-input me-2"
                     placeholder="új" 
-                    [(ngModel)]="newBuilding">
+                    [(ngModel)]="newBuilding"
+                    (click)="resetRadioSelection('building')">
+                    
 
                 <label 
                 *ngFor="let buildingOption of buildingOptions" 
@@ -91,7 +115,9 @@
                     id="newFloor" 
                     class="new-data-input me-2"
                     placeholder="új" 
-                    [(ngModel)]="newFloor">
+                    [(ngModel)]="newFloor"
+                    (click)="resetRadioSelection('floor')">
+                    
 
                  <label 
                  *ngFor="let floorOption of floorOptions" 
@@ -122,7 +148,9 @@
                     id="newDoor" 
                     class="new-data-input me-2"
                     placeholder="új" 
-                    [(ngModel)]="newDoor">
+                    [(ngModel)]="newDoor"
+                    (click)="resetRadioSelection('door')">
+                    
 
                  <label 
                  *ngFor="let doorOption of doorOptions" 
@@ -153,7 +181,9 @@
                     id="newSquareMeter" 
                     class="new-data-input me-2"
                     placeholder="új" 
-                    [(ngModel)]="newSquareMeter">
+                    [(ngModel)]="newSquareMeter"
+                    (blur)="resetRadioSelection('squareMeter')">
+
 
                  <label 
                  *ngFor="let squareMeterOption of squareMeterOptions" 
@@ -184,7 +214,9 @@
                     id="newCommoncost" 
                     class="new-data-input me-2"
                     placeholder="új" 
-                    [(ngModel)]="newCommoncost">
+                    [(ngModel)]="newCommoncost"
+                    (click)="resetRadioSelection('commonCost')">
+                    
 
                  <label 
                  *ngFor="let commoncostOption of commoncostOptions" 

@@ -37,4 +37,5 @@ export class ResidentsService {
   getSquareMeters(): Observable<any> {
     return this.getData('Squaremeters');
   }
+  
 }

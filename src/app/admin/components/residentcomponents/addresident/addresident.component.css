@@ -19,4 +19,17 @@
     padding: 0 0.5rem;
     text-align: center;
   }
+
+  .phone-prefix {
+    width: 3.5rem;
+  }
+
+  .phone-area-num {
+    width: 4.5rem;
+  }
+
+  .phone-num {
+    width: 7rem;
+    margin-left: 1rem;
+  }
   
