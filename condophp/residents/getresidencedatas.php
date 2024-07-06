@@ -14,7 +14,7 @@ class DataFetcher
     public function fetchData($table)
     {
         try {
-            $sql = "SELECT id, typeOf{$table} FROM {$table}";
+            $sql = "SELECT id, typeOf{$table} FROM {$table} ORDER BY typeOf{$table} ASC";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC);

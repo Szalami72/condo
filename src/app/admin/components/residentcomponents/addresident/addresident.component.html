@@ -95,8 +95,10 @@
                     name="building" 
                     [id]="'building' + buildingOption.typeOfBuildings" 
                     class="form-check-input visually-hidden" 
-                    [value]="buildingOption.value" 
-                    [(ngModel)]="building">
+                    [value]="buildingOption.typeOfBuildings" 
+                    [(ngModel)]="building"
+                    (ngModelChange)="resetInputField('newBuilding')">
+                    
                 {{ buildingOption.typeOfBuildings }}
                 </label>
             </div>
@@ -122,14 +124,16 @@
                  <label 
                  *ngFor="let floorOption of floorOptions" 
                  class="form-check-label radio-label" 
-                 [ngClass]="{'checked-label': floor === floorOption.value}">
+                 [ngClass]="{'checked-label': floor === floorOption.typeOfFloors}">
                  <input 
                      type="radio" 
                      name="floor" 
                      [id]="'floor' + floorOption.typeOfFloors" 
                      class="form-check-input visually-hidden" 
                      [value]="floorOption.typeOfFloors" 
-                     [(ngModel)]="floor">
+                     [(ngModel)]="floor"
+                     (ngModelChange)="resetInputField('newFloor')">
+
                  {{ floorOption.typeOfFloors }}
                  </label>
              </div>
@@ -159,10 +163,11 @@
                  <input 
                      type="radio" 
                      name="door" 
-                     [id]="'door' + doorOption.value" 
+                     [id]="'door' + doorOption.typeOfDoors" 
                      class="form-check-input visually-hidden" 
                      [value]="doorOption.typeOfDoors " 
-                     [(ngModel)]="door">
+                     [(ngModel)]="door"
+                     (ngModelChange)="resetInputField('newDoor')">
                  {{ doorOption.typeOfDoors }}
                  </label>
              </div>
@@ -182,25 +187,27 @@
                     class="new-data-input me-2"
                     placeholder="új" 
                     [(ngModel)]="newSquareMeter"
-                    (blur)="resetRadioSelection('squareMeter')">
-
+                    (click)="resetRadioSelection('squareMeter')">
+                    
 
                  <label 
                  *ngFor="let squareMeterOption of squareMeterOptions" 
                  class="form-check-label radio-label" 
-                 [ngClass]="{'checked-label': door === squareMeterOption.typeOfSquareMeters}">
+                 [ngClass]="{'checked-label': squareMeter === squareMeterOption.typeOfSquareMeters}">
                  <input 
                      type="radio" 
                      name="squareMeter" 
                      [id]="'squareMeter' + squareMeterOption.typeOfSquareMeters" 
                      class="form-check-input visually-hidden" 
-                     [value]="squareMeterOption.value" 
-                     [(ngModel)]="squareMeter">
+                     [value]="squareMeterOption.typeOfSquareMeters" 
+                     [(ngModel)]="squareMeter"
+                     (ngModelChange)="resetInputField('newSquareMeter')">
                  {{ squareMeterOption.typeOfSquareMeters }}
                  </label>
              </div>
              </div>
          </div>
+       
 
          <div class="input-field mb-2" *ngIf="commonCost === 'perflat'">
             <div class="row">
@@ -228,7 +235,8 @@
                      [id]="'commoncostBase' + commoncostOption.typeOfCommoncosts" 
                      class="form-check-input visually-hidden" 
                      [value]="commoncostOption.typeOfCommoncosts" 
-                     [(ngModel)]="commoncostBase">
+                     [(ngModel)]="commoncostBase"
+                     (ngModelChange)="resetInputField('newCommoncost')">
                  {{ commoncostOption.typeOfCommoncosts }}
                  </label>
              </div>
@@ -250,11 +258,33 @@
             </div>
             <div class="col-9 w-25">
                 <select id="isMeter" class="form-select" [(ngModel)]="isMeter">
-                    <option value="1">Van</option>
-                    <option value="0">Nincs</option>
+                    <option [ngValue]="1">Van</option>
+                    <option [ngValue]="0">Nincs</option>
                 </select>
             </div>
         </div>
+        
+        <div class="row input-field mb-2" *ngIf="isMeter === 1">
+            <div class="col-3">
+                Vízórák gyári száma:
+            </div>
+            <div class="col-9 row">
+                <div class="col" *ngIf="showCold1Input">
+                  <input type="text" class="form-control" name="cold1SerialNumber" placeholder="hideg 1" [(ngModel)]="cold1SerialNumber">
+                </div>
+                <div class="col" *ngIf="showCold2Input">
+                  <input type="text" class="form-control" name="cold2SerialNumber" placeholder="hideg 2" [(ngModel)]="cold2SerialNumber">
+                </div>
+                <div class="col" *ngIf="showHot1Input">
+                  <input type="text" class="form-control" name="hot1SerialNumber" placeholder="meleg 1" [(ngModel)]="hot1SerialNumber">
+                </div>
+                <div class="col" *ngIf="showHot2Input">
+                  <input type="text" class="form-control" name="hot2SerialNumber" placeholder="meleg 2" [(ngModel)]="hot2SerialNumber">
+                </div>
+              </div>
+        </div>
+        
+        
 
         
         <div class="row input-field mb-2">

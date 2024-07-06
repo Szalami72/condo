@@ -11,6 +11,8 @@ export class ResidentsService {
 
   private getDataApi = API_BASE_URL + 'residents/getresidencedatas.php';
 
+  private saveDataApi = API_BASE_URL + 'residents/saveresidencedata.php';
+
   constructor(private http: HttpClient) { }
 
   getData(action: string): Observable<any> {
@@ -38,4 +40,7 @@ export class ResidentsService {
     return this.getData('Squaremeters');
   }
   
+  saveData(data: any): Observable<any> {
+    return this.http.post(this.saveDataApi, data);
+  }
 }

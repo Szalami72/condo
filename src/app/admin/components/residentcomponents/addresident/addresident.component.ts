@@ -22,11 +22,11 @@ export class AddresidentComponent implements OnInit {
   @Input() amountFix: number | undefined;
   @Input() subDepSmeter: number | undefined;
   @Input() subDepFix: number | undefined;
-  @Input() cold1: number | undefined;
-  @Input() cold2: number | undefined;
-  @Input() hot1: number | undefined;
-  @Input() hot2: number | undefined;
-  @Input() heating: string | undefined;
+  @Input() cold1: string = '';
+  @Input() cold2: string = '';
+  @Input() hot1: string = '';
+  @Input() hot2: string = '';
+  @Input() heating: string = '';
   
   form: FormGroup | undefined;
 
@@ -65,22 +65,30 @@ export class AddresidentComponent implements OnInit {
 
   phoneAreaNum: number = 1;
 
+  cold1SerialNumber: string = '';
+  cold2SerialNumber: string = '';
+  hot1SerialNumber: string = '';
+  hot2SerialNumber: string = '';
+
 
   constructor(private activeModal: NgbActiveModal,
     private residentsService: ResidentsService,
-    public messageService: MessageService
+    public messageService: MessageService,
   ) { }
 
   ngOnInit(): void {
+    
     this.loadBuildings();
     this.loadFloors();
     this.loadDoors();
     this.loadCommonCosts();
     this.loadSquareMeters();
-    
+    this.setForm();
    }
 
+   
    setForm() {
+  console.log(this.squareMeterOptions)
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -97,7 +105,12 @@ export class AddresidentComponent implements OnInit {
       newCommoncost: new FormControl(''),
       balance: new FormControl(''),
       isMeter: new FormControl(''),
-      adminLevel: new FormControl('2') // Default value for adminLevel
+      adminLevel: new FormControl('2'),
+     
+      cold1SerialNumber: new FormControl(''),
+      cold2SerialNumber: new FormControl(''),
+      hot1SerialNumber: new FormControl(''),
+      hot2SerialNumber: new FormControl('')
     });
    }
    loadBuildings(): void {
@@ -180,48 +193,32 @@ export class AddresidentComponent implements OnInit {
   }
 
   onSave() {
-    // this.errorMessage = '';
-    // if (this.validateForm()) {
-    // console.log(
-    //   `name: ${this.name}\n` +
-    //   `email: ${this.email}\n` +
-    //   `phone: ${this.phoneAreaNum} ${this.phone}\n` +
-    //   `building: ${this.building}\n` +
-    //   'newBuilding: ' + this.newBuilding + '\n' +
-    //   `floor: ${this.floor}\n` +
-    //   'newFloor: ' + this.newFloor + '\n' +
-    //   `door: ${this.door}\n` +
-    //   'newDoor: ' + this.newDoor + '\n' +
-    //   `squareMeter: ${this.squareMeter}\n` +
-    //   'newSquareMeter: ' + this.newSquareMeter + '\n' +
-    //   `commoncostBase: ${this.commoncostBase}\n` +
-    //   'newCommoncost: ' + this.newCommoncost + '\n' +
-    //   `balance: ${this.balance}\n` +
-    //   `adminLevel: ${this.adminLevel}\n` +
-    //   `isMeter: ${this.isMeter}`,
-    //   this.activeModal.close()
-    // );
+    
     this.errorMessage = '';
   if (this.validateForm()) {
     const data = {
       name: this.username,
       email: this.email,
       phone: `${this.phoneAreaNum} ${this.phone}`,
-      building: this.building,
-      newBuilding: this.newBuilding,
-      floor: this.floor,
-      newFloor: this.newFloor,
-      door: this.door,
-      newDoor: this.newDoor,
-      squareMeter: this.squareMeter,
-      newSquareMeter: this.newSquareMeter,
-      commoncostBase: this.commoncostBase,
-      newCommoncost: this.newCommoncost,
+      building: this.building || this.newBuilding,
+      floor: this.floor || this.newFloor,
+      door: this.door || this.newDoor,
+      squareMeter: this.squareMeter || this.newSquareMeter,
+      commoncost: this.commoncostBase || this.newCommoncost,
       balance: this.balance,
       adminLevel: this.adminLevel,
-      isMeter: this.isMeter
+      isMeter: this.isMeter,
+      cold1: this.cold1,
+      cold2: this.cold2,
+      hot1: this.hot1,
+      hot2: this.hot2,
+      cold1SerialNumber: this.cold1SerialNumber,
+      cold2SerialNumber: this.cold2SerialNumber,
+      hot1SerialNumber: this.hot1SerialNumber,
+      hot2SerialNumber: this.hot2SerialNumber
     };
-
+    
+    console.log(data);
     this.residentsService.saveData(data)
       .subscribe(
         response => {
@@ -339,6 +336,36 @@ export class AddresidentComponent implements OnInit {
               default:
               break;
       }
+  }
+
+  resetInputField(fieldName: string): void {
+    if (fieldName === 'newBuilding') {
+      this.newBuilding = '';
+    } else if (fieldName === 'newFloor') {
+      this.newFloor = '';
+    } else if (fieldName === 'newDoor') {
+      this.newDoor = '';
+    } else if (fieldName === 'newSquareMeter') {
+      this.newSquareMeter = '';
+    } else if (fieldName === 'newCommoncost') {
+      this.newCommoncost = '';
+    }
+  }
+
+  get showCold1Input(): boolean {
+    return this.cold1 === '1';
+  }
+
+  get showCold2Input(): boolean {
+    return this.cold2 === '1';
+  }
+
+  get showHot1Input(): boolean {
+    return this.hot1 === '1';
+  }
+
+  get showHot2Input(): boolean {
+    return this.hot2 === '1';
   }
   
   

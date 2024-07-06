@@ -36,11 +36,11 @@ export class ResidentsComponent implements OnInit {
   subDepSmeter: number | undefined;
   subDepFix: number | undefined;
 
-  cold1 = false;
-  cold2 = false;
-  hot1 = false;
-  hot2 = false;
-  heating = false;
+  cold1: string = '';
+  cold2: string = '';
+  hot1: string = '';
+  hot2: string = '';
+  heating: string = '';
 
 
   constructor(public messageService: MessageService, 
@@ -106,6 +106,11 @@ export class ResidentsComponent implements OnInit {
     modalRef.componentInstance.amountFix = this.amountFix;
     modalRef.componentInstance.subDepSmeter = this.subDepSmeter;
     modalRef.componentInstance.subDepFix = this.subDepFix;
+    modalRef.componentInstance.cold1 = this.cold1;
+    modalRef.componentInstance.cold2 = this.cold2;
+    modalRef.componentInstance.hot1 = this.hot1;
+    modalRef.componentInstance.hot2 = this.hot2;
+    modalRef.componentInstance.heating = this.heating;
 
   }
   

@@ -64,8 +64,9 @@ CREATE TABLE loginHistory (
 
  CREATE TABLE metersSerialNumber(
     id int(11) NOT NULL AUTO_INCREMENT,
-    meterId int(11) NOT NULL,
+    UserId int(11) NOT NULL,
     serialNum varchar(32),
+    typeOfMeter varchar(255),
     PRIMARY KEY(id)
     );
 
