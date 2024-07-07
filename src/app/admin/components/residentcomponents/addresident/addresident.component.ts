@@ -88,7 +88,6 @@ export class AddresidentComponent implements OnInit {
 
    
    setForm() {
-  console.log(this.squareMeterOptions)
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -178,6 +177,7 @@ export class AddresidentComponent implements OnInit {
       next: (response) => {
         if (response.status === 'success') {
           this.squareMeterOptions = response.data;
+
         } else {
           this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
         }
@@ -199,7 +199,7 @@ export class AddresidentComponent implements OnInit {
     const data = {
       name: this.username,
       email: this.email,
-      phone: `${this.phoneAreaNum} ${this.phone}`,
+      phone: `+36 ${this.phoneAreaNum} ${this.phone}`,
       building: this.building || this.newBuilding,
       floor: this.floor || this.newFloor,
       door: this.door || this.newDoor,
