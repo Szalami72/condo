@@ -187,7 +187,8 @@
                         placeholder="új" 
                         [(ngModel)]="newSquareMeter"
                         (click)="resetRadioSelection('squareMeter')"
-                        (ngModelChange)="updateCommonCost()">
+                        (ngModelChange)="updateCommonCost()"
+                        (keypress)="allowOnlyNumbers($event)">
                     <label 
                         *ngFor="let squareMeterOption of squareMeterOptions" 
                         class="form-check-label radio-label" 
@@ -200,13 +201,13 @@
                             [value]="squareMeterOption.typeOfSquaremeters" 
                             [(ngModel)]="squareMeter"
                             (ngModelChange)="updateCommonCost()">
-                        {{ squareMeterOption.typeOfSquaremeters }}
+                            {{ squareMeterOption.typeOfSquaremeters }}
                     </label>
                 </div>
             </div>
         </div>
         
-        <div class="input-field mb-2" *ngIf="commonCost === 'perflat'">
+        <div class="input-field mb-2" *ngIf="commonCost === 'perflat' && isMeter === 1">
             <div class="row">
                 <div class="col-3">
                     <label class="form-label mt-2">Közös költség:</label>
@@ -229,13 +230,13 @@
                             [id]="'commoncostBase' + commoncostOption.typeOfCommoncosts" 
                             class="form-check-input visually-hidden" 
                             [value]="commoncostOption.typeOfCommoncosts" 
-                            [(ngModel)]="commoncostBase"
-                            (ngModelChange)="resetInputField('newCommoncost')">
+                            [(ngModel)]="commoncostBase">
                         {{ commoncostOption.typeOfCommoncosts }}
                     </label>
                 </div>
             </div>
         </div>
+        
         
          <div class="row input-field mb-2">
             <div class="col-3">
@@ -276,6 +277,38 @@
                   <input type="text" class="form-control" name="hot2SerialNumber" placeholder="meleg 2" [(ngModel)]="hot2SerialNumber">
                 </div>
               </div>
+        </div>
+
+        <div class="input-field mb-2" *ngIf="isMeter === 0 && commonCost === 'perflat'">
+            <div class="row">
+                <div class="col-3">
+                    <label class="form-label mt-2">Albetéti díj:</label>
+                </div>
+                <div class="col-9">
+                    <input 
+                        type="text" 
+                        id="newSubDeposit" 
+                        class="new-data-input me-2"
+                        placeholder="új" 
+                        [(ngModel)]="newSubDeposit"
+                        (click)="resetRadioSelection('subDeposit')">
+                    <ng-container *ngFor="let squareMeterOption of squareMeterOptions">
+                        <label 
+                            *ngIf="squareMeterOption.subDepositForThis"
+                            class="form-check-label radio-label" 
+                            [ngClass]="{'checked-label': subDeposit === squareMeterOption.subDepositForThis}">
+                            <input 
+                                type="radio" 
+                                name="subDeposit"
+                                [id]="'subDeposit' + squareMeterOption.subDepositForThis" 
+                                class="form-check-input visually-hidden" 
+                                [value]="squareMeterOption.subDepositForThis" 
+                                [(ngModel)]="subDeposit">
+                            {{ squareMeterOption.subDepositForThis }}
+                        </label>
+                    </ng-container>
+                </div>
+            </div>
         </div>
         
         

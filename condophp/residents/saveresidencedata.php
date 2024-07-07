@@ -31,19 +31,35 @@ class SaveResidenceData
         $userId = $this->conn->lastInsertId();
 
         // Épület adatok ellenőrzése és mentése
-        $buildingId = $this->saveOrUpdate('buildings', 'typeOfBuildings', $data['building']);
+        $buildingId = 0;
+        $floorId = 0;
+        $doorId = 0;
+        $commonCostId = 0;
+        $squareMeterId = 0;
+
+        if(!empty($data['building'])) {
+            $buildingId = $this->saveOrUpdate('buildings', 'typeOfBuildings', $data['building']);
+        }
 
         // Emelet adatok ellenőrzése és mentése
-        $floorId = $this->saveOrUpdate('floors', 'typeOfFloors', $data['floor']);
+        if(!empty($data['floor'])) {
+             $floorId = $this->saveOrUpdate('floors', 'typeOfFloors', $data['floor']);
+        }
 
         // Ajtó adatok ellenőrzése és mentése
-        $doorId = $this->saveOrUpdate('doors', 'typeOfDoors', $data['door']);
+        if(!empty($data['door'])) {
+            $doorId = $this->saveOrUpdate('doors', 'typeOfDoors', $data['door']);
+        }
 
-        // Négyzetméter adatok ellenőrzése és mentése
-        $squareMeterId = $this->saveOrUpdate('squaremeters', 'typeOfSquareMeters', $data['squareMeter']);
+          // Közös költség adatok ellenőrzése és mentése
+          if ((!empty($data['commoncost']))) {
+              $commonCostId = $this->saveOrUpdate('commoncosts', 'typeOfCommoncosts', $data['commoncost']);
+          }
 
-        // Közös költség adatok ellenőrzése és mentése
-        $commonCostId = $this->saveOrUpdate('commoncosts', 'typeOfCommoncosts', $data['commoncost']);
+         // Négyzetméter adatok ellenőrzése és mentése
+         if(!empty($data['squareMeter'])) {
+            $squareMeterId = $this->saveOrUpdateSquareMeters('squaremeters', 'typeOfSquareMeters', $data['squareMeter'], $data['subDeposit'], $commonCostId);
+         }
 
         // Balance tábla frissítése
         $sql = "INSERT INTO balance (userId, value) VALUES (:userId, :balance)";
@@ -85,6 +101,31 @@ class SaveResidenceData
             $sql = "INSERT INTO $table ($columnName) VALUES (:value)";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':value', $value);
+            $stmt->execute();
+            return $this->conn->lastInsertId();
+        }
+    }
+
+
+    private function saveOrUpdateSquareMeters($table, $columnName, $value, $subDepositValue, $commonCostId)
+    {
+        // Ellenőrizzük, hogy van-e már ilyen érték a táblában
+        $sql = "SELECT id FROM $table WHERE $columnName = :value";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':value', $value);
+        $stmt->bindParam(':subDepositValue', $subDepositValue);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            return $result['id']; // Ha már van ilyen érték, visszaadjuk az id-t
+        } else {
+            // Ha nincs, beszúrjuk az új értéket és visszaadjuk az újonnan generált id-t
+            $sql = "INSERT INTO $table ($columnName, ccostForThis) VALUES (:value, :commonCostId)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':value', $value);
+            $stmt->bindParam(':subDepositValue', $subDepositValue);
+            $stmt->bindParam(':commonCostId', $commonCostId);
             $stmt->execute();
             return $this->conn->lastInsertId();
         }

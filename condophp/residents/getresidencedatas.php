@@ -14,7 +14,13 @@ class DataFetcher
     public function fetchData($table)
     {
         try {
-            $sql = "SELECT id, typeOf{$table} FROM {$table} ORDER BY typeOf{$table} ASC";
+            // Ha a table értéke Squaremeters, akkor a ccForThis oszlopot is lekérdezzük
+            if ($table === 'Squaremeters') {
+                $sql = "SELECT id, typeOf{$table}, ccostForThis, subDepositForThis FROM {$table} ORDER BY typeOf{$table} ASC";
+            }else {
+                $sql = "SELECT id, typeOf{$table} FROM {$table} ORDER BY typeOf{$table} ASC";
+            }
+
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -25,6 +31,7 @@ class DataFetcher
         }
     }
 }
+
 
 // Adatbázis kapcsolat létrehozása
 try {

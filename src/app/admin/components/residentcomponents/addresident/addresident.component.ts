@@ -53,6 +53,9 @@ export class AddresidentComponent implements OnInit {
   commoncostOptions : any[] = [];
   newCommoncost: string | undefined;
 
+  subDeposit: string | undefined;
+  newSubDeposit: string | undefined;
+
   squareMeter: string | undefined;
   squareMeterOptions : any[] = [];
   newSquareMeter: string | undefined;
@@ -116,7 +119,7 @@ export class AddresidentComponent implements OnInit {
     this.residentsService.getBuildings().subscribe({
       next: (response) => {
         if (response.status === 'success') {
-          this.buildingOptions = response.data;
+          this.buildingOptions = this.sortArrayAlphabetically(response.data, 'typeOfBuildings');
         } else {
           this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
         }
@@ -131,7 +134,7 @@ export class AddresidentComponent implements OnInit {
     this.residentsService.getFloors().subscribe({
       next: (response) => {
         if (response.status === 'success') {
-          this.floorOptions = response.data;
+          this.floorOptions = this.sortArrayAlphabetically(response.data, 'typeOfFloors');
         } else {
           this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
         }
@@ -146,7 +149,7 @@ export class AddresidentComponent implements OnInit {
     this.residentsService.getDoors().subscribe({
       next: (response) => {
         if (response.status === 'success') {
-          this.doorOptions = response.data;
+          this.doorOptions = this.sortArrayAlphabetically(response.data, 'typeOfDoors');
         } else {
           this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
         }
@@ -161,7 +164,8 @@ export class AddresidentComponent implements OnInit {
     this.residentsService.getCommoncosts().subscribe({
       next: (response) => {
         if (response.status === 'success') {
-          this.commoncostOptions = response.data;
+          this.commoncostOptions = this.sortArrayAlphabetically(response.data, 'typeOfCommoncosts');
+          console.log(response.data);
         } else {
           this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
         }
@@ -176,7 +180,7 @@ export class AddresidentComponent implements OnInit {
     this.residentsService.getSquareMeters().subscribe({
       next: (response) => {
         if (response.status === 'success') {
-          this.squareMeterOptions = response.data;
+          this.squareMeterOptions = this.sortArrayAlphabetically(response.data, 'typeOfSquareMeters');
           console.log(response.data);
 
         } else {
@@ -205,7 +209,7 @@ export class AddresidentComponent implements OnInit {
       floor: this.floor || this.newFloor,
       door: this.door || this.newDoor,
       squareMeter: this.squareMeter || this.newSquareMeter,
-      commoncost: this.commoncostBase || this.newCommoncost,
+      commoncost: this.commoncostBase || this.newCommoncost || 0,
       balance: this.balance,
       adminLevel: this.adminLevel,
       isMeter: this.isMeter,
@@ -216,7 +220,8 @@ export class AddresidentComponent implements OnInit {
       cold1SerialNumber: this.cold1SerialNumber,
       cold2SerialNumber: this.cold2SerialNumber,
       hot1SerialNumber: this.hot1SerialNumber,
-      hot2SerialNumber: this.hot2SerialNumber
+      hot2SerialNumber: this.hot2SerialNumber,
+      subDeposit: this.subDeposit || this.newSubDeposit
     };
     
     console.log(data);
@@ -312,10 +317,11 @@ export class AddresidentComponent implements OnInit {
   
     allowOnlyNumbers(event: KeyboardEvent) {
       const charCode = event.which ? event.which : event.keyCode;
-      if (charCode < 48 || charCode > 57) {
+      if ((charCode < 48 || charCode > 57) && charCode !== 46 && charCode !== 44) {
         event.preventDefault();
       }
     }
+    
 
     resetRadioSelection(groupName: string) {
       switch (groupName) {
@@ -333,8 +339,12 @@ export class AddresidentComponent implements OnInit {
               break;
           case 'squareMeter':
               this.squareMeter = '';
+              this.commoncostBase = '';
               break;
-              default:
+          case 'subDeposit':
+              this.subDeposit = '';
+              break;
+          default:
               break;
       }
   }
@@ -348,20 +358,47 @@ export class AddresidentComponent implements OnInit {
       this.newDoor = '';
     } else if (fieldName === 'newSquareMeter') {
       this.newSquareMeter = '';
-    } else if (fieldName === 'newCommoncost') {
+    } else if (fieldName === 'newCommoncost') {     
+      this.newSubDeposit = '';
       this.newCommoncost = '';
+    }else if (fieldName === 'newSubDeposit') {
+      this.newSubDeposit = '';
     }
   }
+
+
 
   updateCommonCost(): void {
     const selectedSquareMeterOption = this.squareMeterOptions.find(option => option.typeOfSquaremeters === this.squareMeter);
     if (selectedSquareMeterOption) {
-      const matchingCommonCostOption = this.commoncostOptions.find(option => option.id === selectedSquareMeterOption.ccostForThis);
-      if (matchingCommonCostOption) {
-        this.commoncostBase = matchingCommonCostOption.typeOfCommoncosts;
-      }
+        const matchingCommonCostOption = this.commoncostOptions.find(option => option.id === selectedSquareMeterOption.ccostForThis);
+        if (matchingCommonCostOption) {
+            this.commoncostBase = matchingCommonCostOption.typeOfCommoncosts;
+            this.updateSubDeposit();
+        } else {
+            this.commoncostBase = '';
+            this.updateSubDeposit();
+
+        }
+    } else {
+        this.commoncostBase = '';
+        this.updateSubDeposit();
+
+    }
+}
+
+  updateSubDeposit(): void {
+    const selectedSquareMeterOption = this.squareMeterOptions.find(option => option.typeOfSquaremeters === this.squareMeter);
+    if (selectedSquareMeterOption && selectedSquareMeterOption.subDepositForThis !== '') {
+        this.subDeposit = selectedSquareMeterOption.subDepositForThis;
+    } else {
+        this.subDeposit = '';
     }
   }
+
+
+
+  
   get showCold1Input(): boolean {
     return this.cold1 === '1';
   }
@@ -378,11 +415,22 @@ export class AddresidentComponent implements OnInit {
     return this.hot2 === '1';
   }
   
+  sortArrayAlphabetically(data: any[], key: string): any[] {
+    return data.sort((a, b) => {
+      // Konvertáljuk az értékeket lebegőpontos számmá a parseFloat függvénnyel
+      const numA = parseFloat(a[key]);
+      const numB = parseFloat(b[key]);
+      
+      // Rendezés a számok alapján
+      return numA - numB;
+    });
+  }
+  
   
     
 }
 
 // TODO
-// vízórák szériaszám rögzítése
-// ha négyzetméterre kattint akkor ha van hozzátartozó közös költség akkor jelölje a radio gombokon
+
 // jelszó generálás, email küldés
+
