@@ -177,6 +177,7 @@ export class AddresidentComponent implements OnInit {
       next: (response) => {
         if (response.status === 'success') {
           this.squareMeterOptions = response.data;
+          console.log(response.data);
 
         } else {
           this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
@@ -221,11 +222,11 @@ export class AddresidentComponent implements OnInit {
     console.log(data);
     this.residentsService.saveData(data)
       .subscribe(
-        response => {
+        () => {
           this.messageService.setMessage('Lakó sikeresen mentve.');
           this.activeModal.close();
         },
-        error => {
+        () => {
           this.messageService.setErrorMessage('Hiba történt a mentés során. Próbáld meg később!');
           this.errorMessage = 'Hiba történt a mentés során.';
         }
@@ -352,6 +353,15 @@ export class AddresidentComponent implements OnInit {
     }
   }
 
+  updateCommonCost(): void {
+    const selectedSquareMeterOption = this.squareMeterOptions.find(option => option.typeOfSquaremeters === this.squareMeter);
+    if (selectedSquareMeterOption) {
+      const matchingCommonCostOption = this.commoncostOptions.find(option => option.id === selectedSquareMeterOption.ccostForThis);
+      if (matchingCommonCostOption) {
+        this.commoncostBase = matchingCommonCostOption.typeOfCommoncosts;
+      }
+    }
+  }
   get showCold1Input(): boolean {
     return this.cold1 === '1';
   }
