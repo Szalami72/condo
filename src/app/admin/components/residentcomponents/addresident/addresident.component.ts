@@ -221,7 +221,7 @@ export class AddresidentComponent implements OnInit {
       cold2SerialNumber: this.cold2SerialNumber,
       hot1SerialNumber: this.hot1SerialNumber,
       hot2SerialNumber: this.hot2SerialNumber,
-      subDeposit: this.subDeposit || this.newSubDeposit
+      subDeposit: this.subDeposit || this.newSubDeposit || 0
     };
     
     console.log(data);

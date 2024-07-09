@@ -36,6 +36,7 @@ class SaveResidenceData
         $doorId = 0;
         $commonCostId = 0;
         $squareMeterId = 0;
+      
 
         if(!empty($data['building'])) {
             $buildingId = $this->saveOrUpdate('buildings', 'typeOfBuildings', $data['building']);
@@ -58,7 +59,7 @@ class SaveResidenceData
 
          // Négyzetméter adatok ellenőrzése és mentése
          if(!empty($data['squareMeter'])) {
-            $squareMeterId = $this->saveOrUpdateSquareMeters('squaremeters', 'typeOfSquareMeters', $data['squareMeter'], $data['subDeposit'], $commonCostId);
+            $squareMeterId = $this->saveOrUpdateSquareMeters('squaremeters', 'typeOfSquareMeters', $data['squareMeter'], $data['subDeposit'], $commonCostId, $data['commoncost']);
          }
 
         // Balance tábla frissítése
@@ -106,30 +107,55 @@ class SaveResidenceData
         }
     }
 
+//$squareMeterId = $this->saveOrUpdateSquareMeters('squaremeters', 'typeOfSquareMeters', $data['squareMeter'], $data['subDeposit'], $commonCostId);
 
-    private function saveOrUpdateSquareMeters($table, $columnName, $value, $subDepositValue, $commonCostId)
-    {
-        // Ellenőrizzük, hogy van-e már ilyen érték a táblában
-        $sql = "SELECT id FROM $table WHERE $columnName = :value";
+private function saveOrUpdateSquareMeters($table, $columnName, $value, $subDepositValue, $commonCostId, $commoncostValue)
+{
+    // Ellenőrizzük, hogy van-e már ilyen érték a táblában
+    $sql = "SELECT id, ccostForThis FROM $table WHERE $columnName = :value";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bindParam(':value', $value);
+
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($result) {
+        // Ha már van ilyen érték, visszaadjuk az id-t
+        $existingId = $result['id'];
+        $existingCcostForThis = $result['ccostForThis'];
+
+        // Ha a ccostForThis értéke 0 és a $data['commoncost'] nem nulla, frissítjük az adatokat
+        if ($existingCcostForThis == 0 && !empty($commonCostId)) {
+            $sql = "UPDATE $table SET ccostForThis = :commonCostId WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':commonCostId', $commonCostId);
+            $stmt->bindParam(':id', $existingId);
+            $stmt->execute();
+        }
+
+        // Ha a subDepositValue nem üres vagy nulla, frissítjük az adatokat
+        if (!empty($subDepositValue)) {
+            $sql = "UPDATE $table SET subDepositForThis = :subDepositValue WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':subDepositValue', $subDepositValue);
+            $stmt->bindParam(':id', $existingId);
+            $stmt->execute();
+        }
+
+        return $existingId;
+    } else {
+        // Ha nincs, beszúrjuk az új értéket és visszaadjuk az újonnan generált id-t
+        $sql = "INSERT INTO $table ($columnName, ccostForThis, subDepositForThis) VALUES (:value, :commonCostId, :subDepositValue)";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':value', $value);
+        $stmt->bindParam(':commonCostId', $commonCostId);
         $stmt->bindParam(':subDepositValue', $subDepositValue);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($result) {
-            return $result['id']; // Ha már van ilyen érték, visszaadjuk az id-t
-        } else {
-            // Ha nincs, beszúrjuk az új értéket és visszaadjuk az újonnan generált id-t
-            $sql = "INSERT INTO $table ($columnName, ccostForThis) VALUES (:value, :commonCostId)";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':value', $value);
-            $stmt->bindParam(':subDepositValue', $subDepositValue);
-            $stmt->bindParam(':commonCostId', $commonCostId);
-            $stmt->execute();
-            return $this->conn->lastInsertId();
-        }
+        $stmt->execute();
+        return $this->conn->lastInsertId();
     }
+}
+
 
     private function saveMeterSerialNumbers($userId, $data)
     {
