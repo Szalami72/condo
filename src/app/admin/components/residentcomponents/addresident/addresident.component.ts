@@ -54,6 +54,7 @@ export class AddresidentComponent implements OnInit {
   newCommoncost: string | undefined;
 
   subDeposit: string | undefined;
+  subDepositOptions : any[] = [];
   newSubDeposit: string | undefined;
 
   squareMeter: string | undefined;
@@ -86,6 +87,7 @@ export class AddresidentComponent implements OnInit {
     this.loadDoors();
     this.loadCommonCosts();
     this.loadSquareMeters();
+    this.loadSubdeposits();
     this.setForm();
    }
 
@@ -105,6 +107,7 @@ export class AddresidentComponent implements OnInit {
       newSquareMeter: new FormControl(''),
       commoncostBase: new FormControl(''),
       newCommoncost: new FormControl(''),
+      subDeposit: new FormControl(''),
       balance: new FormControl(''),
       isMeter: new FormControl(''),
       adminLevel: new FormControl('2'),
@@ -164,8 +167,26 @@ export class AddresidentComponent implements OnInit {
     this.residentsService.getCommoncosts().subscribe({
       next: (response) => {
         if (response.status === 'success') {
+          console.log('cc',response.data);
           this.commoncostOptions = this.sortArrayAlphabetically(response.data, 'typeOfCommoncosts');
-          console.log(response.data);
+       
+        } else {
+          this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        }
+      },
+      error: (error) => {
+        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+      }
+    });
+  }
+
+  loadSubdeposits(): void {
+    this.residentsService.getSubdeposits().subscribe({
+      next: (response) => {
+        if (response.status === 'success') {
+          console.log('sd',response.data);
+          this.subDepositOptions = this.sortArrayAlphabetically(response.data, 'typeOfSubdeposits');
+       
         } else {
           this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
         }
@@ -389,8 +410,9 @@ export class AddresidentComponent implements OnInit {
 
   updateSubDeposit(): void {
     const selectedSquareMeterOption = this.squareMeterOptions.find(option => option.typeOfSquaremeters === this.squareMeter);
-    if (selectedSquareMeterOption && selectedSquareMeterOption.subDepositForThis !== '') {
-        this.subDeposit = selectedSquareMeterOption.subDepositForThis;
+    if (selectedSquareMeterOption && selectedSquareMeterOption.subDepForThis !== '') {
+      const selectedSubDepositOption = (this.subDepositOptions.find(option => option.id === selectedSquareMeterOption.subDepForThis));
+        this.subDeposit = selectedSubDepositOption.typeOfSubdeposits;
     } else {
         this.subDeposit = '';
     }
@@ -431,6 +453,6 @@ export class AddresidentComponent implements OnInit {
 }
 
 // TODO
-
+// php mentést megcsinálni a subdeposit miatt!!!
 // jelszó generálás, email küldés
 

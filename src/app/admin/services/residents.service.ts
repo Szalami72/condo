@@ -36,6 +36,9 @@ export class ResidentsService {
     return this.getData('Commoncosts');
   }
 
+  getSubdeposits(): Observable<any> {
+    return this.getData('Subdeposits');
+  }
   getSquareMeters(): Observable<any> {
     return this.getData('Squaremeters');
   }

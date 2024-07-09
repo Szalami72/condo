@@ -49,6 +49,12 @@ CREATE TABLE commonCosts (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE subDeposits (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    typeOfSubdeposit varchar(32) NOT NULL,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE squareMeters (
     id int(11) NOT NULL AUTO_INCREMENT,
     typeOfSquareMeters int(4) NOT NULL,

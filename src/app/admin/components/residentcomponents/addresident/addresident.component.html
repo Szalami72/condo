@@ -292,19 +292,19 @@
                         placeholder="új" 
                         [(ngModel)]="newSubDeposit"
                         (click)="resetRadioSelection('subDeposit')">
-                    <ng-container *ngFor="let squareMeterOption of squareMeterOptions">
+                    <ng-container *ngFor="let subDepositOption of subDepositOptions">
                         <label 
-                            *ngIf="squareMeterOption.subDepositForThis != 0"
+                            *ngIf="subDepositOption.typeOfSubdeposits != 0"
                             class="form-check-label radio-label" 
-                            [ngClass]="{'checked-label': subDeposit === squareMeterOption.subDepositForThis}">
+                            [ngClass]="{'checked-label': subDeposit === subDepositOption.typeOfSubdeposits}">
                             <input 
                                 type="radio" 
                                 name="subDeposit"
-                                [id]="'subDeposit' + squareMeterOption.subDepositForThis" 
+                                [id]="'subDeposit' + subDepositOption.typeOfSubdeposits" 
                                 class="form-check-input visually-hidden" 
-                                [value]="squareMeterOption.subDepositForThis" 
+                                [value]="subDepositOption.typeOfSubdeposits" 
                                 [(ngModel)]="subDeposit">
-                            {{ squareMeterOption.subDepositForThis }}
+                            {{ subDepositOption.typeOfSubdeposits }}
                         </label>
                     </ng-container>
                 </div>
