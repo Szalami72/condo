@@ -294,7 +294,7 @@
                         (click)="resetRadioSelection('subDeposit')">
                     <ng-container *ngFor="let squareMeterOption of squareMeterOptions">
                         <label 
-                            *ngIf="squareMeterOption.subDepositForThis"
+                            *ngIf="squareMeterOption.subDepositForThis != 0"
                             class="form-check-label radio-label" 
                             [ngClass]="{'checked-label': subDeposit === squareMeterOption.subDepositForThis}">
                             <input 
