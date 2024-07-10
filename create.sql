@@ -59,7 +59,7 @@ CREATE TABLE squareMeters (
     id int(11) NOT NULL AUTO_INCREMENT,
     typeOfSquareMeters int(4) NOT NULL,
     ccostForThis int(11) NOT NULL,
-    subDepositForThis int(11) NOT NULL,
+    subDepForThis int(11) NOT NULL,
     PRIMARY KEY (id)
 );
 

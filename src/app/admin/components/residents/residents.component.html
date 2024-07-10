@@ -45,7 +45,33 @@
 
 <div class="resident-list mt-4">
 
+  <div *ngIf="users && users.length > 0; else noData">
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Building</th>
+          <th>Floor</th>
+          <th>Door</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.typeOfBuildings }}</td>
+          <td>{{ user.typeOfFloors }}</td>
+          <td>{{ user.typeOfDoors }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #noData>
+    <p>Nincs megjeleníthető adat.</p>
+  </ng-template>
+  
 
 </div>
-lakók: {{ filteredUsers }}
-</div>
+
+

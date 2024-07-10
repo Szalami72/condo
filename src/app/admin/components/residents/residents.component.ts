@@ -9,6 +9,7 @@ import { MenuComponent } from '../menu/menu.component';
 import { MessageService } from '../../../shared/services/message.service';
 import { CostsService } from '../../services/costs.service';
 import { MetersService } from '../../services/meters.service';
+import { ResidentsService } from '../../services/residents.service';
 import { AddresidentComponent } from '../residentcomponents/addresident/addresident.component';
 import { from } from 'rxjs';
 
@@ -46,12 +47,31 @@ export class ResidentsComponent implements OnInit {
   constructor(public messageService: MessageService, 
     private costsService: CostsService,
     private metersService: MetersService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private residentsService: ResidentsService
     ) {}
 
   ngOnInit(): void {
     this.loadCosts();
     this.getMeters();
+    this.getAllResidents();
+  }
+
+  getAllResidents(): void {
+    this.residentsService.getAllResidents().subscribe(
+      response => {
+        if (response.status === 'success') {
+          this.users = response.data;
+          console.log(this.users);
+          this.filteredUsers = this.users;
+        } else {
+          this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        }
+      },
+      error => {
+        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+      }
+    );
   }
 
   async loadCosts() {
@@ -95,7 +115,7 @@ export class ResidentsComponent implements OnInit {
 
   filterUsers() {
     this.filteredUsers = this.users.filter((user) =>
-      user.personalData.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      user.username.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 

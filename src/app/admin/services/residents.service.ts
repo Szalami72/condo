@@ -9,9 +9,11 @@ import { API_BASE_URL } from '../../constans/constans';
 })
 export class ResidentsService {
 
-  private getDataApi = API_BASE_URL + 'residents/getresidencedatas.php';
+  private getDataApi = API_BASE_URL + 'residents/getresidentdatas.php';
 
-  private saveDataApi = API_BASE_URL + 'residents/saveresidencedata.php';
+  private saveDataApi = API_BASE_URL + 'residents/saveresidentdata.php';
+
+  private getResidentsApi = API_BASE_URL + 'residents/getresidents.php';
 
   constructor(private http: HttpClient) { }
 
@@ -45,5 +47,9 @@ export class ResidentsService {
   
   saveData(data: any): Observable<any> {
     return this.http.post(this.saveDataApi, data);
+  }
+
+  getAllResidents(): Observable<any> {
+    return this.http.get<any>(this.getResidentsApi);
   }
 }
