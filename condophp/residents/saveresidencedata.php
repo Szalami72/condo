@@ -36,6 +36,7 @@ class SaveResidenceData
         $doorId = 0;
         $commonCostId = 0;
         $squareMeterId = 0;
+        $subDepositId = 0;
       
 
         if(!empty($data['building'])) {
@@ -57,9 +58,14 @@ class SaveResidenceData
               $commonCostId = $this->saveOrUpdate('commoncosts', 'typeOfCommoncosts', $data['commoncost']);
           }
 
+          // Albetéti díj ellenőrzése és mentése
+          if ((!empty($data['subDeposit']))) {
+              $subDepositId = $this->saveOrUpdate('subdeposits', 'typeOfSubdeposits', $data['subDeposit']);
+          }
+
          // Négyzetméter adatok ellenőrzése és mentése
          if(!empty($data['squareMeter'])) {
-            $squareMeterId = $this->saveOrUpdateSquareMeters('squaremeters', 'typeOfSquareMeters', $data['squareMeter'], $data['subDeposit'], $commonCostId, $data['commoncost']);
+            $squareMeterId = $this->saveOrUpdateSquareMeters('squaremeters', 'typeOfSquareMeters', $data['squareMeter'], $subDepositId, $commonCostId);
          }
 
         // Balance tábla frissítése
@@ -109,10 +115,10 @@ class SaveResidenceData
 
 //$squareMeterId = $this->saveOrUpdateSquareMeters('squaremeters', 'typeOfSquareMeters', $data['squareMeter'], $data['subDeposit'], $commonCostId);
 
-private function saveOrUpdateSquareMeters($table, $columnName, $value, $subDepositValue, $commonCostId, $commoncostValue)
+private function saveOrUpdateSquareMeters($table, $columnName, $value, $subDepositId, $commonCostId)
 {
     // Ellenőrizzük, hogy van-e már ilyen érték a táblában
-    $sql = "SELECT id, ccostForThis FROM $table WHERE $columnName = :value";
+    $sql = "SELECT id, ccostForThis, subDepForThis FROM $table WHERE $columnName = :value";
     $stmt = $this->conn->prepare($sql);
     $stmt->bindParam(':value', $value);
 
@@ -122,10 +128,9 @@ private function saveOrUpdateSquareMeters($table, $columnName, $value, $subDepos
     if ($result) {
         // Ha már van ilyen érték, visszaadjuk az id-t
         $existingId = $result['id'];
-        $existingCcostForThis = $result['ccostForThis'];
 
-        // Ha a ccostForThis értéke 0 és a $data['commoncost'] nem nulla, frissítjük az adatokat
-        if ($existingCcostForThis == 0 && !empty($commonCostId)) {
+        // Ellenőrizzük és frissítjük az ccostForThis mezőt, ha szükséges
+        if (empty($result['ccostForThis']) || $result['ccostForThis'] == 0) {
             $sql = "UPDATE $table SET ccostForThis = :commonCostId WHERE id = :id";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':commonCostId', $commonCostId);
@@ -133,11 +138,11 @@ private function saveOrUpdateSquareMeters($table, $columnName, $value, $subDepos
             $stmt->execute();
         }
 
-        // Ha a subDepositValue nem üres vagy nulla, frissítjük az adatokat
-        if (!empty($subDepositValue)) {
-            $sql = "UPDATE $table SET subDepositForThis = :subDepositValue WHERE id = :id";
+        // Ellenőrizzük és frissítjük az subDepForThis mezőt, ha szükséges
+        if (empty($result['subDepForThis']) || $result['subDepForThis'] == 0) {
+            $sql = "UPDATE $table SET subDepForThis = :subDepositId WHERE id = :id";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':subDepositValue', $subDepositValue);
+            $stmt->bindParam(':subDepositId', $subDepositId);
             $stmt->bindParam(':id', $existingId);
             $stmt->execute();
         }
@@ -145,16 +150,17 @@ private function saveOrUpdateSquareMeters($table, $columnName, $value, $subDepos
         return $existingId;
     } else {
         // Ha nincs, beszúrjuk az új értéket és visszaadjuk az újonnan generált id-t
-        $sql = "INSERT INTO $table ($columnName, ccostForThis, subDepositForThis) VALUES (:value, :commonCostId, :subDepositValue)";
+        $sql = "INSERT INTO $table ($columnName, ccostForThis, subDepForThis) VALUES (:value, :commonCostId, :subDepositId)";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':value', $value);
         $stmt->bindParam(':commonCostId', $commonCostId);
-        $stmt->bindParam(':subDepositValue', $subDepositValue);
+        $stmt->bindParam(':subDepositId', $subDepositId);
 
         $stmt->execute();
         return $this->conn->lastInsertId();
     }
 }
+
 
 
     private function saveMeterSerialNumbers($userId, $data)
