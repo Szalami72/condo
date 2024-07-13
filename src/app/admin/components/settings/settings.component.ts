@@ -9,6 +9,7 @@ import { DatasComponent } from '../settingscomponents/datas/datas.component';
 import { InfosectionComponent } from '../settingscomponents/infosection/infosection.component';
 import { MessageService } from '../../../shared/services/message.service';
 import { DescriptionService } from '../../services/description.service';
+import { MessageComponent } from "../../../shared/sharedcomponents/message/message.component";
 
 
 @Component({
@@ -17,13 +18,13 @@ import { DescriptionService } from '../../services/description.service';
     templateUrl: './settings.component.html',
     styleUrl: './settings.component.css',
     imports: [MenuComponent,
-            CommonModule,
-            FormsModule,
-            RecdatesComponent,
-            MetersComponent,
-            CostsComponent,
-            DatasComponent,
-            InfosectionComponent]
+    CommonModule,
+    FormsModule,
+    RecdatesComponent,
+    MetersComponent,
+    CostsComponent,
+    DatasComponent,
+    InfosectionComponent, MessageComponent]
 })
 export class SettingsComponent {
   showInfo: boolean = false;

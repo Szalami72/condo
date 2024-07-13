@@ -7,16 +7,22 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { MenuComponent } from '../menu/menu.component';
 import { MessageService } from '../../../shared/services/message.service';
+import { MessageComponent } from '../../../shared/sharedcomponents/message/message.component';
 import { CostsService } from '../../services/costs.service';
 import { MetersService } from '../../services/meters.service';
 import { ResidentsService } from '../../services/residents.service';
 import { AddresidentComponent } from '../residentcomponents/addresident/addresident.component';
-import { from } from 'rxjs';
 
 @Component({
   selector: 'app-residents',
   standalone: true,
-  imports: [MenuComponent, CommonModule, FormsModule, NgbPaginationModule, NgbModule, AddresidentComponent],
+  imports: [MenuComponent,
+            CommonModule, 
+            FormsModule, 
+            NgbPaginationModule, 
+            NgbModule, 
+            AddresidentComponent, 
+            MessageComponent],
   templateUrl: './residents.component.html',
   styleUrl: './residents.component.css'
 })
@@ -43,6 +49,9 @@ export class ResidentsComponent implements OnInit {
   hot2: string = '';
   heating: string = '';
 
+  sortedColumn: string | null = null;
+
+
 
   constructor(public messageService: MessageService, 
     private costsService: CostsService,
@@ -55,15 +64,18 @@ export class ResidentsComponent implements OnInit {
     this.loadCosts();
     this.getMeters();
     this.getAllResidents();
+    
   }
 
-  getAllResidents(): void {
+  getAllResidents() {
     this.residentsService.getAllResidents().subscribe(
       response => {
         if (response.status === 'success') {
           this.users = response.data;
-          console.log(this.users);
-          this.filteredUsers = this.users;
+       
+          this.filterUsers(); 
+          this.sortUsers('username');
+
         } else {
           this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
         }
@@ -114,10 +126,74 @@ export class ResidentsComponent implements OnInit {
   }
 
   filterUsers() {
+    const term = this.searchTerm ? this.searchTerm.toLowerCase() : '';
+  
     this.filteredUsers = this.users.filter((user) =>
-      user.username.toLowerCase().includes(this.searchTerm.toLowerCase())
+      user.username.toLowerCase().includes(term) ||
+      (user.typeOfBuildings && user.typeOfBuildings.toLowerCase().includes(term))
     );
+
+    if (this.sortedColumn) {
+      this.sortUsers(this.sortedColumn);
+    }
   }
+  
+  
+ sortUsers(key: string) {
+  if (this.filteredUsers.length > 1) {
+    this.filteredUsers.sort((a, b) => {
+      const valueA = this.getSortableValue(a[key]);
+      const valueB = this.getSortableValue(b[key]);
+
+      if (valueA < valueB) {
+        return -1;
+      }
+      if (valueA > valueB) {
+        return 1;
+      }
+
+      // Ha az 'typeOfBuildings' az aktuális rendező oszlop, akkor ellenőrizzük a 'typeOfFloors' és 'typeOfDoors' értékeket is
+      if (key === 'typeOfBuildings') {
+        const floorA = this.getSortableValue(a['typeOfFloors']);
+        const floorB = this.getSortableValue(b['typeOfFloors']);
+
+        if (floorA < floorB) {
+          return -1;
+        }
+        if (floorA > floorB) {
+          return 1;
+        }
+
+        // Ha a 'typeOfFloors' egyenlő, akkor ellenőrizzük a 'typeOfDoors' értékeit
+        if (floorA === floorB) {
+          const doorA = this.getSortableValue(a['typeOfDoors']);
+          const doorB = this.getSortableValue(b['typeOfDoors']);
+
+          if (doorA < doorB) {
+            return -1;
+          }
+          if (doorA > doorB) {
+            return 1;
+          }
+        }
+      }
+
+      return 0;
+    });
+
+    this.sortedColumn = key; // Beállítjuk az aktuális rendezett oszlopot
+  }
+}
+
+getSortableValue(value: any): any {
+  if (!isNaN(value)) { // Ellenőrizzük, hogy a value szám-e
+    return parseFloat(value); // Számként rendezzük, ha szám
+  }
+  return value && value.toUpperCase ? value.toUpperCase() : ''; // Ellenkező esetben stringként rendezzük
+}
+  
+  
+  
 
   addNewResident() {
     const modalRef = this.modalService.open(AddresidentComponent, { size: 'lg' });
@@ -134,5 +210,9 @@ export class ResidentsComponent implements OnInit {
 
   }
   
+  goToResident(id: number) {
+    //this.residentsService.goToResident(id);
+    console.log('goToResident', id);
+  }
 
 }

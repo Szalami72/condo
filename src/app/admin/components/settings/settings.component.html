@@ -3,16 +3,7 @@
 <div class="container mb-4">
 
     <h2 class="mb-4">Beállítások</h2>
-
-    <ng-container *ngIf="!messageService.message && !messageService.errorMessage; else showMessage">
-    </ng-container>
-    
-    <ng-template #showMessage>
-      <div class="alert text-center fixed-top" [ngClass]="{'alert-success': messageService.message, 'alert-danger': messageService.errorMessage}" role="alert">
-        {{ messageService.message || messageService.errorMessage }}
-      </div>
-
-    </ng-template>
+    <app-message></app-message>
 
     <div class="row align-items-stretch">
         

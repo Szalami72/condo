@@ -4,14 +4,7 @@
 
     <h2 class="mb-4">Lakók</h2>
 
-    <ng-container *ngIf="!messageService.message && !messageService.errorMessage; else showMessage">
-    </ng-container>
-    
-    <ng-template #showMessage>
-      <div class="alert text-center fixed-top" [ngClass]="{'alert-success': messageService.message, 'alert-danger': messageService.errorMessage}" role="alert">
-        {{ messageService.message || messageService.errorMessage }}
-      </div>
-    </ng-template>
+    <app-message></app-message>
 
 <div class="new-resident mt-2 mb-4">
     <button class="btn btn-primary" (click)="addNewResident()">Új lakó felvétele</button>
@@ -45,24 +38,35 @@
 
 <div class="resident-list mt-4">
 
-  <div *ngIf="users && users.length > 0; else noData">
-    <table>
+  <div *ngIf="filteredUsers && filteredUsers.length > 0; else noData">
+    <table class="table  table-hover table-success table-striped">
       <thead>
         <tr>
-          <th>Username</th>
+          <th (click)="sortUsers('username')" 
+              class="cursor-pointer">Lakó neve
+            <i [ngClass]="{'sorted-column': sortedColumn === 'username'}" 
+               class="fa-solid fa-arrow-down fa-xs ms-2">
+              </i>
+          </th>
           <th>Email</th>
-          <th>Building</th>
-          <th>Floor</th>
-          <th>Door</th>
+          <th (click)="sortUsers('typeOfBuildings')" 
+              class="cursor-pointer text-end">Épület
+            <i 
+              [ngClass]="{'sorted-column': sortedColumn === 'typeOfBuildings'}" 
+              class="fa-solid fa-arrow-down fa-xs ms-2">
+            </i>
+          </th>
+          <th class="text-end">Emelet</th>
+          <th class="text-end">Ajtó</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of users">
-          <td>{{ user.username }}</td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.typeOfBuildings }}</td>
-          <td>{{ user.typeOfFloors }}</td>
-          <td>{{ user.typeOfDoors }}</td>
+        <tr class="cursor-pointer" *ngFor="let filteredUser of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize" (click)="goToResident(filteredUser.userId)">
+          <td>{{ filteredUser.username }}</td>
+          <td>{{ filteredUser.email }}</td>
+          <td class="text-end">{{ filteredUser.typeOfBuildings }}</td>
+          <td class="text-end">{{ filteredUser.typeOfFloors }}</td>
+          <td class="text-end">{{ filteredUser.typeOfDoors }}</td>
         </tr>
       </tbody>
     </table>

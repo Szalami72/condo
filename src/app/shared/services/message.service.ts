@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -13,19 +12,11 @@ export class MessageService {
   setMessage(message: string): void {
     this.message = message;
     this.errorMessage = null;
-
-    setTimeout(() => {
-      this.clearMessages();
-    }, 3000);
   }
 
   setErrorMessage(errorMessage: string): void {
     this.errorMessage = errorMessage;
     this.message = null;
-
-    setTimeout(() => {
-      this.clearMessages();
-    }, 3000);
   }
 
   clearMessages(): void {
@@ -33,4 +24,3 @@ export class MessageService {
     this.errorMessage = null;
   }
 }
-
