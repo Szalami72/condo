@@ -2,7 +2,8 @@
 
     <div class="modal-header">
         <div class="text-center mt-2">
-            <h2>Lakó hozzáadása</h2>
+            <h2 *ngIf="!userId">Lakó hozzáadása</h2>
+            <h2 *ngIf="userId">Lakó szerkesztése</h2>
         </div>
         <button
         type="button"
@@ -338,7 +339,7 @@
             </button>
         </div>
         <div class="col-6 d-flex justify-content-end">
-            <button class="btn btn-primary" (click)="onSave()">
+            <button class="btn btn-primary" (click)="onSave(userId)">
                 Mentés
             </button>
         </div>

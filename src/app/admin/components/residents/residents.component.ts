@@ -11,8 +11,7 @@ import { MessageComponent } from '../../../shared/sharedcomponents/message/messa
 import { CostsService } from '../../services/costs.service';
 import { MetersService } from '../../services/meters.service';
 import { ResidentsService } from '../../services/residents.service';
-import { AddresidentComponent } from '../residentcomponents/addresident/addresident.component';
-
+import { AddAndEditResidentComponent } from '../residentcomponents/addAndEditResident/addAndEditResident.component';
 @Component({
   selector: 'app-residents',
   standalone: true,
@@ -21,7 +20,7 @@ import { AddresidentComponent } from '../residentcomponents/addresident/addresid
             FormsModule, 
             NgbPaginationModule, 
             NgbModule, 
-            AddresidentComponent, 
+            AddAndEditResidentComponent,
             MessageComponent],
   templateUrl: './residents.component.html',
   styleUrl: './residents.component.css'
@@ -36,6 +35,7 @@ export class ResidentsComponent implements OnInit {
 
   searchTerm: string = '';
 
+  loadErrorMessage = "Hiba történt az adatok betöltése során. Próbáld meg később!";
 
   commonCost: string | undefined;
   amountSmeter: number | undefined;
@@ -77,11 +77,11 @@ export class ResidentsComponent implements OnInit {
           this.sortUsers('username');
 
         } else {
-          this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+          this.messageService.setErrorMessage(this.loadErrorMessage);
         }
       },
       error => {
-        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     );
   }
@@ -99,10 +99,10 @@ export class ResidentsComponent implements OnInit {
         this.subDepFix = data.subDepFix ? Number(data.subDepFix) : undefined;
 
       } else {
-        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     } catch (error) {
-      this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+      this.messageService.setErrorMessage(this.loadErrorMessage);
     }
   }
 
@@ -116,7 +116,7 @@ export class ResidentsComponent implements OnInit {
         this.heating = data.heating;
       },
       error => {
-        this.messageService.setErrorMessage('Hiba történt az adatok letöltése során. Próbáld meg később!');
+        this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     );
   }
@@ -152,7 +152,6 @@ export class ResidentsComponent implements OnInit {
         return 1;
       }
 
-      // Ha az 'typeOfBuildings' az aktuális rendező oszlop, akkor ellenőrizzük a 'typeOfFloors' és 'typeOfDoors' értékeket is
       if (key === 'typeOfBuildings') {
         const floorA = this.getSortableValue(a['typeOfFloors']);
         const floorB = this.getSortableValue(b['typeOfFloors']);
@@ -164,7 +163,6 @@ export class ResidentsComponent implements OnInit {
           return 1;
         }
 
-        // Ha a 'typeOfFloors' egyenlő, akkor ellenőrizzük a 'typeOfDoors' értékeit
         if (floorA === floorB) {
           const doorA = this.getSortableValue(a['typeOfDoors']);
           const doorB = this.getSortableValue(b['typeOfDoors']);
@@ -181,22 +179,19 @@ export class ResidentsComponent implements OnInit {
       return 0;
     });
 
-    this.sortedColumn = key; // Beállítjuk az aktuális rendezett oszlopot
+    this.sortedColumn = key; 
   }
 }
 
 getSortableValue(value: any): any {
-  if (!isNaN(value)) { // Ellenőrizzük, hogy a value szám-e
-    return parseFloat(value); // Számként rendezzük, ha szám
+  if (!isNaN(value)) { 
+    return parseFloat(value); 
   }
-  return value && value.toUpperCase ? value.toUpperCase() : ''; // Ellenkező esetben stringként rendezzük
+  return value && value.toUpperCase ? value.toUpperCase() : ''; 
 }
   
-  
-  
-
-  addNewResident() {
-    const modalRef = this.modalService.open(AddresidentComponent, { size: 'lg' });
+  addAndEditResident(userId: number | undefined) {
+    const modalRef = this.modalService.open(AddAndEditResidentComponent, { size: 'lg' });
     modalRef.componentInstance.commonCost = this.commonCost;
     modalRef.componentInstance.amountSmeter = this.amountSmeter;
     modalRef.componentInstance.amountFix = this.amountFix;
@@ -207,11 +202,12 @@ getSortableValue(value: any): any {
     modalRef.componentInstance.hot1 = this.hot1;
     modalRef.componentInstance.hot2 = this.hot2;
     modalRef.componentInstance.heating = this.heating;
+    modalRef.componentInstance.userId = userId;
 
   }
   
-  goToResident(id: number) {
-    //this.residentsService.goToResident(id);
+  editResident(id: number) {
+    this.addAndEditResident(id);
     console.log('goToResident', id);
   }
 

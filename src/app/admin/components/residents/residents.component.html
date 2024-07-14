@@ -7,7 +7,7 @@
     <app-message></app-message>
 
 <div class="new-resident mt-2 mb-4">
-    <button class="btn btn-primary" (click)="addNewResident()">Új lakó felvétele</button>
+    <button class="btn btn-primary" (click)="addAndEditResident(undefined)">Új lakó felvétele</button>
 </div>
 
 <div class="row row-cols-auto justify-content-between">
@@ -61,7 +61,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="cursor-pointer" *ngFor="let filteredUser of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize" (click)="goToResident(filteredUser.userId)">
+        <tr class="cursor-pointer" *ngFor="let filteredUser of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize" (click)="editResident(filteredUser.userId)">
           <td>{{ filteredUser.username }}</td>
           <td>{{ filteredUser.email }}</td>
           <td class="text-end">{{ filteredUser.typeOfBuildings }}</td>

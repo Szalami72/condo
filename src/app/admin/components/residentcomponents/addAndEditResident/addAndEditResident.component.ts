@@ -12,10 +12,10 @@ import { ResidentsService } from '../../../services/residents.service';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   providers: [],
-  templateUrl: './addresident.component.html',
-  styleUrl: './addresident.component.css'
+  templateUrl: './addAndEditResident.component.html',
+  styleUrl: './addAndEditResident.component.css'
 })
-export class AddresidentComponent implements OnInit {
+export class AddAndEditResidentComponent implements OnInit {
 
   @Input() commonCost: string | undefined;
   @Input() amountSmeter: number | undefined;
@@ -27,11 +27,15 @@ export class AddresidentComponent implements OnInit {
   @Input() hot1: string = '';
   @Input() hot2: string = '';
   @Input() heating: string = '';
+  @Input() userId: number | undefined;
+
   
   form: FormGroup | undefined;
 
   errorMessage: string | undefined;
   message: string | undefined;
+
+  loadErrorMessage = "Hiba történt az adatok betöltése során. Próbáld meg később!";
 
   username: string | undefined;
   email: string | undefined;
@@ -124,11 +128,11 @@ export class AddresidentComponent implements OnInit {
         if (response.status === 'success') {
           this.buildingOptions = this.sortArrayAlphabetically(response.data, 'typeOfBuildings');
         } else {
-          this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+          this.messageService.setErrorMessage(this.loadErrorMessage);
         }
       },
       error: (error) => {
-        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     });
   }
@@ -139,11 +143,11 @@ export class AddresidentComponent implements OnInit {
         if (response.status === 'success') {
           this.floorOptions = this.sortArrayAlphabetically(response.data, 'typeOfFloors');
         } else {
-          this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+          this.messageService.setErrorMessage(this.loadErrorMessage);
         }
       },
       error: (error) => {
-        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     });
   }
@@ -154,11 +158,11 @@ export class AddresidentComponent implements OnInit {
         if (response.status === 'success') {
           this.doorOptions = this.sortArrayAlphabetically(response.data, 'typeOfDoors');
         } else {
-          this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+          this.messageService.setErrorMessage(this.loadErrorMessage);
         }
       },
       error: (error) => {
-        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     });
   }
@@ -167,15 +171,14 @@ export class AddresidentComponent implements OnInit {
     this.residentsService.getCommoncosts().subscribe({
       next: (response) => {
         if (response.status === 'success') {
-          console.log('cc',response.data);
           this.commoncostOptions = this.sortArrayAlphabetically(response.data, 'typeOfCommoncosts');
        
         } else {
-          this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+          this.messageService.setErrorMessage(this.loadErrorMessage);
         }
       },
       error: (error) => {
-        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     });
   }
@@ -184,15 +187,14 @@ export class AddresidentComponent implements OnInit {
     this.residentsService.getSubdeposits().subscribe({
       next: (response) => {
         if (response.status === 'success') {
-          console.log('sd',response.data);
           this.subDepositOptions = this.sortArrayAlphabetically(response.data, 'typeOfSubdeposits');
        
         } else {
-          this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+          this.messageService.setErrorMessage(this.loadErrorMessage);
         }
       },
       error: (error) => {
-        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     });
   }
@@ -202,14 +204,12 @@ export class AddresidentComponent implements OnInit {
       next: (response) => {
         if (response.status === 'success') {
           this.squareMeterOptions = this.sortArrayAlphabetically(response.data, 'typeOfSquareMeters');
-          console.log(response.data);
-
         } else {
-          this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+          this.messageService.setErrorMessage(this.loadErrorMessage);
         }
       },
       error: (error) => {
-        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     });
   }
@@ -218,46 +218,58 @@ export class AddresidentComponent implements OnInit {
     this.activeModal.close();
   }
 
-  onSave() {
-    
-    this.errorMessage = '';
-  if (this.validateForm()) {
-    const data = {
-      name: this.username,
-      email: this.email,
-      phone: `+36 ${this.phoneAreaNum} ${this.phone}`,
-      building: this.building || this.newBuilding,
-      floor: this.floor || this.newFloor,
-      door: this.door || this.newDoor,
-      squareMeter: this.squareMeter || this.newSquareMeter,
-      commoncost: this.commoncostBase || this.newCommoncost || 0,
-      balance: this.balance,
-      adminLevel: this.adminLevel,
-      isMeter: this.isMeter,
-      cold1: this.cold1,
-      cold2: this.cold2,
-      hot1: this.hot1,
-      hot2: this.hot2,
-      cold1SerialNumber: this.cold1SerialNumber,
-      cold2SerialNumber: this.cold2SerialNumber,
-      hot1SerialNumber: this.hot1SerialNumber,
-      hot2SerialNumber: this.hot2SerialNumber,
-      subDeposit: this.subDeposit || this.newSubDeposit || 0
-    };
-    
-    console.log(data);
-    this.residentsService.saveData(data)
-      .subscribe(
-        () => {
-          this.messageService.setMessage('Lakó sikeresen mentve.');
-          this.activeModal.close();
-        },
-        () => {
-          this.messageService.setErrorMessage('Hiba történt a mentés során. Próbáld meg később!');
-          this.errorMessage = 'Hiba történt a mentés során.';
-        }
-      );
+  onSave(userId: number | undefined) {
+    if(!userId){
+      this.addNewResident();
+    }
+    if(userId){ 
+      this.editResident(userId);
+    } 
+
   }
+
+  addNewResident() {
+    this.errorMessage = '';
+    if (this.validateForm()) {
+      const data = {
+        name: this.username,
+        email: this.email,
+        phone: `+36 ${this.phoneAreaNum} ${this.phone}`,
+        building: this.building || this.newBuilding,
+        floor: this.floor || this.newFloor,
+        door: this.door || this.newDoor,
+        squareMeter: this.squareMeter || this.newSquareMeter,
+        commoncost: this.commoncostBase || this.newCommoncost || 0,
+        balance: this.balance,
+        adminLevel: this.adminLevel,
+        isMeter: this.isMeter,
+        cold1: this.cold1,
+        cold2: this.cold2,
+        hot1: this.hot1,
+        hot2: this.hot2,
+        cold1SerialNumber: this.cold1SerialNumber,
+        cold2SerialNumber: this.cold2SerialNumber,
+        hot1SerialNumber: this.hot1SerialNumber,
+        hot2SerialNumber: this.hot2SerialNumber,
+        subDeposit: this.subDeposit || this.newSubDeposit || 0
+      };
+  
+  this.residentsService.saveData(data)
+    .subscribe(
+      () => {
+        this.messageService.setMessage('Lakó sikeresen mentve.');
+        this.activeModal.close();
+      },
+      () => {
+        this.messageService.setErrorMessage(this.loadErrorMessage);
+        this.errorMessage = this.loadErrorMessage;
+      }
+    );
+    }
+  }
+
+  editResident(userId: number) {
+    console.log('editResident', userId);
   }
    
   
@@ -453,6 +465,6 @@ export class AddresidentComponent implements OnInit {
 }
 
 // TODO
-// php mentést megcsinálni a subdeposit miatt!!!
-// jelszó generálás, email küldés
+// lakó adatainak betöltése a módosítás miatt.
+// update metódus és php megírása
 

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddresidentComponent } from './addresident.component';
+import { AddresidentComponent } from './AddAndEditResident.component';
 
 describe('AddresidentComponent', () => {
   let component: AddresidentComponent;
