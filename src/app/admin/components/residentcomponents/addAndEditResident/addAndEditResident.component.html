@@ -24,14 +24,14 @@
 
         <div class="row input-field mb-2">
             <div class="col-3">
-              <label for="name" class="form-label mt-2">Név:</label>
+              <label for="username" class="form-label mt-2">Név:</label>
             </div>
             <div class="col-9">
               <input
                 type="text"
                 class="form-control"
-                id="name"
-                name="name"
+                id="username"
+                name="username"
                 [(ngModel)]="username"
                 (ngModelChange)="capitalizeName()"
                 (keypress)="allowOnlyLetters($event)"

@@ -5,6 +5,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 
 import { MessageService } from '../../../../shared/services/message.service';
 import { ResidentsService } from '../../../services/residents.service';
+import { map, Observable, tap } from 'rxjs';
 
 
 @Component({
@@ -71,7 +72,7 @@ export class AddAndEditResidentComponent implements OnInit {
 
   isMeter: number = 1;
 
-  phoneAreaNum: number = 1;
+  phoneAreaNum: string = '1';
 
   cold1SerialNumber: string = '';
   cold2SerialNumber: string = '';
@@ -92,13 +93,66 @@ export class AddAndEditResidentComponent implements OnInit {
     this.loadCommonCosts();
     this.loadSquareMeters();
     this.loadSubdeposits();
-    this.setForm();
+
+    if (this.userId !== undefined) {
+      this.loadUserData(this.userId);
+    }
+ 
+      this.setForm();
+   
    }
 
-   
+   loadUserData(userId: number): void {
+    this.residentsService.getResidentDatasById(userId).subscribe({
+      next: (response) => {
+        if (response.status === 'success') {
+
+        
+          console.log(response.data);
+          const data = response.data;
+
+          const { areaNum, phoneNum } = this.splitPhoneNumber(data.phone);
+          this.phoneAreaNum = areaNum;
+          this.phone = phoneNum;
+
+          this.username = data.username;
+          this.email = data.email;
+          this.building = data.typeOfBuildings;
+          this.floor = data.typeOfFloors;
+          this.door = data.typeOfDoors;
+          this.squareMeter = data.typeOfSquareMeters;
+          this.commoncostBase = data.typeOfCommoncosts;
+          this.subDeposit = data.typeOfSubdeposits;
+          this.balance = data.balance;
+          this.adminLevel = data.adminLevel;
+          this.isMeter = data.isMeters;
+          this.cold1SerialNumber = data.cold1SerialNumber;
+          this.cold2SerialNumber = data.cold2SerialNumber;
+          this.hot1SerialNumber = data.hot1SerialNumber;
+          this.hot2SerialNumber = data.hot2SerialNumber;
+        } else {
+          this.messageService.setErrorMessage(this.loadErrorMessage);
+        }
+      },  
+    });
+  }
+  
+  splitPhoneNumber(phoneNumber: string): { areaNum: string, phoneNum: string } {
+    const parts = phoneNumber.split(' ');
+    let areaNum = '';
+    let phoneNum = '';
+  
+    if (parts.length > 1) {
+      areaNum = parts[0];
+      phoneNum = parts.slice(1).join(' ');
+    } 
+    return { areaNum, phoneNum };
+  }
+  
+
    setForm() {
     this.form = new FormGroup({
-      name: new FormControl('', [Validators.required]),
+      username: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
       phone: new FormControl(''),
       building: new FormControl(''),
@@ -234,7 +288,7 @@ export class AddAndEditResidentComponent implements OnInit {
       const data = {
         name: this.username,
         email: this.email,
-        phone: `+36 ${this.phoneAreaNum} ${this.phone}`,
+        phone: `${this.phoneAreaNum} ${this.phone}`,
         building: this.building || this.newBuilding,
         floor: this.floor || this.newFloor,
         door: this.door || this.newDoor,

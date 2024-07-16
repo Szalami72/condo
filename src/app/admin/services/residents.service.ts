@@ -15,6 +15,8 @@ export class ResidentsService {
 
   private getResidentsApi = API_BASE_URL + 'residents/getresidents.php';
 
+  private getResidentByIdApi = API_BASE_URL + 'residents/getresidentbyid.php';
+
   constructor(private http: HttpClient) { }
 
   getData(action: string): Observable<any> {
@@ -52,4 +54,9 @@ export class ResidentsService {
   getAllResidents(): Observable<any> {
     return this.http.get<any>(this.getResidentsApi);
   }
+
+  getResidentDatasById(userId: number): Observable<any> {
+    return this.http.post<any>(this.getResidentByIdApi, { id: userId });
+}
+
 }
