@@ -40,7 +40,7 @@ export class AddAndEditResidentComponent implements OnInit {
 
   username: string | undefined;
   email: string | undefined;
-  phone: string = '';
+  phoneNum: string = '';
 
   building: string | undefined;
   buildingOptions : any[] = [];
@@ -108,12 +108,12 @@ export class AddAndEditResidentComponent implements OnInit {
         if (response.status === 'success') {
 
         
-          console.log(response.data);
+          console.log('rd', response.data);
           const data = response.data;
 
           const { areaNum, phoneNum } = this.splitPhoneNumber(data.phone);
           this.phoneAreaNum = areaNum;
-          this.phone = phoneNum;
+          this.phoneNum = phoneNum;
 
           this.username = data.username;
           this.email = data.email;
@@ -146,6 +146,7 @@ export class AddAndEditResidentComponent implements OnInit {
       areaNum = parts[0];
       phoneNum = parts.slice(1).join(' ');
     } 
+
     return { areaNum, phoneNum };
   }
   
@@ -154,7 +155,8 @@ export class AddAndEditResidentComponent implements OnInit {
     this.form = new FormGroup({
       username: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      phone: new FormControl(''),
+      phoneAreaNum: new FormControl(''),
+      phoneNum: new FormControl(''),
       building: new FormControl(''),
       newBuilding: new FormControl(''),
       floor: new FormControl(''),
@@ -277,7 +279,7 @@ export class AddAndEditResidentComponent implements OnInit {
       this.addNewResident();
     }
     if(userId){ 
-      this.editResident(userId);
+      this.updateResident(userId);
     } 
 
   }
@@ -288,7 +290,7 @@ export class AddAndEditResidentComponent implements OnInit {
       const data = {
         name: this.username,
         email: this.email,
-        phone: `${this.phoneAreaNum} ${this.phone}`,
+        phone: `${this.phoneAreaNum} ${this.phoneNum}`,
         building: this.building || this.newBuilding,
         floor: this.floor || this.newFloor,
         door: this.door || this.newDoor,
@@ -322,11 +324,54 @@ export class AddAndEditResidentComponent implements OnInit {
     }
   }
 
-  editResident(userId: number) {
+  updateResident(userId: number) {
     console.log('editResident', userId);
-  }
-   
+    this.errorMessage = '';
+    if (this.validateForm()) {
+      const data = {
+        id: userId,
+        username: this.username,
+        email: this.email,
+        phone: `${this.phoneAreaNum} ${this.phoneNum}`,
+        building: this.building || this.newBuilding,
+        floor: this.floor || this.newFloor,
+        door: this.door || this.newDoor,
+        squareMeter: this.squareMeter || this.newSquareMeter,
+        commoncost: this.commoncostBase || this.newCommoncost || 0,
+        balance: this.balance,
+        adminLevel: this.adminLevel,
+        isMeter: this.isMeter,
+        cold1: this.cold1,
+        cold2: this.cold2,
+        hot1: this.hot1,
+        hot2: this.hot2,
+        cold1SerialNumber: this.cold1SerialNumber,
+        cold2SerialNumber: this.cold2SerialNumber,
+        hot1SerialNumber: this.hot1SerialNumber,
+        hot2SerialNumber: this.hot2SerialNumber,
+        subDeposit: this.subDeposit || this.newSubDeposit || 0
+      };
+      console.log(data);
+
+      this.residentsService.updateData(data)
+      .subscribe(
+        () => {
+          this.messageService.setMessage('Lakó adatai sikeresen frissítve.');
+          this.activeModal.close();
+        },
+        () => {
+          this.messageService.setErrorMessage('Hiba a frissítés során. Próbáld meg később!');
+          this.errorMessage = 'Hiba a frissítés során. Próbáld meg később!';
+        }
+      );
+      }
+    }
   
+   
+  deleteUser(userId: number | undefined) {
+    console.log('deleteUser', userId);
+  }
+
     validateForm(): boolean {
       if (!this.username) {
         this.errorMessage = 'Név mező kitöltése kötelező!';
@@ -393,11 +438,11 @@ export class AddAndEditResidentComponent implements OnInit {
       const cleaned = event.replace(/\D/g, '');
   
       if (cleaned.length <= 3) {
-        this.phone = cleaned;
+        this.phoneNum = cleaned;
       } else if (cleaned.length <= 5) {
-        this.phone = `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`;
+        this.phoneNum = `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`;
       } else {
-        this.phone = `${cleaned.slice(0, 3)} ${cleaned.slice(3, 5)} ${cleaned.slice(5, 7)}`;
+        this.phoneNum = `${cleaned.slice(0, 3)} ${cleaned.slice(3, 5)} ${cleaned.slice(5, 7)}`;
       }
 
     }
@@ -474,15 +519,20 @@ export class AddAndEditResidentComponent implements OnInit {
     }
 }
 
-  updateSubDeposit(): void {
-    const selectedSquareMeterOption = this.squareMeterOptions.find(option => option.typeOfSquaremeters === this.squareMeter);
-    if (selectedSquareMeterOption && selectedSquareMeterOption.subDepForThis !== '') {
-      const selectedSubDepositOption = (this.subDepositOptions.find(option => option.id === selectedSquareMeterOption.subDepForThis));
-        this.subDeposit = selectedSubDepositOption.typeOfSubdeposits;
-    } else {
-        this.subDeposit = '';
-    }
+updateSubDeposit(): void {
+  const selectedSquareMeterOption = this.squareMeterOptions.find(option => option.typeOfSquaremeters === this.squareMeter);
+  if (selectedSquareMeterOption && selectedSquareMeterOption.subDepForThis !== '') {
+      const selectedSubDepositOption = this.subDepositOptions.find(option => option.id === selectedSquareMeterOption.subDepForThis);
+      if (selectedSubDepositOption) {
+          this.subDeposit = selectedSubDepositOption.typeOfSubdeposits;
+      } else {
+          this.subDeposit = '';
+      }
+  } else {
+      this.subDeposit = '';
   }
+}
+
 
 
 

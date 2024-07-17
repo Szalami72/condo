@@ -13,6 +13,8 @@ export class ResidentsService {
 
   private saveDataApi = API_BASE_URL + 'residents/saveresidentdata.php';
 
+  private updateDataApi = API_BASE_URL + 'residents/updateresidentdata.php';
+
   private getResidentsApi = API_BASE_URL + 'residents/getresidents.php';
 
   private getResidentByIdApi = API_BASE_URL + 'residents/getresidentbyid.php';
@@ -49,6 +51,10 @@ export class ResidentsService {
   
   saveData(data: any): Observable<any> {
     return this.http.post(this.saveDataApi, data);
+  }
+
+  updateData(data: any): Observable<any> {
+    return this.http.post(this.updateDataApi, data);
   }
 
   getAllResidents(): Observable<any> {

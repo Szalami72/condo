@@ -67,7 +67,7 @@
                 </select>
             </div>
             <div class="col-7">
-                <input type="text" class="form-control phone-num" id="phone" name="phone" maxlength="9" [(ngModel)]="phone" (ngModelChange)="formatPhone($event)" (keypress)="allowOnlyNumbers($event)">
+                <input type="text" class="form-control phone-num" id="phoneNum" name="phoneNum" maxlength="9" [(ngModel)]="phoneNum" (ngModelChange)="formatPhone($event)" (keypress)="allowOnlyNumbers($event)">
             </div>
         </div>
 
@@ -333,12 +333,17 @@
       </div>
 
       <div class="row footer mt-4 mb-2">
-        <div class="col-6 d-flex justify-content-start">
+        <div class="col-4 d-flex">
             <button class="btn btn-secondary" (click)="closeModal()">
                 Mégse
             </button>
         </div>
-        <div class="col-6 d-flex justify-content-end">
+        <div class="col-4 d-flex justify-content-center">
+            <button  *ngIf="userId" class="btn btn-danger" (click)="deleteUser(userId)">
+                Töröl
+            </button>
+        </div>
+        <div class="col-4 d-flex justify-content-end">
             <button class="btn btn-primary" (click)="onSave(userId)">
                 Mentés
             </button>
