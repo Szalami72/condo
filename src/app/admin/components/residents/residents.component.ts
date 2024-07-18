@@ -50,8 +50,7 @@ export class ResidentsComponent implements OnInit {
   heating: string = '';
 
   sortedColumn: string | null = null;
-
-
+  
 
   constructor(public messageService: MessageService, 
     private costsService: CostsService,
@@ -203,6 +202,12 @@ getSortableValue(value: any): any {
     modalRef.componentInstance.hot2 = this.hot2;
     modalRef.componentInstance.heating = this.heating;
     modalRef.componentInstance.userId = userId;
+
+    modalRef.result.then(
+      (result) => {
+        this.getAllResidents();
+      }
+    );
 
   }
   

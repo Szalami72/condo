@@ -24,7 +24,7 @@ class SaveResidentData
             $sql = "INSERT INTO users (username, email, phone, adminLevel, password) 
                     VALUES (:username, :email, :phone, :adminLevel, :password)";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':username', $data['name']);
+            $stmt->bindParam(':username', $data['username']);
             $stmt->bindParam(':email', $data['email']);
             $stmt->bindParam(':phone', $data['phone']);
             $stmt->bindParam(':adminLevel', $data['adminLevel']);

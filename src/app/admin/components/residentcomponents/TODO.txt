@@ -1,6 +1,6 @@
-db-be menteni a módosításokat
 
-ha törölni akarjuk akkor kérjen megerősítést
+
+törlés php-t megírni, ha törölni akarjuk akkor kérjen megerősítést
 
 mikor létrejön egy új lakó, jelszót generálni és emailt küldeni neki
 

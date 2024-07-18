@@ -37,6 +37,7 @@ export class AddAndEditResidentComponent implements OnInit {
   message: string | undefined;
 
   loadErrorMessage = "Hiba történt az adatok betöltése során. Próbáld meg később!";
+  updateErrorMessage = "Hiba történt az adatok frissítése során. Próbáld meg később!";
 
   username: string | undefined;
   email: string | undefined;
@@ -79,6 +80,10 @@ export class AddAndEditResidentComponent implements OnInit {
   hot1SerialNumber: string = '';
   hot2SerialNumber: string = '';
 
+  isLoading = true;
+  pendingRequests: number = 0;
+
+
 
   constructor(private activeModal: NgbActiveModal,
     private residentsService: ResidentsService,
@@ -86,21 +91,23 @@ export class AddAndEditResidentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    
-    this.loadBuildings();
-    this.loadFloors();
-    this.loadDoors();
-    this.loadCommonCosts();
-    this.loadSquareMeters();
-    this.loadSubdeposits();
-
+    this.isLoading = true; // Kezdjük a betöltést
+  
+    this.loadOptions(() => this.residentsService.getBuildings(), 'typeOfBuildings', 'buildingOptions');
+    this.loadOptions(() => this.residentsService.getFloors(), 'typeOfFloors', 'floorOptions');
+    this.loadOptions(() => this.residentsService.getDoors(), 'typeOfDoors', 'doorOptions');
+    this.loadOptions(() => this.residentsService.getCommoncosts(), 'typeOfCommoncosts', 'commoncostOptions');
+    this.loadOptions(() => this.residentsService.getSquareMeters(), 'typeOfSquareMeters', 'squareMeterOptions');
+    this.loadOptions(() => this.residentsService.getSubdeposits(), 'typeOfSubdeposits', 'subDepositOptions');
+  
     if (this.userId !== undefined) {
       this.loadUserData(this.userId);
     }
- 
-      this.setForm();
-   
-   }
+  
+    this.setForm();
+  }
+  
+  
 
    loadUserData(userId: number): void {
     this.residentsService.getResidentDatasById(userId).subscribe({
@@ -178,98 +185,31 @@ export class AddAndEditResidentComponent implements OnInit {
       hot2SerialNumber: new FormControl('')
     });
    }
-   loadBuildings(): void {
-    this.residentsService.getBuildings().subscribe({
+   
+   private loadOptions(endpoint: () => Observable<any>, sortKey: string, optionsField: keyof this): void {
+    this.pendingRequests++;
+    endpoint().subscribe({
       next: (response) => {
         if (response.status === 'success') {
-          this.buildingOptions = this.sortArrayAlphabetically(response.data, 'typeOfBuildings');
+          (this as any)[optionsField] = this.sortArrayAlphabetically(response.data, sortKey);
         } else {
           this.messageService.setErrorMessage(this.loadErrorMessage);
         }
       },
-      error: (error) => {
+      error: () => {
         this.messageService.setErrorMessage(this.loadErrorMessage);
-      }
-    });
-  }
-
-  loadFloors(): void {
-    this.residentsService.getFloors().subscribe({
-      next: (response) => {
-        if (response.status === 'success') {
-          this.floorOptions = this.sortArrayAlphabetically(response.data, 'typeOfFloors');
-        } else {
-          this.messageService.setErrorMessage(this.loadErrorMessage);
-        }
       },
-      error: (error) => {
-        this.messageService.setErrorMessage(this.loadErrorMessage);
-      }
-    });
-  }
-
-  loadDoors(): void {
-    this.residentsService.getDoors().subscribe({
-      next: (response) => {
-        if (response.status === 'success') {
-          this.doorOptions = this.sortArrayAlphabetically(response.data, 'typeOfDoors');
-        } else {
-          this.messageService.setErrorMessage(this.loadErrorMessage);
+      complete: () => {
+        this.pendingRequests--;
+        if (this.pendingRequests === 0) {
+          this.isLoading = false;
         }
-      },
-      error: (error) => {
-        this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     });
   }
-
-  loadCommonCosts(): void {
-    this.residentsService.getCommoncosts().subscribe({
-      next: (response) => {
-        if (response.status === 'success') {
-          this.commoncostOptions = this.sortArrayAlphabetically(response.data, 'typeOfCommoncosts');
-       
-        } else {
-          this.messageService.setErrorMessage(this.loadErrorMessage);
-        }
-      },
-      error: (error) => {
-        this.messageService.setErrorMessage(this.loadErrorMessage);
-      }
-    });
-  }
-
-  loadSubdeposits(): void {
-    this.residentsService.getSubdeposits().subscribe({
-      next: (response) => {
-        if (response.status === 'success') {
-          this.subDepositOptions = this.sortArrayAlphabetically(response.data, 'typeOfSubdeposits');
-       
-        } else {
-          this.messageService.setErrorMessage(this.loadErrorMessage);
-        }
-      },
-      error: (error) => {
-        this.messageService.setErrorMessage(this.loadErrorMessage);
-      }
-    });
-  }
-
-  loadSquareMeters(): void {
-    this.residentsService.getSquareMeters().subscribe({
-      next: (response) => {
-        if (response.status === 'success') {
-          this.squareMeterOptions = this.sortArrayAlphabetically(response.data, 'typeOfSquareMeters');
-        } else {
-          this.messageService.setErrorMessage(this.loadErrorMessage);
-        }
-      },
-      error: (error) => {
-        this.messageService.setErrorMessage(this.loadErrorMessage);
-      }
-    });
-  }
-
+  
+  
+  
   closeModal() {
     this.activeModal.close();
   }
@@ -277,6 +217,7 @@ export class AddAndEditResidentComponent implements OnInit {
   onSave(userId: number | undefined) {
     if(!userId){
       this.addNewResident();
+
     }
     if(userId){ 
       this.updateResident(userId);
@@ -287,70 +228,27 @@ export class AddAndEditResidentComponent implements OnInit {
   addNewResident() {
     this.errorMessage = '';
     if (this.validateForm()) {
-      const data = {
-        name: this.username,
-        email: this.email,
-        phone: `${this.phoneAreaNum} ${this.phoneNum}`,
-        building: this.building || this.newBuilding,
-        floor: this.floor || this.newFloor,
-        door: this.door || this.newDoor,
-        squareMeter: this.squareMeter || this.newSquareMeter,
-        commoncost: this.commoncostBase || this.newCommoncost || 0,
-        balance: this.balance,
-        adminLevel: this.adminLevel,
-        isMeter: this.isMeter,
-        cold1: this.cold1,
-        cold2: this.cold2,
-        hot1: this.hot1,
-        hot2: this.hot2,
-        cold1SerialNumber: this.cold1SerialNumber,
-        cold2SerialNumber: this.cold2SerialNumber,
-        hot1SerialNumber: this.hot1SerialNumber,
-        hot2SerialNumber: this.hot2SerialNumber,
-        subDeposit: this.subDeposit || this.newSubDeposit || 0
-      };
+      const data = this.setResidentData();
   
-  this.residentsService.saveData(data)
-    .subscribe(
-      () => {
-        this.messageService.setMessage('Lakó sikeresen mentve.');
-        this.activeModal.close();
-      },
-      () => {
-        this.messageService.setErrorMessage(this.loadErrorMessage);
-        this.errorMessage = this.loadErrorMessage;
-      }
-    );
-    }
+      this.residentsService.saveData(data)
+        .subscribe(
+          () => {
+            this.messageService.setMessage('Lakó sikeresen mentve.');
+            this.activeModal.close();
+          },
+          () => {
+            this.messageService.setErrorMessage(this.loadErrorMessage);
+            this.errorMessage = this.loadErrorMessage;
+          }
+        );
+        }
   }
 
   updateResident(userId: number) {
     console.log('editResident', userId);
     this.errorMessage = '';
     if (this.validateForm()) {
-      const data = {
-        id: userId,
-        username: this.username,
-        email: this.email,
-        phone: `${this.phoneAreaNum} ${this.phoneNum}`,
-        building: this.building || this.newBuilding,
-        floor: this.floor || this.newFloor,
-        door: this.door || this.newDoor,
-        squareMeter: this.squareMeter || this.newSquareMeter,
-        commoncost: this.commoncostBase || this.newCommoncost || 0,
-        balance: this.balance,
-        adminLevel: this.adminLevel,
-        isMeter: this.isMeter,
-        cold1: this.cold1,
-        cold2: this.cold2,
-        hot1: this.hot1,
-        hot2: this.hot2,
-        cold1SerialNumber: this.cold1SerialNumber,
-        cold2SerialNumber: this.cold2SerialNumber,
-        hot1SerialNumber: this.hot1SerialNumber,
-        hot2SerialNumber: this.hot2SerialNumber,
-        subDeposit: this.subDeposit || this.newSubDeposit || 0
-      };
+      const data = this.setResidentData();
       console.log(data);
 
       this.residentsService.updateData(data)
@@ -360,16 +258,43 @@ export class AddAndEditResidentComponent implements OnInit {
           this.activeModal.close();
         },
         () => {
-          this.messageService.setErrorMessage('Hiba a frissítés során. Próbáld meg később!');
-          this.errorMessage = 'Hiba a frissítés során. Próbáld meg később!';
+          this.messageService.setErrorMessage(this.updateErrorMessage);
+          this.errorMessage = this.updateErrorMessage;
         }
       );
       }
     }
   
-   
-  deleteUser(userId: number | undefined) {
+   setResidentData() {
+    const data = {
+      id: this.userId,
+      username: this.username,
+      email: this.email,
+      phone: `${this.phoneAreaNum} ${this.phoneNum}`,
+      building: this.building || this.newBuilding,
+      floor: this.floor || this.newFloor,
+      door: this.door || this.newDoor,
+      squareMeter: this.squareMeter || this.newSquareMeter,
+      commoncost: this.commoncostBase || this.newCommoncost || 0,
+      balance: this.balance,
+      adminLevel: this.adminLevel,
+      isMeter: this.isMeter,
+      cold1: this.cold1,
+      cold2: this.cold2,
+      hot1: this.hot1,
+      hot2: this.hot2,
+      cold1SerialNumber: this.cold1SerialNumber,
+      cold2SerialNumber: this.cold2SerialNumber,
+      hot1SerialNumber: this.hot1SerialNumber,
+      hot2SerialNumber: this.hot2SerialNumber,
+      subDeposit: this.subDeposit || this.newSubDeposit || 0
+    };
+    return data;
+   }
+
+  deleteUser(userId: number ) {
     console.log('deleteUser', userId);
+    this.residentsService.deleteResident(userId);
   }
 
     validateForm(): boolean {
@@ -555,11 +480,9 @@ updateSubDeposit(): void {
   
   sortArrayAlphabetically(data: any[], key: string): any[] {
     return data.sort((a, b) => {
-      // Konvertáljuk az értékeket lebegőpontos számmá a parseFloat függvénnyel
       const numA = parseFloat(a[key]);
       const numB = parseFloat(b[key]);
       
-      // Rendezés a számok alapján
       return numA - numB;
     });
   }
@@ -568,7 +491,5 @@ updateSubDeposit(): void {
     
 }
 
-// TODO
-// lakó adatainak betöltése a módosítás miatt.
-// update metódus és php megírása
+
 

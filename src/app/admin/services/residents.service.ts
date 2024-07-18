@@ -19,6 +19,8 @@ export class ResidentsService {
 
   private getResidentByIdApi = API_BASE_URL + 'residents/getresidentbyid.php';
 
+  private deleteResidentApi = API_BASE_URL + 'residents/deleteresident.php';
+
   constructor(private http: HttpClient) { }
 
   getData(action: string): Observable<any> {
@@ -65,4 +67,7 @@ export class ResidentsService {
     return this.http.post<any>(this.getResidentByIdApi, { id: userId });
 }
 
+  deleteResident(userId: number): Observable<any> {
+    return this.http.post<any>(this.deleteResidentApi, { id: userId });
+  }
 }
