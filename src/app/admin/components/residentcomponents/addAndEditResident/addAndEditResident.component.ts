@@ -1,17 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MessageService } from '../../../../shared/services/message.service';
 import { ResidentsService } from '../../../services/residents.service';
-import { map, Observable, tap } from 'rxjs';
+import { ConfirmdeleteresidentComponent } from '../confirmdeleteresident/confirmdeleteresident.component';
+import { Observable } from 'rxjs';
 
 
 @Component({
   selector: 'app-addresident',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ],
   providers: [],
   templateUrl: './addAndEditResident.component.html',
   styleUrl: './addAndEditResident.component.css'
@@ -86,6 +88,7 @@ export class AddAndEditResidentComponent implements OnInit {
 
 
   constructor(private activeModal: NgbActiveModal,
+    private modalService: NgbModal,
     private residentsService: ResidentsService,
     public messageService: MessageService,
   ) { }
@@ -292,9 +295,21 @@ export class AddAndEditResidentComponent implements OnInit {
     return data;
    }
 
-  deleteUser(userId: number ) {
-    console.log('deleteUser', userId);
-    this.residentsService.deleteResident(userId);
+   deleteUser(userId: number) {
+    const modalRef = this.modalService.open(ConfirmdeleteresidentComponent, { centered: true, size: 'sm' });
+    modalRef.result.then(
+      (result) => {
+        if (result === 'confirmed') {
+          this.residentsService.deleteResident(userId).subscribe(() => {
+            this.messageService.setMessage('Lakó sikeresen törölve.');
+            this.activeModal.close(); // Biztosítsd, hogy az activeModal-ra megfelelően hivatkozol.
+          });
+        }
+      },
+      (reason) => {
+        // A modal bezárásakor (pl. cancel vagy close)
+      }
+    );
   }
 
     validateForm(): boolean {
