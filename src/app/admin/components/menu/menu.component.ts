@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MenulogoutconfirmComponent } from '../menulogoutconfirm/menulogoutconfirm.component';
 
 
 @Component({
@@ -12,12 +14,25 @@ import { Router } from '@angular/router';
 export class MenuComponent {
   currentUser = this.getCurrentUserDatas();
 
-  constructor(private router: Router) { 
+  constructor(private router: Router,
+    private modalService: NgbModal
+  ) { 
   }
-  logout() : void {
-    localStorage.removeItem('currentUser');
-    sessionStorage.removeItem('currentUser');
-    this.router.navigate(['/login']);
+  logout() {
+    const modalRef = this.modalService.open(MenulogoutconfirmComponent, { centered: true, size: 'sm' });
+    modalRef.result.then(
+      (result) => {
+        if (result === 'confirmed') {
+          console.log('Bejelentkezve: ', this.currentUser);
+          localStorage.removeItem('currentUser');
+          sessionStorage.removeItem('currentUser');
+          this.router.navigate(['/login']);
+  }
+},
+(reason) => {
+  // A modal bezárásakor (pl. cancel vagy close)
+}
+);
   }
 
   private getCurrentUserDatas() {
