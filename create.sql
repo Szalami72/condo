@@ -12,7 +12,7 @@ CREATE TABLE users (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE residences (
+CREATE TABLE residents (
     id int(11) NOT NULL AUTO_INCREMENT,
     userId int(11) NOT NULL,
     buildingId int(11) NOT NULL,
@@ -45,13 +45,19 @@ CREATE TABLE doors (
 
 CREATE TABLE commonCosts (
     id int(11) NOT NULL AUTO_INCREMENT,
-    typeOfCommoncost varchar(32) NOT NULL,
+    typeOfCommoncosts varchar(32) NOT NULL,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE subDeposits (
     id int(11) NOT NULL AUTO_INCREMENT,
-    typeOfSubdeposit varchar(32) NOT NULL,
+    typeOfSubdeposits varchar(32) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE balance (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    value varchar(32) NOT NULL,
     PRIMARY KEY (id)
 );
 

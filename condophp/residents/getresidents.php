@@ -37,7 +37,9 @@ class GetResidents {
             LEFT JOIN 
                 doors 
             ON 
-                residents.doorId = doors.id;
+                residents.doorId = doors.id
+            WHERE
+                adminLevel != 0
             ;"; 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();

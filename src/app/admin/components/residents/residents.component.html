@@ -61,12 +61,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="cursor-pointer" *ngFor="let filteredUser of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize" (click)="editResident(filteredUser.userId)">
+        <tr class="cursor-pointer" *ngFor="let filteredUser of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize"
+        (click)="editResident(filteredUser.userId)">
           <td>{{ filteredUser.username }}</td>
           <td>{{ filteredUser.email }}</td>
           <td class="text-end">{{ filteredUser.typeOfBuildings }}</td>
           <td class="text-end">{{ filteredUser.typeOfFloors }}</td>
-          <td class="text-end">{{ filteredUser.typeOfDoors }}</td>
+          <td class="text-end">{{ filteredUser.typeOfDoors }}</td> 
         </tr>
       </tbody>
     </table>

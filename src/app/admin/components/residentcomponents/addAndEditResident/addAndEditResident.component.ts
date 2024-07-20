@@ -82,7 +82,7 @@ export class AddAndEditResidentComponent implements OnInit {
   hot1SerialNumber: string = '';
   hot2SerialNumber: string = '';
 
-  isLoading = true;
+  isLoading = false;
   pendingRequests: number = 0;
 
 
@@ -94,22 +94,27 @@ export class AddAndEditResidentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.isLoading = true; // Kezdjük a betöltést
-  
+
+
+    if(this.userId !== undefined){ {
+      //console.log('userId', this.userId);
+      this.isLoading = true; // Kezdjük a betöltést
+
+
     this.loadOptions(() => this.residentsService.getBuildings(), 'typeOfBuildings', 'buildingOptions');
     this.loadOptions(() => this.residentsService.getFloors(), 'typeOfFloors', 'floorOptions');
     this.loadOptions(() => this.residentsService.getDoors(), 'typeOfDoors', 'doorOptions');
     this.loadOptions(() => this.residentsService.getCommoncosts(), 'typeOfCommoncosts', 'commoncostOptions');
     this.loadOptions(() => this.residentsService.getSquareMeters(), 'typeOfSquareMeters', 'squareMeterOptions');
     this.loadOptions(() => this.residentsService.getSubdeposits(), 'typeOfSubdeposits', 'subDepositOptions');
-  
-    if (this.userId !== undefined) {
+    
+    
       this.loadUserData(this.userId);
+    
     }
-  
     this.setForm();
   }
-  
+}
   
 
    loadUserData(userId: number): void {
