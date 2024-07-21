@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MenulogoutconfirmComponent } from '../menulogoutconfirm/menulogoutconfirm.component';
+import { ConfirmmodalComponent } from '../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
 
 
 @Component({
@@ -13,26 +13,28 @@ import { MenulogoutconfirmComponent } from '../menulogoutconfirm/menulogoutconfi
 })
 export class MenuComponent {
   currentUser = this.getCurrentUserDatas();
+ 
 
   constructor(private router: Router,
-    private modalService: NgbModal
+    private modalService: NgbModal,
   ) { 
   }
   logout() {
-    const modalRef = this.modalService.open(MenulogoutconfirmComponent, { centered: true, size: 'sm' });
-    modalRef.result.then(
-      (result) => {
-        if (result === 'confirmed') {
-          console.log('Bejelentkezve: ', this.currentUser);
-          localStorage.removeItem('currentUser');
-          sessionStorage.removeItem('currentUser');
-          this.router.navigate(['/login']);
-  }
-},
-(reason) => {
-  // A modal bezárásakor (pl. cancel vagy close)
-}
-);
+    const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true, size: 'sm' });
+    modalRef.componentInstance.confirmMessage = 'Biztosan ki szeretne jelentkezni?'; 
+
+      modalRef.result.then(
+        (result) => {
+          if (result === 'confirmed') {
+            localStorage.removeItem('currentUser');
+            sessionStorage.removeItem('currentUser');
+            this.router.navigate(['/login']);
+          }
+        },
+        (reason) => {
+          console.log('Hiba a modal bezárásakor:', reason);
+        }
+      );
   }
 
   private getCurrentUserDatas() {

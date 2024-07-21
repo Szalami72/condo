@@ -6,7 +6,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 
 import { MessageService } from '../../../../shared/services/message.service';
 import { ResidentsService } from '../../../services/residents.service';
-import { ConfirmdeleteresidentComponent } from '../confirmdeleteresident/confirmdeleteresident.component';
+import { ConfirmmodalComponent } from '../../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
 import { Observable } from 'rxjs';
 
 
@@ -94,11 +94,14 @@ export class AddAndEditResidentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
+    
+    this.isLoading = true; // Kezdjük a betöltést
 
     if(this.userId !== undefined){ {
+      this.loadUserData(this.userId);
+    }}
       //console.log('userId', this.userId);
-      this.isLoading = true; // Kezdjük a betöltést
+      
 
 
     this.loadOptions(() => this.residentsService.getBuildings(), 'typeOfBuildings', 'buildingOptions');
@@ -109,11 +112,11 @@ export class AddAndEditResidentComponent implements OnInit {
     this.loadOptions(() => this.residentsService.getSubdeposits(), 'typeOfSubdeposits', 'subDepositOptions');
     
     
-      this.loadUserData(this.userId);
     
-    }
+    
+    
     this.setForm();
-  }
+  
 }
   
 
@@ -301,18 +304,19 @@ export class AddAndEditResidentComponent implements OnInit {
    }
 
    deleteUser(userId: number) {
-    const modalRef = this.modalService.open(ConfirmdeleteresidentComponent, { centered: true, size: 'sm' });
+    const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true, size: 'sm' });
+    modalRef.componentInstance.confirmMessage = 'Biztosan törlöd a lakót?'; 
+
     modalRef.result.then(
       (result) => {
         if (result === 'confirmed') {
           this.residentsService.deleteResident(userId).subscribe(() => {
             this.messageService.setMessage('Lakó sikeresen törölve.');
-            this.activeModal.close(); // Biztosítsd, hogy az activeModal-ra megfelelően hivatkozol.
           });
         }
       },
       (reason) => {
-        // A modal bezárásakor (pl. cancel vagy close)
+        console.log('Hiba a modal bezárásakor:', reason);
       }
     );
   }
