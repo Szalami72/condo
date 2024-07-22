@@ -23,7 +23,7 @@ import { AddAndEditResidentComponent } from '../residentcomponents/addAndEditRes
             AddAndEditResidentComponent,
             MessageComponent],
   templateUrl: './residents.component.html',
-  styleUrl: './residents.component.css'
+  styleUrls: ['../../../shared/css/userlist.css']
 })
 export class ResidentsComponent implements OnInit {
 

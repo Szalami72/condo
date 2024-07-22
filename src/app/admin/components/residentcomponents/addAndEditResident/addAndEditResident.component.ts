@@ -311,6 +311,7 @@ export class AddAndEditResidentComponent implements OnInit {
       (result) => {
         if (result === 'confirmed') {
           this.residentsService.deleteResident(userId).subscribe(() => {
+            this.closeModal();
             this.messageService.setMessage('Lakó sikeresen törölve.');
           });
         }

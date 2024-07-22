@@ -1,0 +1,48 @@
+<app-menu></app-menu>
+
+<div class="container mb-4">
+
+    <h2 class="mb-4">Óraállások</h2>
+
+    <app-message></app-message>
+
+    <div class="row row-cols-auto justify-content-between">
+
+        <div class="col h-100 header-items">
+            <ngb-pagination [collectionSize]="filteredUsers.length" [(page)]="page" [pageSize]="pageSize" [maxSize]="3" [rotate]="false" [ellipses]="true" [boundaryLinks]="false">
+            </ngb-pagination>
+          </div>
+        
+          <div class="col h-100 header-items">
+              <span>Lakó/oldal:</span>
+              <select class="form-select-sm ms-2" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+              </select>
+          </div>
+        
+          <div class="col h-100 header-items">
+            <div class="col h-100 header-items justify-content-end">
+              <input type="text" class="search-input ps-2" placeholder="keresés..." [(ngModel)]="searchTerm" (input)="filterUsers()">
+            </div>
+          </div>
+        
+        </div>
+
+        <div *ngIf="filteredUsers && filteredUsers.length > 0; else noData">
+
+            </div>  
+
+
+        
+            <ng-template #noData>
+                <p>Nincs megjeleníthető adat.</p>
+              </ng-template>
+
+        
+
+
+
+</div>

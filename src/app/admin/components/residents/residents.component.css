@@ -1,18 +1,3 @@
-.container {
-    margin-top: 5rem;
-}
 
-.header-items {
-    display: flex;
-    align-items: center;
-}
-
-ngb-pagination {
-    border-radius: 0;
-}
-
-.sorted-column {
-    color: #fd7e14;
-  }
   
 

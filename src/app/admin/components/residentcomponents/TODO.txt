@@ -1,6 +1,5 @@
 
 
-törlés php-t megírni, ha törölni akarjuk akkor kérjen megerősítést
 
 mikor létrejön egy új lakó, jelszót generálni és emailt küldeni neki
 
@@ -8,5 +7,4 @@ ha megváltozik az email címe szintén jelszót generálni és emailt küldeni
 
 bejelentkezéskor a loginhistory táblába id, userId loginTime menteni
 
-kijelentkezéskor megerősítést kérni
 
