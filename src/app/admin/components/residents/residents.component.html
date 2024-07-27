@@ -43,6 +43,7 @@
       <thead>
         <tr>
           <th (click)="sortUsers('username')" 
+              [ngClass]="{'sorted-column': sortedColumn === 'username'}"
               class="cursor-pointer">Lakó neve
             <i [ngClass]="{'sorted-column': sortedColumn === 'username'}" 
                class="fa-solid fa-arrow-down fa-xs ms-2">
@@ -50,6 +51,7 @@
           </th>
           <th>Email</th>
           <th (click)="sortUsers('typeOfBuildings')" 
+          [ngClass]="{'sorted-column': sortedColumn === 'typeOfBuildings'}" 
               class="cursor-pointer text-end">Épület
             <i 
               [ngClass]="{'sorted-column': sortedColumn === 'typeOfBuildings'}" 

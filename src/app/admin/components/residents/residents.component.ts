@@ -8,10 +8,12 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { MenuComponent } from '../menu/menu.component';
 import { MessageService } from '../../../shared/services/message.service';
 import { MessageComponent } from '../../../shared/sharedcomponents/message/message.component';
+import { AddAndEditResidentComponent } from '../residentcomponents/addAndEditResident/addAndEditResident.component';
 import { CostsService } from '../../services/costs.service';
 import { MetersService } from '../../services/meters.service';
 import { ResidentsService } from '../../services/residents.service';
-import { AddAndEditResidentComponent } from '../residentcomponents/addAndEditResident/addAndEditResident.component';
+import { MeterData } from '../../models/costandmeterdatas.model';
+
 @Component({
   selector: 'app-residents',
   standalone: true,
@@ -37,17 +39,18 @@ export class ResidentsComponent implements OnInit {
 
   loadErrorMessage = "Hiba történt az adatok betöltése során. Próbáld meg később!";
 
-  commonCost: string | undefined;
-  amountSmeter: number | undefined;
-  amountFix: number | undefined;
-  subDepSmeter: number | undefined;
-  subDepFix: number | undefined;
-
-  cold1: string = '';
-  cold2: string = '';
-  hot1: string = '';
-  hot2: string = '';
-  heating: string = '';
+  meterData: MeterData = {
+    commonCost: undefined,
+    amountSmeter: undefined,
+    amountFix: undefined,
+    subDepSmeter: undefined,
+    subDepFix: undefined,
+    cold1: '',
+    cold2: '',
+    hot1: '',
+    hot2: '',
+    heating: ''
+  };
 
   sortedColumn: string | null = null;
   
@@ -91,11 +94,11 @@ export class ResidentsComponent implements OnInit {
       if (response.status === 'success') {
         const data = response.data;
 
-        this.commonCost = data.commonCost || undefined;
-        this.amountSmeter = data.amountSmeter ? Number(data.amountSmeter) : undefined;
-        this.amountFix = data.amountFix ? Number(data.amountFix) : undefined;
-        this.subDepSmeter = data.subDepSmeter ? Number(data.subDepSmeter) : undefined;
-        this.subDepFix = data.subDepFix ? Number(data.subDepFix) : undefined;
+        this.meterData.commonCost = data.commonCost || undefined;
+        this.meterData.amountSmeter = data.amountSmeter ? Number(data.amountSmeter) : undefined;
+        this.meterData.amountFix = data.amountFix ? Number(data.amountFix) : undefined;
+        this.meterData.subDepSmeter = data.subDepSmeter ? Number(data.subDepSmeter) : undefined;
+        this.meterData.subDepFix = data.subDepFix ? Number(data.subDepFix) : undefined;
 
       } else {
         this.messageService.setErrorMessage(this.loadErrorMessage);
@@ -108,11 +111,11 @@ export class ResidentsComponent implements OnInit {
   getMeters() { 
     this.metersService.getMeters().subscribe(
       data => {
-        this.cold1 = data.cold1;
-        this.cold2 = data.cold2;
-        this.hot1 = data.hot1;
-        this.hot2 = data.hot2;
-        this.heating = data.heating;
+        this.meterData.cold1 = data.cold1;
+        this.meterData.cold2 = data.cold2;
+        this.meterData.hot1 = data.hot1;
+        this.meterData.hot2 = data.hot2;
+        this.meterData.heating = data.heating;
       },
       error => {
         this.messageService.setErrorMessage(this.loadErrorMessage);
@@ -191,16 +194,16 @@ getSortableValue(value: any): any {
   
   addAndEditResident(userId: number | undefined) {
     const modalRef = this.modalService.open(AddAndEditResidentComponent, { size: 'lg' });
-    modalRef.componentInstance.commonCost = this.commonCost;
-    modalRef.componentInstance.amountSmeter = this.amountSmeter;
-    modalRef.componentInstance.amountFix = this.amountFix;
-    modalRef.componentInstance.subDepSmeter = this.subDepSmeter;
-    modalRef.componentInstance.subDepFix = this.subDepFix;
-    modalRef.componentInstance.cold1 = this.cold1;
-    modalRef.componentInstance.cold2 = this.cold2;
-    modalRef.componentInstance.hot1 = this.hot1;
-    modalRef.componentInstance.hot2 = this.hot2;
-    modalRef.componentInstance.heating = this.heating;
+    modalRef.componentInstance.commonCost = this.meterData.commonCost;
+    modalRef.componentInstance.amountSmeter = this.meterData.amountSmeter;
+    modalRef.componentInstance.amountFix = this.meterData.amountFix;
+    modalRef.componentInstance.subDepSmeter = this.meterData.subDepSmeter;
+    modalRef.componentInstance.subDepFix = this.meterData.subDepFix;
+    modalRef.componentInstance.cold1 = this.meterData.cold1;
+    modalRef.componentInstance.cold2 = this.meterData.cold2;
+    modalRef.componentInstance.hot1 = this.meterData.hot1;
+    modalRef.componentInstance.hot2 = this.meterData.hot2;
+    modalRef.componentInstance.heating = this.meterData.heating;
     modalRef.componentInstance.userId = userId;
 
     modalRef.result.then(

@@ -13,6 +13,8 @@ export class MetersService {
   private saveMetersApi = API_BASE_URL + 'settings/savemeters.php';
   private getMetersApi = API_BASE_URL + 'settings/getmeters.php';
 
+  private getMetersValuesApi = API_BASE_URL + 'meters/getmetersvalues.php';
+
   constructor(private http: HttpClient) { }
 
   saveMeters(metersData: { cold1: boolean, cold2: boolean, hot1: boolean, hot2: boolean, heating: boolean }): Observable<any> {
@@ -39,5 +41,9 @@ export class MetersService {
       })
     );
   }
+
+  getMetersValues(monthAndYear: string): Observable<any> {
+    return this.http.post<any>(this.getMetersValuesApi, { monthAndYear: monthAndYear });
+}
 
 }
