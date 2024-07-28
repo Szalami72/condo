@@ -23,7 +23,7 @@
               </select>
           </div>
         
-          <div class="col h-100 header-items">
+          <div class="col h-100 header-items mb-4">
             <div class="col h-100 header-items justify-content-end">
               <input type="text" class="search-input ps-2" placeholder="keresés..." [(ngModel)]="searchTerm" (input)="filterUsers()">
             </div>
@@ -52,68 +52,50 @@
                     </i>
                   </span>
                 </div>
-
+                <div class="col text-end" (click)="justEmptyFields()"
+                [ngClass]="{'sorted-column': filterEmptyFields}">
+                  Leadatlanok
+                </div>
               </div>
 
               <div class="user-list row" *ngFor="let filteredUser of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
-                <div class="col">
-                  {{ filteredUser.username }}
-                </div>
-                  <br>
-                  <span class="col" *ngIf="filteredUser.typeOfBuildings != '' && filteredUser.typeOfFloors != '' && filteredUser.typeOfDoors != ''">
-                    {{ filteredUser.typeOfBuildings }} /
-                    {{ filteredUser.typeOfFloors }} /
-                    {{ filteredUser.typeOfDoors }}
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-3">
+                  <b>{{ filteredUser.username }}</b>
+               <br>
+                  <span class="" *ngIf="filteredUser.typeOfBuildings != '' && filteredUser.typeOfFloors != '' && filteredUser.typeOfDoors != ''">
+                    {{ filteredUser.typeOfBuildings }}/{{ filteredUser.typeOfFloors }}/{{ filteredUser.typeOfDoors }}
                   </span>
-                  <div class="col" *ngIf="meterData.cold1 != ''">Hideg1: {{ filteredUser.cold1 }}</div>
-                  <div class="col" *ngIf="meterData.cold2 != ''">Hideg2: {{ filteredUser.cold2 }}</div>
-                  <div class="col" *ngIf="meterData.hot1 != ''">Meleg1: {{ filteredUser.hot1 }}</div>
-                  <div class="col" *ngIf="meterData.hot2 != ''">Meleg2: {{ filteredUser.hot2 }}</div>
-                  <div class="col" *ngIf="meterData.heating != ''">Fűtés: {{ filteredUser.heating }}</div>
-                
+                </div>
+                  
+                <div class="col text-center" *ngIf="meterData.cold1 != ''">Hideg1: 
+                    <input class="w-100 text-center border border-primary-subtle  bg-primary-subtle" type="number" name="cold1" [(ngModel)]="filteredUser.cold1">
+                  </div>
+
+                  <div class="col text-center" *ngIf="meterData.cold2 != ''">Hideg2: 
+                    <input class="w-100 text-center border border-primary-subtle  bg-primary-subtle" type="number" name="cold2" [(ngModel)]="filteredUser.cold2">
+                  </div>
+
+                  <div class="col text-center" *ngIf="meterData.hot1 != ''">Meleg1: 
+                    <input class="w-100 text-center border border-danger-subtle bg-danger-subtle" type="number" name="hot1" [(ngModel)]="filteredUser.hot1">
+                  </div>
+
+                  <div class="col text-center" *ngIf="meterData.hot2 != ''">Meleg2: 
+                    <input class="w-100 text-center border border-danger-subtle bg-danger-subtle" type="number" name="hot2" [(ngModel)]="filteredUser.hot2">
+                  </div>
+
+                  <div class="col text-center" *ngIf="meterData.heating != ''">Fűtés: 
+                    <input class="w-100 text-center border border-warning-subtle bg-warning-subtle" type="number" name="heating" [(ngModel)]="filteredUser.heating">
+                  </div>
+                  
+                  <div class="col text-center mt-4 mb-2">
+                    <button class="btn btn-sm btn-primary" (click)="saveMetersById(filteredUser.userId)">Mentés</button>
+                  </div>
+
+                <hr>
               </div>
               
             </div>
-          <!-- <table class="table  table-hover table-success table-striped">
-            <thead>
-              <tr>
-                <th class="cursor-pointer">
-                  <span (click)="sortUsers('username')">
-                    Lakó neve
-                    <i [ngClass]="{'sorted-column': sortedColumn === 'username'}" 
-                       class="fa-solid fa-arrow-down fa-xs ms-2">
-                    </i>
-                  </span>
-                  <span (click)="sortUsers('typeOfBuildings')" class="ms-4">
-                    / lakás
-                    <i [ngClass]="{'sorted-column': sortedColumn === 'typeOfBuildings'}" 
-                       class="fa-solid fa-arrow-down fa-xs ms-2">
-                    </i>
-                  </span>
-                </th>
-              
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="cursor-pointer" *ngFor="let filteredUser of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize"
-              >
-                <td>{{ filteredUser.username }}
-                  <br>
-                  <span *ngIf="filteredUser.typeOfBuildings != '' && filteredUser.typeOfFloors != '' && filteredUser.typeOfDoors != ''">
-                    {{ filteredUser.typeOfBuildings }} /
-                    {{ filteredUser.typeOfFloors }} /
-                    {{ filteredUser.typeOfDoors }}
-                  </span>
-                </td>
-               
-                <td class="text-end" *ngIf="meterData.cold1 != ''">Hideg1</td>
-                <td class="text-end" *ngIf="meterData.cold2 != ''">Hideg2</td>
-                <td class="text-end" *ngIf="meterData.hot1 != ''">Meleg1</td>
-                <td class="text-end" *ngIf="meterData.hot2 != ''">Meleg2</td>
-                <td class="text-end" *ngIf="meterData.heating != ''">Fűtés</td>
-              </tr>
-            </tbody>
-          </table> -->
+        
             </div>  
 
 

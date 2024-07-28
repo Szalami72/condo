@@ -6,7 +6,6 @@ import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { MetersService } from '../../services/meters.service';
 import { MessageService } from '../../../shared/services/message.service';
-import { ResidentsService } from '../../services/residents.service';
 import { MenuComponent } from "../menu/menu.component";
 import { MessageComponent } from '../../../shared/sharedcomponents/message/message.component';
 import { MeterData } from '../../models/costandmeterdatas.model';
@@ -31,8 +30,7 @@ export class MetersComponent implements OnInit {
   pageSize: number = 10;
 
   searchTerm: string = '';
-
-
+  filterEmptyFields: boolean = false; // Új változó a szűréshez
 
   loadErrorMessage = "Hiba történt az adatok betöltése során. Próbáld meg később!";
 
@@ -53,7 +51,7 @@ export class MetersComponent implements OnInit {
 
   constructor(public messageService: MessageService, 
     private metersService: MetersService,
-    private residentsService: ResidentsService) { }
+  ) { }
 
   ngOnInit(): void {
     this.getMeters();
@@ -66,10 +64,12 @@ export class MetersComponent implements OnInit {
 
   filterUsers() {
     const term = this.searchTerm ? this.searchTerm.toLowerCase() : '';
-  
+
     this.filteredUsers = this.users.filter((user) =>
-      user.username.toLowerCase().includes(term) ||
-      (user.typeOfBuildings && user.typeOfBuildings.toLowerCase().includes(term))
+      (user.username.toLowerCase().includes(term) ||
+      (user.typeOfBuildings && user.typeOfBuildings.toLowerCase().includes(term))) &&
+      (!this.filterEmptyFields || // Csak akkor alkalmazzuk a szűrőt, ha a filterEmptyFields igaz
+        user.cold1 === undefined || user.cold2 === undefined || user.hot1 === undefined || user.hot2 === undefined || user.heating === undefined)
     );
 
     if (this.sortedColumn) {
@@ -77,105 +77,107 @@ export class MetersComponent implements OnInit {
     }
   }
 
+  getAllResidentsAndMeters() {
+    const monthAndYear = this.getCurrentMonthAndYear();
 
-getAllResidentsAndMeters() {
-  
-  const monthAndYear = this.getCurrentMonthAndYear();
- 
-  this.metersService.getMetersValues(monthAndYear).subscribe(
-   
-    response => {
-      if (response.status === 'success') {
-        this.users = response.data;
-        console.log("meters",this.users);
-     
-        this.filterUsers(); 
-        this.sortUsers('username');
+    this.metersService.getMetersValues(monthAndYear).subscribe(
+      response => {
+        if (response.status === 'success') {
+          this.users = response.data;
+          console.log("meters", this.users);
 
-      } else {
+          this.filterUsers(); 
+          this.sortUsers('username');
+        } else {
+          this.messageService.setErrorMessage(this.loadErrorMessage);
+        }
+      },
+      error => {
         this.messageService.setErrorMessage(this.loadErrorMessage);
       }
-    },
-    error => {
-      this.messageService.setErrorMessage(this.loadErrorMessage);
-    }
-  );
-}
+    );
+  }
 
-
-getMeters() { 
-  this.metersService.getMeters().subscribe(
-    data => {
-      this.meterData.cold1 = data.cold1;
-      this.meterData.cold2 = data.cold2;
-      this.meterData.hot1 = data.hot1;
-      this.meterData.hot2 = data.hot2;
-      this.meterData.heating = data.heating;
-    },
-    error => {
-      this.messageService.setErrorMessage(this.loadErrorMessage);
-    }
-  );
-}
-
-sortUsers(key: string) {
-  if (this.filteredUsers.length > 1) {
-    this.filteredUsers.sort((a, b) => {
-      const valueA = this.getSortableValue(a[key]);
-      const valueB = this.getSortableValue(b[key]);
-
-      if (valueA < valueB) {
-        return -1;
+  getMeters() { 
+    this.metersService.getMeters().subscribe(
+      data => {
+        this.meterData.cold1 = data.cold1;
+        this.meterData.cold2 = data.cold2;
+        this.meterData.hot1 = data.hot1;
+        this.meterData.hot2 = data.hot2;
+        this.meterData.heating = data.heating;
+      },
+      error => {
+        this.messageService.setErrorMessage(this.loadErrorMessage);
       }
-      if (valueA > valueB) {
-        return 1;
-      }
+    );
+  }
 
-      if (key === 'typeOfBuildings') {
-        const floorA = this.getSortableValue(a['typeOfFloors']);
-        const floorB = this.getSortableValue(b['typeOfFloors']);
+  sortUsers(key: string) {
+    if (this.filteredUsers.length > 1) {
+      this.filteredUsers.sort((a, b) => {
+        const valueA = this.getSortableValue(a[key]);
+        const valueB = this.getSortableValue(b[key]);
 
-        if (floorA < floorB) {
+        if (valueA < valueB) {
           return -1;
         }
-        if (floorA > floorB) {
+        if (valueA > valueB) {
           return 1;
         }
 
-        if (floorA === floorB) {
-          const doorA = this.getSortableValue(a['typeOfDoors']);
-          const doorB = this.getSortableValue(b['typeOfDoors']);
+        if (key === 'typeOfBuildings') {
+          const floorA = this.getSortableValue(a['typeOfFloors']);
+          const floorB = this.getSortableValue(b['typeOfFloors']);
 
-          if (doorA < doorB) {
+          if (floorA < floorB) {
             return -1;
           }
-          if (doorA > doorB) {
+          if (floorA > floorB) {
             return 1;
           }
+
+          if (floorA === floorB) {
+            const doorA = this.getSortableValue(a['typeOfDoors']);
+            const doorB = this.getSortableValue(b['typeOfDoors']);
+
+            if (doorA < doorB) {
+              return -1;
+            }
+            if (doorA > doorB) {
+              return 1;
+            }
+          }
         }
-      }
 
-      return 0;
-    });
+        return 0;
+      });
 
-    this.sortedColumn = key; 
+      this.sortedColumn = key; 
+    }
+  }
+
+  getSortableValue(value: any): any {
+    if (!isNaN(value)) { 
+      return parseFloat(value); 
+    }
+    return value && value.toUpperCase ? value.toUpperCase() : ''; 
+  }
+
+  getCurrentMonthAndYear(): string {
+    const currentDate = new Date();
+    const month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // Hónap (01-12)
+    const year = currentDate.getFullYear(); // Év (YYYY)
+
+    return `${month}-${year}`;
+  }
+
+  justEmptyFields() {
+    this.filterEmptyFields = !this.filterEmptyFields; // Változtatja a filterEmptyFields értékét
+    this.filterUsers();
+  }
+
+  saveMetersById(userId: number) {
+    console.log('saveMetersById', userId);
   }
 }
-
-getSortableValue(value: any): any {
-  if (!isNaN(value)) { 
-    return parseFloat(value); 
-  }
-  return value && value.toUpperCase ? value.toUpperCase() : ''; 
-}
-
-getCurrentMonthAndYear(): string {
-  const currentDate = new Date();
-  const month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // Hónap (01-12)
-  const year = currentDate.getFullYear(); // Év (YYYY)
-
-  return `${month}-${year}`;
-}
-
-}
-
