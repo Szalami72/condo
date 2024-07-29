@@ -47,6 +47,8 @@ export class MetersComponent implements OnInit {
     heating: ''
   };
 
+ 
+
   sortedColumn: string | null = null;
 
   constructor(public messageService: MessageService, 
@@ -64,18 +66,19 @@ export class MetersComponent implements OnInit {
 
   filterUsers() {
     const term = this.searchTerm ? this.searchTerm.toLowerCase() : '';
-
+  
     this.filteredUsers = this.users.filter((user) =>
       (user.username.toLowerCase().includes(term) ||
       (user.typeOfBuildings && user.typeOfBuildings.toLowerCase().includes(term))) &&
       (!this.filterEmptyFields || // Csak akkor alkalmazzuk a szűrőt, ha a filterEmptyFields igaz
-        user.cold1 === undefined || user.cold2 === undefined || user.hot1 === undefined || user.hot2 === undefined || user.heating === undefined)
+        (user.cold1 === null || user.cold2 === null || user.hot1 === null || user.hot2 === null || user.heating === null))
     );
-
+  
     if (this.sortedColumn) {
       this.sortUsers(this.sortedColumn);
     }
   }
+  
 
   getAllResidentsAndMeters() {
     const monthAndYear = this.getCurrentMonthAndYear();
@@ -101,17 +104,18 @@ export class MetersComponent implements OnInit {
   getMeters() { 
     this.metersService.getMeters().subscribe(
       data => {
-        this.meterData.cold1 = data.cold1;
-        this.meterData.cold2 = data.cold2;
-        this.meterData.hot1 = data.hot1;
-        this.meterData.hot2 = data.hot2;
-        this.meterData.heating = data.heating;
+        this.meterData.cold1 = data.cold1 || '';
+        this.meterData.cold2 = data.cold2 || '';
+        this.meterData.hot1 = data.hot1 || '';
+        this.meterData.hot2 = data.hot2 || '';
+        this.meterData.heating = data.heating || '';
       },
       error => {
         this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     );
   }
+  
 
   sortUsers(key: string) {
     if (this.filteredUsers.length > 1) {
@@ -177,7 +181,25 @@ export class MetersComponent implements OnInit {
     this.filterUsers();
   }
 
-  saveMetersById(userId: number) {
-    console.log('saveMetersById', userId);
+  validatePositiveNumber(user: any, field: string) {
+    if (user[field] < 0) {
+      user[field] = 0; // Visszaállítja az értéket 0-ra, ha negatív számot adtak meg
+    }
+  }
+  
+  saveMetersById(user: any) {
+    console.log('saveMetersById', user.userId);
+    console.log('mayId:', this.getCurrentMonthAndYear());
+    console.log('Cold1:', user.cold1);
+    console.log('Cold2:', user.cold2);
+    console.log('Hot1:', user.hot1);
+    console.log('Hot2:', user.hot2);
+    console.log('Heating:', user.heating);
   }
 }
+
+//TODO
+//mentés:
+// ha már van a táblában ilyen userId és mayId páros akkor updatelni az adatokat 
+// ha még nincs ilyen mayId a monthandyear táblában akkor hozzáadni és lekérni az id-jét
+// elmenteni az user óraállásait és a mayId-t hozzá

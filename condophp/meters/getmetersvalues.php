@@ -32,8 +32,11 @@ class GetMetersValues
                 buildings.typeOfBuildings, 
                 floors.typeOfFloors, 
                 doors.typeOfDoors,
-                metersvalues.typeOfMeter,
-                metersvalues.valueOfMeter 
+                metersvalues.cold1,
+                metersvalues.cold2,
+                metersvalues.hot1,
+                metersvalues.hot2,
+                metersvalues.heating
             FROM 
                 users 
             LEFT JOIN 
@@ -59,7 +62,7 @@ class GetMetersValues
             AND 
                 metersvalues.mayId = :monthAndYearId
             WHERE
-                adminLevel != 0
+                users.adminLevel != 0
             ;"; 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([':monthAndYearId' => $monthAndYearId]);
@@ -75,15 +78,15 @@ class GetMetersValues
                         'username' => $row['username'],
                         'typeOfBuildings' => $row['typeOfBuildings'],
                         'typeOfFloors' => $row['typeOfFloors'],
-                        'typeOfDoors' => $row['typeOfDoors']
+                        'typeOfDoors' => $row['typeOfDoors'],
+                        'cold1' => $row['cold1'],
+                        'cold2' => $row['cold2'],
+                        'hot1' => $row['hot1'],
+                        'hot2' => $row['hot2'],
+                        'heating' => $row['heating']
                     ];
                 }
-
-                if ($row['typeOfMeter'] !== null) {
-                    $meters[$userId][$row['typeOfMeter']] = $row['valueOfMeter'];
-                }
             }
-
             return array_values($meters);
         } catch (PDOException $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];

@@ -43,53 +43,62 @@
                        class="fa-solid fa-arrow-down fa-xs ms-2">
                     </i>
                   </span>
+                    /
                   <span (click)="sortUsers('typeOfBuildings')" 
                     [ngClass]="{'sorted-column': sortedColumn === 'typeOfBuildings'}" 
-                    class="ms-4">
-                    / lakás
+                    class="">
+                     lakás
                     <i [ngClass]="{'sorted-column': sortedColumn === 'typeOfBuildings'}" 
                        class="fa-solid fa-arrow-down fa-xs ms-2">
                     </i>
                   </span>
                 </div>
-                <div class="col text-end" (click)="justEmptyFields()"
-                [ngClass]="{'sorted-column': filterEmptyFields}">
-                  Leadatlanok
+                <div class="col">
+               
+                  <div class="form-check form-switch">
+                    <input class="form-check-input float-end"
+                     type="checkbox" 
+                     role="switch" 
+                     id="flexSwitchCheckDefault"  
+                     (click)="justEmptyFields()">
+                      <div class="form-check-label float-end me-5" for="flexSwitchCheckDefault"
+                      [ngClass]="{'sorted-column': filterEmptyFields}">Csak az üresek</div>
+                  </div>
                 </div>
               </div>
 
-              <div class="user-list row" *ngFor="let filteredUser of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+              <div class="user-list row" *ngFor="let user of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
                 <div class="col-lg-2 col-md-12 col-sm-12 mb-3">
-                  <b>{{ filteredUser.username }}</b>
-               <br>
-                  <span class="" *ngIf="filteredUser.typeOfBuildings != '' && filteredUser.typeOfFloors != '' && filteredUser.typeOfDoors != ''">
-                    {{ filteredUser.typeOfBuildings }}/{{ filteredUser.typeOfFloors }}/{{ filteredUser.typeOfDoors }}
+                  <b>{{ user.username }}</b><br>
+                  <span *ngIf="user.typeOfBuildings && user.typeOfFloors && user.typeOfDoors">
+                    {{ user.typeOfBuildings }}/{{ user.typeOfFloors }}/{{ user.typeOfDoors }}
                   </span>
                 </div>
-                  
-                <div class="col text-center" *ngIf="meterData.cold1 != ''">Hideg1: 
-                    <input class="w-100 text-center border border-primary-subtle  bg-primary-subtle" type="number" name="cold1" [(ngModel)]="filteredUser.cold1">
-                  </div>
-
-                  <div class="col text-center" *ngIf="meterData.cold2 != ''">Hideg2: 
-                    <input class="w-100 text-center border border-primary-subtle  bg-primary-subtle" type="number" name="cold2" [(ngModel)]="filteredUser.cold2">
-                  </div>
-
-                  <div class="col text-center" *ngIf="meterData.hot1 != ''">Meleg1: 
-                    <input class="w-100 text-center border border-danger-subtle bg-danger-subtle" type="number" name="hot1" [(ngModel)]="filteredUser.hot1">
-                  </div>
-
-                  <div class="col text-center" *ngIf="meterData.hot2 != ''">Meleg2: 
-                    <input class="w-100 text-center border border-danger-subtle bg-danger-subtle" type="number" name="hot2" [(ngModel)]="filteredUser.hot2">
-                  </div>
-
-                  <div class="col text-center" *ngIf="meterData.heating != ''">Fűtés: 
-                    <input class="w-100 text-center border border-warning-subtle bg-warning-subtle" type="number" name="heating" [(ngModel)]="filteredUser.heating">
-                  </div>
-                  
-                  <div class="col text-center mt-4 mb-2">
-                    <button class="btn btn-sm btn-primary" (click)="saveMetersById(filteredUser.userId)">Mentés</button>
-                  </div>
+        
+                <div class="col text-center" *ngIf="meterData.cold1 ==='1'">Hideg1:
+                  <input class="w-100 text-center border border-primary-subtle bg-primary-subtle" type="number" name="cold1" [(ngModel)]="user.cold1" (ngModelChange)="validatePositiveNumber(user, 'cold1')" min="0" step="1">
+                </div>
+                
+                <div class="col text-center" *ngIf="meterData.cold2 ==='1'">Hideg2:
+                  <input class="w-100 text-center border border-primary-subtle bg-primary-subtle" type="number" name="cold2" [(ngModel)]="user.cold2" (ngModelChange)="validatePositiveNumber(user, 'cold2')" min="0" step="1">
+                </div>
+                
+                <div class="col text-center" *ngIf="meterData.hot1 ==='1'">Meleg1:
+                  <input class="w-100 text-center border border-danger-subtle bg-danger-subtle" type="number" name="hot1" [(ngModel)]="user.hot1" (ngModelChange)="validatePositiveNumber(user, 'hot1')" min="0" step="1">
+                </div>
+                
+                <div class="col text-center" *ngIf="meterData.hot2 ==='1'">Meleg2:
+                  <input class="w-100 text-center border border-danger-subtle bg-danger-subtle" type="number" name="hot2" [(ngModel)]="user.hot2" (ngModelChange)="validatePositiveNumber(user, 'hot2')" min="0" step="1">
+                </div>
+                
+                <div class="col text-center" *ngIf="meterData.heating ==='1'">Fűtés:
+                  <input class="w-100 text-center border border-warning-subtle bg-warning-subtle" type="number" name="heating" [(ngModel)]="user.heating" (ngModelChange)="validatePositiveNumber(user, 'heating')" min="0" step="1">
+                </div>
+                
+        
+                <div class="col text-center mt-4 mb-2">
+                  <button class="btn btn-sm btn-primary" (click)="saveMetersById(user)">Mentés</button>
+                </div>
 
                 <hr>
               </div>
