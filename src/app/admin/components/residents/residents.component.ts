@@ -8,7 +8,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { MenuComponent } from '../menu/menu.component';
 import { MessageService } from '../../../shared/services/message.service';
 import { MessageComponent } from '../../../shared/sharedcomponents/message/message.component';
-import { AddAndEditResidentComponent } from '../residentcomponents/addAndEditResident/addAndEditResident.component';
+import { AddAndEditResidentComponent } from './addAndEditResident/addAndEditResident.component';
 import { CostsService } from '../../services/costs.service';
 import { MetersService } from '../../services/meters.service';
 import { ResidentsService } from '../../services/residents.service';
@@ -25,7 +25,7 @@ import { MeterData } from '../../models/costandmeterdatas.model';
             AddAndEditResidentComponent,
             MessageComponent],
   templateUrl: './residents.component.html',
-  styleUrls: ['../../../shared/css/userlist.css']
+  styleUrls: ['../../../shared/css/userlist.css', './residents.component.css']
 })
 export class ResidentsComponent implements OnInit {
 
@@ -38,6 +38,7 @@ export class ResidentsComponent implements OnInit {
   searchTerm: string = '';
 
   loadErrorMessage = "Hiba történt az adatok betöltése során. Próbáld meg később!";
+
 
   meterData: MeterData = {
     commonCost: undefined,
@@ -63,6 +64,7 @@ export class ResidentsComponent implements OnInit {
     ) {}
 
   ngOnInit(): void {
+    this.messageService.setErrorMessage('Adatok betöltése...');
     this.loadCosts();
     this.getMeters();
     this.getAllResidents();
@@ -74,7 +76,7 @@ export class ResidentsComponent implements OnInit {
       response => {
         if (response.status === 'success') {
           this.users = response.data;
-       
+          this.messageService.setErrorMessage('');
           this.filterUsers(); 
           this.sortUsers('username');
 

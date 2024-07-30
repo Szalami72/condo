@@ -36,21 +36,16 @@
           <div class="">
               <div class="header row cursor-pointer bg-secondary text-white p-2 mb-3">
                 <div class="col">
+                  Rendezés:
                   <span (click)="sortUsers('username')"
                   [ngClass]="{'sorted-column': sortedColumn === 'username'}">
-                    Lakó neve
-                    <i [ngClass]="{'sorted-column': sortedColumn === 'username'}" 
-                       class="fa-solid fa-arrow-down fa-xs ms-2">
-                    </i>
+                    név
                   </span>
-                    /
+                    |
                   <span (click)="sortUsers('typeOfBuildings')" 
                     [ngClass]="{'sorted-column': sortedColumn === 'typeOfBuildings'}" 
                     class="">
                      lakás
-                    <i [ngClass]="{'sorted-column': sortedColumn === 'typeOfBuildings'}" 
-                       class="fa-solid fa-arrow-down fa-xs ms-2">
-                    </i>
                   </span>
                 </div>
                 <div class="col">
@@ -62,7 +57,7 @@
                      id="flexSwitchCheckDefault"  
                      (click)="justEmptyFields()">
                       <div class="form-check-label float-end me-5" for="flexSwitchCheckDefault"
-                      [ngClass]="{'sorted-column': filterEmptyFields}">Csak az üresek</div>
+                      [ngClass]="{'sorted-column': filterEmptyFields}">Pótolandók</div>
                   </div>
                 </div>
               </div>

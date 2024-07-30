@@ -37,8 +37,59 @@
 
 
 <div class="resident-list mt-4">
-
   <div *ngIf="filteredUsers && filteredUsers.length > 0; else noData">
+
+    <div class="">
+        <div class="header row cursor-pointer bg-secondary text-white p-2 mb-3">
+          <div class="col">
+            Rendezés:
+            <span (click)="sortUsers('username')"
+            [ngClass]="{'sorted-column': sortedColumn === 'username'}">
+              név
+            </span>
+              |
+            <span (click)="sortUsers('typeOfBuildings')" 
+              [ngClass]="{'sorted-column': sortedColumn === 'typeOfBuildings'}" 
+              class="">
+               lakás
+            </span>
+          </div>
+        </div>
+
+        <div class="user-list row cursor-pointer pt-1 pb-1" 
+        *ngFor="let user of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize"
+        (click)="editResident(user.userId)">
+     <div class="col-12 col-md-4">
+       <b>{{ user.username }}</b>         
+     </div>
+     
+     <div class="col-12 col-md-4">
+       {{ user.email}}
+     </div>
+   
+     <div *ngIf="user.typeOfBuildings" class="col-1 col-md-1 text-end">
+      {{ user.typeOfBuildings }}.ép
+    </div>
+    
+    <div *ngIf="user.typeOfFloors" class="col-1 col-md-1 text-end">
+      {{ user.typeOfFloors }}.em
+    </div>
+    
+    <div *ngIf="user.typeOfDoors" class="col-1 col-md-1 text-end">
+      {{ user.typeOfDoors }}.a
+    </div>
+    
+   
+
+   </div>
+
+
+        </div>
+        
+      </div>
+  
+      </div>
+  <!-- <div *ngIf="filteredUsers && filteredUsers.length > 0; else noData">
     <table class="table  table-hover table-success table-striped">
       <thead>
         <tr>
@@ -73,7 +124,7 @@
         </tr>
       </tbody>
     </table>
-  </div>
+  </div> -->
   <ng-template #noData>
     <p>Nincs megjeleníthető adat.</p>
   </ng-template>

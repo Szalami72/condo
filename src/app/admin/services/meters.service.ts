@@ -14,6 +14,7 @@ export class MetersService {
   private getMetersApi = API_BASE_URL + 'settings/getmeters.php';
 
   private getMetersValuesApi = API_BASE_URL + 'meters/getmetersvalues.php';
+  private saveMetersValuesByIdApi = API_BASE_URL + 'meters/savemetersValuesByid.php';
 
   constructor(private http: HttpClient) { }
 
@@ -45,5 +46,9 @@ export class MetersService {
   getMetersValues(monthAndYear: string): Observable<any> {
     return this.http.post<any>(this.getMetersValuesApi, { monthAndYear: monthAndYear });
 }
+
+  saveMetersValuesById(metersValues: any): Observable<any> {
+    return this.http.post(this.saveMetersValuesByIdApi, metersValues);
+  }
 
 }

@@ -32,7 +32,7 @@ export class MetersComponent implements OnInit {
   searchTerm: string = '';
   filterEmptyFields: boolean = false; // Új változó a szűréshez
 
-  loadErrorMessage = "Hiba történt az adatok betöltése során. Próbáld meg később!";
+  loadErrorMessage = "Hiba történt az adatok mentése során. Próbáld meg később!";
 
   meterData: MeterData = {
     commonCost: undefined,
@@ -56,6 +56,7 @@ export class MetersComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.messageService.setErrorMessage('Adatok betöltése...');
     this.getMeters();
     this.getAllResidentsAndMeters();
   }
@@ -71,7 +72,9 @@ export class MetersComponent implements OnInit {
       (user.username.toLowerCase().includes(term) ||
       (user.typeOfBuildings && user.typeOfBuildings.toLowerCase().includes(term))) &&
       (!this.filterEmptyFields || // Csak akkor alkalmazzuk a szűrőt, ha a filterEmptyFields igaz
-        (user.cold1 === null || user.cold2 === null || user.hot1 === null || user.hot2 === null || user.heating === null))
+        (user.cold1 === null || user.cold2 === null || user.hot1 === null || user.hot2 === null || user.heating === null) ||
+        (user.cold1 === 0 || user.cold2 === 0 || user.hot1 === 0 || user.hot2 === 0 || user.heating === 0)
+      )
     );
   
     if (this.sortedColumn) {
@@ -87,6 +90,7 @@ export class MetersComponent implements OnInit {
       response => {
         if (response.status === 'success') {
           this.users = response.data;
+          this.messageService.setErrorMessage('');
           console.log("meters", this.users);
 
           this.filterUsers(); 
@@ -188,18 +192,33 @@ export class MetersComponent implements OnInit {
   }
   
   saveMetersById(user: any) {
-    console.log('saveMetersById', user.userId);
-    console.log('mayId:', this.getCurrentMonthAndYear());
-    console.log('Cold1:', user.cold1);
-    console.log('Cold2:', user.cold2);
-    console.log('Hot1:', user.hot1);
-    console.log('Hot2:', user.hot2);
-    console.log('Heating:', user.heating);
+    // console.log('saveMetersById', user.userId);
+    // console.log('mayId:', this.getCurrentMonthAndYear());
+    // console.log('Cold1:', user.cold1);
+    // console.log('Cold2:', user.cold2);
+    // console.log('Hot1:', user.hot1);
+    // console.log('Hot2:', user.hot2);
+    // console.log('Heating:', user.heating);
+
+    const data = {
+      userId: user.userId,
+      mayId: this.getCurrentMonthAndYear(),
+      cold1: user.cold1,
+      cold2: user.cold2,
+      hot1: user.hot1,
+      hot2: user.hot2,
+      heating: user.heating
+    };
+
+    this.metersService.saveMetersValuesById(data).subscribe(
+      response => {
+        if (response.status === 'success') {
+          this.messageService.setMessage('Adatok mentése sikeres!');
+        } else {
+          this.messageService.setErrorMessage('Hiba történt a mentés során. Próbáld meg később!');
+        }
+      }
+    )
   }
 }
 
-//TODO
-//mentés:
-// ha már van a táblában ilyen userId és mayId páros akkor updatelni az adatokat 
-// ha még nincs ilyen mayId a monthandyear táblában akkor hozzáadni és lekérni az id-jét
-// elmenteni az user óraállásait és a mayId-t hozzá
