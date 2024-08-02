@@ -1,15 +1,15 @@
 import { Component, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-
 @Component({
-  selector: 'app-confirmmodal',
+  selector: 'app-infomodal',
   standalone: true,
-  templateUrl: './confirmmodal.component.html',
-  styleUrls: ['./confirmmodal.component.css']
+  imports: [],
+  templateUrl: './infomodal.component.html',
+  styleUrl: './infomodal.component.css'
 })
-export class ConfirmmodalComponent {
-  @Input() confirmMessage: string | undefined;
+export class InfomodalComponent {
+  @Input() infoMessage: string | undefined;
 
   constructor(public activeModal: NgbActiveModal) {}
 
@@ -21,3 +21,4 @@ export class ConfirmmodalComponent {
     this.activeModal.dismiss('cancel');
   }
 }
+

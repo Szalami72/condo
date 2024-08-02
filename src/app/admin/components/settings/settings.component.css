@@ -1,8 +1,66 @@
 
-.card {
-    border: none;
-}
-
 .container {
     margin-top: 5rem;
+}
+.settings-box {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.form-inline {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.label-cost {
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+.selected-label {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.amount {
+    margin-bottom: 1rem;
+}
+
+.input-label {
+    flex-basis: 150px; /* Ensure all labels are the same width */
+    margin-right: 1rem;
+    text-align: right;
+}
+
+.amount-input {
+    flex-grow: 1;
+    max-width: 100px; /* Control the width of the input fields */
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    clip: rect(0, 0, 0, 0);
+    overflow: hidden;
+}
+
+.mt-auto {
+    margin-top: auto;
+}
+
+.flex-grow-1 {
+    flex-grow: 1;
+}
+
+.info-icon {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffc107;
+    cursor: pointer;
 }

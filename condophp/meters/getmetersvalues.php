@@ -21,14 +21,15 @@ class GetMetersValues
             $stmt->execute([':monthAndYear' => $monthAndYear]);
             $monthAndYearId = $stmt->fetchColumn();
 
-            if (!$monthAndYearId) {
-                return ['status' => 'error', 'message' => 'Invalid monthAndYear value'];
-            }
+            // if (!$monthAndYearId) {
+            //     return ['status' => 'error', 'message' => 'Invalid monthAndYear value'];
+            // }
 
             // Lekérdezés a residents és metersvalues adatainak megszerzésére
             $sql = "SELECT 
                 users.id AS userId, 
-                users.username, 
+                users.username,
+                residents.isMeters, 
                 buildings.typeOfBuildings, 
                 floors.typeOfFloors, 
                 doors.typeOfDoors,
@@ -76,6 +77,7 @@ class GetMetersValues
                     $meters[$userId] = [
                         'userId' => $userId,
                         'username' => $row['username'],
+                        'isMeters' => $row['isMeters'],
                         'typeOfBuildings' => $row['typeOfBuildings'],
                         'typeOfFloors' => $row['typeOfFloors'],
                         'typeOfDoors' => $row['typeOfDoors'],

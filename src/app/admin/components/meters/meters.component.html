@@ -2,7 +2,12 @@
 
 <div class="container mb-4">
 
-    <h2 class="mb-4">Óraállások</h2>
+  <div class="new-resident mt-2 mb-4">
+    <h2 class="mb-4 d-inline">Óraállások</h2>
+    <span class="ms-4">{{ monthAndYear }}</span>
+    <button class="btn btn-primary float-end" (click)="closeMeters()">Lezárás</button>
+</div>
+    
 
     <app-message></app-message>
 
@@ -13,7 +18,7 @@
             </ngb-pagination>
           </div>
         
-          <div class="col h-100 header-items">
+          <div class="col h-100 header-items mb-2">
               <span>Lakó/oldal:</span>
               <select class="form-select-sm ms-2" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
                   <option value="10">10</option>
@@ -23,9 +28,9 @@
               </select>
           </div>
         
-          <div class="col h-100 header-items mb-4">
+          <div class="col h-100 header-items mb-2">
             <div class="col h-100 header-items justify-content-end">
-              <input type="text" class="search-input ps-2" placeholder="keresés..." [(ngModel)]="searchTerm" (input)="filterUsers()">
+              <input type="text" class="search-input ps-2 rounded" placeholder="keresés..." [(ngModel)]="searchTerm" (input)="filterUsers()">
             </div>
           </div>
         
@@ -48,8 +53,12 @@
                      lakás
                   </span>
                 </div>
-                <div class="col">
-               
+
+                <div class="col text-center">
+                  <span class="info-icon" (click)="getMetersDetailsDescription()">info</span>
+                </div>
+
+                <div class="col">            
                   <div class="form-check form-switch">
                     <input class="form-check-input float-end"
                      type="checkbox" 
@@ -70,30 +79,38 @@
                   </span>
                 </div>
         
-                <div class="col text-center" *ngIf="meterData.cold1 ==='1'">Hideg1:
+                
+                <div class="col text-center" *ngIf="meterData.cold1 ==='1' && user.isMeters">Hideg1:
                   <input class="w-100 text-center border border-primary-subtle bg-primary-subtle" type="number" name="cold1" [(ngModel)]="user.cold1" (ngModelChange)="validatePositiveNumber(user, 'cold1')" min="0" step="1">
                 </div>
                 
-                <div class="col text-center" *ngIf="meterData.cold2 ==='1'">Hideg2:
+                <div class="col text-center" *ngIf="meterData.cold2 ==='1' && user.isMeters">Hideg2:
                   <input class="w-100 text-center border border-primary-subtle bg-primary-subtle" type="number" name="cold2" [(ngModel)]="user.cold2" (ngModelChange)="validatePositiveNumber(user, 'cold2')" min="0" step="1">
                 </div>
                 
-                <div class="col text-center" *ngIf="meterData.hot1 ==='1'">Meleg1:
+                <div class="col text-center" *ngIf="meterData.hot1 ==='1' && user.isMeters">Meleg1:
                   <input class="w-100 text-center border border-danger-subtle bg-danger-subtle" type="number" name="hot1" [(ngModel)]="user.hot1" (ngModelChange)="validatePositiveNumber(user, 'hot1')" min="0" step="1">
                 </div>
                 
-                <div class="col text-center" *ngIf="meterData.hot2 ==='1'">Meleg2:
+                <div class="col text-center" *ngIf="meterData.hot2 ==='1' && user.isMeters">Meleg2:
                   <input class="w-100 text-center border border-danger-subtle bg-danger-subtle" type="number" name="hot2" [(ngModel)]="user.hot2" (ngModelChange)="validatePositiveNumber(user, 'hot2')" min="0" step="1">
                 </div>
                 
-                <div class="col text-center" *ngIf="meterData.heating ==='1'">Fűtés:
+                <div class="col text-center" *ngIf="meterData.heating ==='1' && user.isMeters">Fűtés:
                   <input class="w-100 text-center border border-warning-subtle bg-warning-subtle" type="number" name="heating" [(ngModel)]="user.heating" (ngModelChange)="validatePositiveNumber(user, 'heating')" min="0" step="1">
                 </div>
                 
         
-                <div class="col text-center mt-4 mb-2">
-                  <button class="btn btn-sm btn-primary" (click)="saveMetersById(user)">Mentés</button>
+                <div class="col text-center mt-4 mb-2" *ngIf="user.isMeters">
+                  <button class="btn btn-sm btn-primary float-end ms-2" (click)="saveMetersById(user)" >Mentés</button>
+                  <button class="btn btn-sm btn-secondary float-end" (click)="getPreviousDatasById(user.userId)" >Előző</button>      
                 </div>
+             
+               
+                  <p *ngIf="!user.isMeters" class="col text-center">Nincs vízóra.</p>
+             
+
+           
 
                 <hr>
               </div>

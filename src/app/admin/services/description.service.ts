@@ -29,7 +29,17 @@ export class DescriptionService {
   "Módosításhoz írd át a rögzített adatokat, majd nyomd meg a <b>Mentés</b> gombot. " +
   "<br><br>Ha beállítottad az értékeket, a <b>Mentés</b> gombra kattintva véglegesítheted.";
   
+  metersDetailsDescription: string = "A lakókat név és lépcsőház szerint rendezheted sorba a bal oldalon található kapcsolóval.<br>" +
+  "A jobb oldali <b>Pótolandók</b> kapcsoló aktiválásával a listában csak azok a lakók jelennek meg akiknek még nincs vagy hiányos a rögzítése.<br>" +
+  "A 'Lezárás' gombra kattintva véglegesítheted az adatokat.<br>";
   
+  residentDetailsDescription: string = "A lakókat név és lépcsőház szerint rendezheted sorba a bal oldalon található kapcsolóval.<br>" +
+  "Új lakó felvételéhez kattints a <b>Új lakó felvétele</b> gombra.<br>" +
+  "Az adatainak rögzítése után egy email-t küld ki a rendszer az új lakónak. Az email tartalmaza egy generált jelszó amivel be tud lépni az oldalra.<br>" +
+  "A lakó szerkesztéséhez kattints az adatait tartalmazó sorra.<br>" +
+  "Az adatokat beírva, vagy ha már volt rögzítve akkor a listából kiválasztva adhatod meg.<br>" +
+  "A <b>Törlés</b> gombra kattintva törölheted a lakó adatait.<br>" +
+  "A <b>Mentés</b> gombra kattintva véglegesítheted az adatokat.<br>";
 
   constructor() { }
   getRecDatesDescription(): string {
@@ -46,5 +56,13 @@ export class DescriptionService {
 
   getDatasDescription(): string {
     return this.datasDescription;
+  }
+
+  getMetersDetailsDescription(): string {
+    return this.metersDetailsDescription;
+  }
+
+  getResidentDetailsDescription(): string {
+    return this.residentDetailsDescription;
   }
 }

@@ -1,61 +1,53 @@
 <app-menu></app-menu>
 
 <div class="container mb-4">
-
-    <h2 class="mb-4">Beállítások</h2>
+    <h2 class="ms-3">Beállítások</h2>
     <app-message></app-message>
 
-    <div class="row align-items-stretch">
-        
+        <div class="row">
             <div class="col-lg-6 col-md-12 col-sm-12 mb-4">
-                <app-infosection title="Diktálási időszak">
-  
-                    <div class="card h-100 p-2" defaultContent>
-                        <app-recdates></app-recdates>
+                <div class="p-0 bg-white d-flex flex-column">
+                    <p class="p-2 ps-3 bg-secondary text-white">Költségek
+                        <span class="info-icon float-end" (click)="getCostsDescription()">info</span>
+                    </p>
+                    <div class="flex-grow-1 d-flex">
+                        <app-costs class="w-100"></app-costs>
                     </div>
-                    <div class="card h-100 p-2" infoContent>
-                        <p [innerHTML]="getRecDatesDescription()"></p>
+                </div>
+            </div>
+           
+            <div class="col-lg-6 col-md-12 col-sm-12 mb-4">
+                <div class="p-0 bg-white d-flex flex-column">
+                    <p class="p-2 ps-3 bg-secondary text-white">Mérőórák
+                    <span class="info-icon float-end" (click)="getMetersDescription()">info</span>
+                     </p>
+                    <div class="flex-grow-1 d-flex">
+                        <app-meters class="w-100"></app-meters>
                     </div>
-                </app-infosection>
-            </div> 
+                </div>
+            </div>
+            
+            <div class="col-lg-6 col-md-12 col-sm-12 mb-4">
+                <div class="p-0 bg-white d-flex flex-column">
+                    <p class="p-2 ps-3 bg-secondary text-white">Diktálási időszak
+                    <span class="info-icon float-end" (click)="getRecDatesDescription()">info</span>
+                        </p>
+                    <div class="flex-grow-1 d-flex">
+                        <app-recdates class="w-100"></app-recdates>
+                    </div>
+                </div>
+            </div>
 
             <div class="col-lg-6 col-md-12 col-sm-12 mb-4">
-                <app-infosection title="Mérőórák">
-  
-                    <div class="card h-100 p-2" defaultContent>
-                        <app-meters></app-meters>
+                <div class="p-0 bg-white d-flex flex-column">
+                    <p class="p-2 ps-3 bg-secondary text-white">Adatok
+                    <span class="info-icon float-end" (click)="getDatasDescription()">info</span>
+                </p>
+                    <div class="flex-grow-1 d-flex">
+                        <app-datas class="w-100"></app-datas>
                     </div>
-                    <div class="card h-100 p-2" infoContent>
-                        <p [innerHTML]="getMetersDescription()"></p>
-                    </div>
-                </app-infosection>
-            </div> 
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-6 col-md-12 col-sm-12 mb-4">
-            <app-infosection title="Költségek">
-
-                <div class="p-2" defaultContent>
-                    <app-costs></app-costs>
-                </div>
-                <div class="p-2" infoContent>
-                    <p [innerHTML]="getCostsDescription()"></p>
-                </div>
-            </app-infosection>
-        </div> 
-
-        <div class="col-lg-6 col-md-12 col-sm-12">
-            <app-infosection title="Adatok">
-
-                <div class="p-2" defaultContent>
-                    <app-datas></app-datas>
-                </div>
-                <div class="p-2" infoContent>
-                    <p [innerHTML]="getDatasDescription()"></p>
-                </div>
-            </app-infosection>
-        </div> 
-
-</div>
-</div>

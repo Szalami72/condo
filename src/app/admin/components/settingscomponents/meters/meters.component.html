@@ -1,28 +1,23 @@
-<div class="settings-box">
-
-
-    <p>válaszd ki a használni kívánt mérőórákat:</p>
-
+<div class="settings-box p-3 d-flex flex-column h-100">
+    <p>Válaszd ki a használni kívánt mérőórákat:</p>
     
-    <div class="form-inline">
+    <div class="form-inline mb-2">
         <label class="label-cold-hot" [class.selected-cold]="cold1" for="cold1">Hideg 1</label>
         <input class="visually-hidden" type="checkbox" name="cold1" id="cold1" [(ngModel)]="cold1">
         <label class="label-cold-hot" [class.selected-cold]="cold2" for="cold2">Hideg 2</label>
         <input class="visually-hidden" type="checkbox" name="cold2" id="cold2" [(ngModel)]="cold2">
     </div>
-    <div class="form-inline">
+    <div class="form-inline mb-2">
         <label class="label-cold-hot" [class.selected-hot]="hot1" for="hot1">Meleg 1</label>
         <input class="visually-hidden" type="checkbox" name="hot1" id="hot1" [(ngModel)]="hot1">
         <label class="label-cold-hot" [class.selected-hot]="hot2" for="hot2">Meleg 2</label>
         <input class="visually-hidden" type="checkbox" name="hot2" id="hot2" [(ngModel)]="hot2">
     </div>
-    <div class="form-inline">
+    <div class="form-inline mb-2">
         <label class="heating" [class.selected-heating]="heating" for="heating">Hőmennyiség</label>
         <input class="visually-hidden" type="checkbox" name="heating" id="heating" [(ngModel)]="heating">
     </div>
-
-    <button class="btn btn-primary btn-sm float-end" (click)="saveMeters()" >Mentés</button>
-
-    
+    <div class="mt-auto">
+        <button class="btn btn-primary btn-sm float-end" (click)="saveMeters()">Mentés</button>
+    </div>
 </div>
-

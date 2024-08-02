@@ -1,14 +1,13 @@
 <app-menu></app-menu>
 
 <div class="container mb-4">
+  <div class="new-resident mb-4">
+    <h2 class="d-inline">Lakók</h2>
 
-    <h2 class="mb-4">Lakók</h2>
-
-    <app-message></app-message>
-
-<div class="new-resident mt-2 mb-4">
-    <button class="btn btn-primary" (click)="addAndEditResident(undefined)">Új lakó felvétele</button>
+    <button class="btn btn-primary float-end" (click)="addAndEditResident(undefined)">Új lakó felvétele</button>
 </div>
+
+<app-message></app-message>
 
 <div class="row row-cols-auto justify-content-between">
 
@@ -17,7 +16,7 @@
     </ngb-pagination>
   </div>
 
-  <div class="col h-100 header-items">
+  <div class="col h-100 header-items mb-2">
       <span>Lakó/oldal:</span>
       <select class="form-select-sm ms-2" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
           <option value="10">10</option>
@@ -27,16 +26,16 @@
       </select>
   </div>
 
-  <div class="col h-100 header-items">
+  <div class="col h-100 header-items mb-2"> 
     <div class="col h-100 header-items justify-content-end">
-      <input type="text" class="search-input ps-2" placeholder="keresés..." [(ngModel)]="searchTerm" (input)="filterUsers()">
+      <input type="text" class="search-input ps-2 rounded" placeholder="keresés..." [(ngModel)]="searchTerm" (input)="filterUsers()">
     </div>
   </div>
 
 </div>
 
 
-<div class="resident-list mt-4">
+<div class="">
   <div *ngIf="filteredUsers && filteredUsers.length > 0; else noData">
 
     <div class="">
@@ -54,7 +53,12 @@
                lakás
             </span>
           </div>
+          <div class="col text-end">
+            <span class="info-icon" (click)="getResidentDetailsDescription()">info</span>
+          </div>
         </div>
+
+        
 
         <div class="user-list row cursor-pointer pt-1 pb-1" 
         *ngFor="let user of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize"
@@ -89,42 +93,7 @@
       </div>
   
       </div>
-  <!-- <div *ngIf="filteredUsers && filteredUsers.length > 0; else noData">
-    <table class="table  table-hover table-success table-striped">
-      <thead>
-        <tr>
-          <th (click)="sortUsers('username')" 
-              [ngClass]="{'sorted-column': sortedColumn === 'username'}"
-              class="cursor-pointer">Lakó neve
-            <i [ngClass]="{'sorted-column': sortedColumn === 'username'}" 
-               class="fa-solid fa-arrow-down fa-xs ms-2">
-              </i>
-          </th>
-          <th>Email</th>
-          <th (click)="sortUsers('typeOfBuildings')" 
-          [ngClass]="{'sorted-column': sortedColumn === 'typeOfBuildings'}" 
-              class="cursor-pointer text-end">Épület
-            <i 
-              [ngClass]="{'sorted-column': sortedColumn === 'typeOfBuildings'}" 
-              class="fa-solid fa-arrow-down fa-xs ms-2">
-            </i>
-          </th>
-          <th class="text-end">Emelet</th>
-          <th class="text-end">Ajtó</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="cursor-pointer" *ngFor="let filteredUser of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize"
-        (click)="editResident(filteredUser.userId)">
-          <td>{{ filteredUser.username }}</td>
-          <td>{{ filteredUser.email }}</td>
-          <td class="text-end">{{ filteredUser.typeOfBuildings }}</td>
-          <td class="text-end">{{ filteredUser.typeOfFloors }}</td>
-          <td class="text-end">{{ filteredUser.typeOfDoors }}</td> 
-        </tr>
-      </tbody>
-    </table>
-  </div> -->
+ 
   <ng-template #noData>
     <p>Nincs megjeleníthető adat.</p>
   </ng-template>

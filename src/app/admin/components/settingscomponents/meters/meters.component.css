@@ -1,47 +1,38 @@
-
-
-label {
-    cursor: pointer;
+.settings-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }
 
-.label-cold-hot {
-    width: 8rem;
-    padding: 0.1rem 0.25rem;
-    margin-right: 0.5rem;
-    text-align: center;
-    border: 1px solid #666;
-    font-weight: bold;
-    color: #666;
-}
-
-.heating {
-    width: 16.5rem;
-    text-align: center;
-    border: 1px solid #666;
-    font-weight: bold;
-    color: #666;
-
-}
-
-.selected-cold {
-    background-color: #cfe2ff;
-    color:#666;
-  }
-
-.selected-hot {
-    background-color: #f1aeb5;
-    color:#666;
-  }
-  
-.selected-heating {
-    background-color: #fff3cd;
-    color:#666;
-  }
-
-.form-inline {
+.settings-box .form-inline {
     margin-bottom: 0.5rem;
 }
 
-button {
-    margin-top: 4.6rem;
+.settings-box .label-cold-hot,
+.settings-box .heating {
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+.settings-box .selected-cold,
+.settings-box .selected-hot,
+.settings-box .selected-heating {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    clip: rect(0, 0, 0, 0);
+    overflow: hidden;
+}
+
+.mt-auto {
+    margin-top: auto;
 }

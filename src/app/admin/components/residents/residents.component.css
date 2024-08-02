@@ -8,5 +8,12 @@
     background-color: #666;
     color: #ddd;
 }
+
+.info-icon {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffc107;
+    cursor: pointer;
+}
   
 

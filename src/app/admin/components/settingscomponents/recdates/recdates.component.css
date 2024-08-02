@@ -1,27 +1,20 @@
+.settings-box .form-check-inline {
+  margin-bottom: 0.5rem;
+}
 
-.label-day { 
+.settings-box .label-day {
   cursor: pointer;
+  display: block;
+  width: 1rem; /* or set an appropriate width based on your design */
+  text-align: right;
 }
 
-.form-check-inline {
-    margin: 0 0.1rem 0.1rem 0;
+.settings-box .selected-label {
+  font-weight: bold;
+  color: #007bff;
 }
 
-.label-day {
-    width: 1.5rem;
-    text-align: center;
-    border: 1px solid #666;
-    color: #666;
-    font-weight: bold;
+.settings-box .unselectable {
+  color: #ccc;
+  cursor: not-allowed;
 }
-
-.selected-label {
-    background-color: #6C757D;
-    color:#e2e3e5;
-  }
-  
-.unselectable {
-    background-color: #f1aeb5;
-    cursor: not-allowed;
-  }
-

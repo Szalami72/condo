@@ -9,6 +9,8 @@ import { MenuComponent } from '../menu/menu.component';
 import { MessageService } from '../../../shared/services/message.service';
 import { MessageComponent } from '../../../shared/sharedcomponents/message/message.component';
 import { AddAndEditResidentComponent } from './addAndEditResident/addAndEditResident.component';
+import { InfomodalComponent } from '../../../shared/sharedcomponents/infomodal/infomodal.component';
+import { DescriptionService } from '../../services/description.service';
 import { CostsService } from '../../services/costs.service';
 import { MetersService } from '../../services/meters.service';
 import { ResidentsService } from '../../services/residents.service';
@@ -23,7 +25,8 @@ import { MeterData } from '../../models/costandmeterdatas.model';
             NgbPaginationModule, 
             NgbModule, 
             AddAndEditResidentComponent,
-            MessageComponent],
+            MessageComponent,
+            InfomodalComponent],
   templateUrl: './residents.component.html',
   styleUrls: ['../../../shared/css/userlist.css', './residents.component.css']
 })
@@ -60,7 +63,8 @@ export class ResidentsComponent implements OnInit {
     private costsService: CostsService,
     private metersService: MetersService,
     private modalService: NgbModal,
-    private residentsService: ResidentsService
+    private residentsService: ResidentsService,
+    private descriptionService: DescriptionService
     ) {}
 
   ngOnInit(): void {
@@ -221,4 +225,9 @@ getSortableValue(value: any): any {
     console.log('goToResident', id);
   }
 
+  getResidentDetailsDescription() {
+    const message = this.descriptionService.getResidentDetailsDescription();
+    const modalRef = this.modalService.open(InfomodalComponent, { centered: true });
+        modalRef.componentInstance.infoMessage = message;
+  }
 }

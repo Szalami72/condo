@@ -1,0 +1,38 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title">Előző óraállások</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()">
+        </button>
+      </div>
+      <div class="modal-body">
+       <p>A korábban leadott állások (m<sup>3</sup>):</p>
+        <table class="table">
+            <thead>
+              <tr class="text-end">
+                <th scope="col">Hónap/év</th>
+                <th scope="col" *ngIf="meterData.cold1 ==='1'">Hideg1</th>
+                <th scope="col" *ngIf="meterData.cold2 ==='1'">Hideg2</th>
+                <th scope="col" *ngIf="meterData.hot1 ==='1'">Meleg1</th>
+                <th scope="col" *ngIf="meterData.hot2 ==='1'">Meleg2</th>
+                <th scope="col" *ngIf="meterData.heating ==='1'">Hőm.</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="prevValues.length > 0">
+              <tr *ngFor="let prev of prevValues" class="text-end">
+                <td>{{prev.monthAndYear}}</td>
+                <td *ngIf="meterData.cold1 ==='1'">{{prev.cold1}}</td>
+                <td *ngIf="meterData.cold2 ==='1'">{{prev.cold2}}</td>
+                <td *ngIf="meterData.hot1 ==='1'">{{prev.hot1}}</td>
+                <td *ngIf="meterData.hot2 ==='1'">{{prev.hot2}}</td>
+                <td *ngIf="meterData.heating ==='1'">{{prev.heating}}</td>
+              </tr>
+             
+            </tbody>
+          </table>
+
+          <p *ngIf="prevValues.length === 0">Nincsenek előző óraállások.</p>
+      </div>
+      <div class="modal-footer d-inline">
+        <button type="button" class="btn btn-secondary" (click)="dismiss()">Bezár</button>
+      </div>
+    </div>

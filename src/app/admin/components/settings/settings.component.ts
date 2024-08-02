@@ -2,14 +2,15 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../components/menu/menu.component';
 import { FormsModule } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RecdatesComponent } from '../settingscomponents/recdates/recdates.component';
 import { MetersComponent } from '../settingscomponents/meters/meters.component';
 import { CostsComponent } from '../settingscomponents/costs/costs.component';
 import { DatasComponent } from '../settingscomponents/datas/datas.component';
-import { InfosectionComponent } from '../settingscomponents/infosection/infosection.component';
 import { MessageService } from '../../../shared/services/message.service';
 import { DescriptionService } from '../../services/description.service';
 import { MessageComponent } from "../../../shared/sharedcomponents/message/message.component";
+import { InfomodalComponent } from '../../../shared/sharedcomponents/infomodal/infomodal.component';
 
 
 @Component({
@@ -24,31 +25,78 @@ import { MessageComponent } from "../../../shared/sharedcomponents/message/messa
     MetersComponent,
     CostsComponent,
     DatasComponent,
-    InfosectionComponent, MessageComponent]
+    MessageComponent,
+    InfomodalComponent]
 })
 export class SettingsComponent {
   showInfo: boolean = false;
+  
+  constructor(public messageService: MessageService, 
+    public descriptionService: DescriptionService,
+    private modalService: NgbModal) { }
 
-  constructor(public messageService: MessageService, public descriptionService: DescriptionService) { }
 
-  toggleInfo(infoSection: InfosectionComponent) {
-    infoSection.toggleInfo();
-  }
+  // getRecDatesDescription(): any {
+  //   const modalRef = this.modalService.open(InfomodalComponent, { centered: true });
+  //   const message = this.descriptionService.getRecDatesDescription();
+  //   modalRef.componentInstance.infoMessage = message;
+  // }
 
-  getRecDatesDescription(): string {
-    return this.descriptionService.getRecDatesDescription();
-  }
+  // getMetersDescription(): string {
+  //   return this.descriptionService.getMetersDescription();
+  // }
 
-  getMetersDescription(): string {
-    return this.descriptionService.getMetersDescription();
-  }
+  // getCostsDescription(): string {
+  //   return this.descriptionService.getCostsDescription();
+  // }
 
-  getCostsDescription(): string {
-    return this.descriptionService.getCostsDescription();
-  }
+  // getDatasDescription(): string {
+  //   return this.descriptionService.getDatasDescription();
+  // }
 
-  getDatasDescription(): string {
-    return this.descriptionService.getDatasDescription();
-  }
+  getDescription(type: string, openModal: boolean = false): any | string {
+    let message = '';
+
+    switch(type) {
+        case 'recDates':
+            message = this.descriptionService.getRecDatesDescription();
+            break;
+        case 'meters':
+            message = this.descriptionService.getMetersDescription();
+            break;
+        case 'costs':
+            message = this.descriptionService.getCostsDescription();
+            break;
+        case 'datas':
+            message = this.descriptionService.getDatasDescription();
+            break;
+        default:
+            throw new Error('Invalid description type');
+    }
+
+    if (openModal) {
+        const modalRef = this.modalService.open(InfomodalComponent, { centered: true });
+        modalRef.componentInstance.infoMessage = message;
+        return;
+    }
+
+    return message;
+}
+
+getRecDatesDescription(): void {
+    this.getDescription('recDates', true);
+}
+
+getMetersDescription(): void {
+    this.getDescription('meters', true);
+}
+
+getCostsDescription(): void {
+    this.getDescription('costs', true);
+}
+
+getDatasDescription(): void {
+    this.getDescription('datas', true);
+}
 
 }

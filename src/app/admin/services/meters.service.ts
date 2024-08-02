@@ -16,6 +16,8 @@ export class MetersService {
   private getMetersValuesApi = API_BASE_URL + 'meters/getmetersvalues.php';
   private saveMetersValuesByIdApi = API_BASE_URL + 'meters/savemetersValuesByid.php';
 
+  private getPreviousMetersValuesApi = API_BASE_URL + 'meters/getpreviousmetersvalues.php';
+
   constructor(private http: HttpClient) { }
 
   saveMeters(metersData: { cold1: boolean, cold2: boolean, hot1: boolean, hot2: boolean, heating: boolean }): Observable<any> {
@@ -49,6 +51,10 @@ export class MetersService {
 
   saveMetersValuesById(metersValues: any): Observable<any> {
     return this.http.post(this.saveMetersValuesByIdApi, metersValues);
+  }
+
+  getPreviousMetersValues(userId: number): Observable<any> {
+    return this.http.post<any>(this.getPreviousMetersValuesApi, { userId: userId });
   }
 
 }

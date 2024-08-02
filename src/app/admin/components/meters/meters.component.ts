@@ -2,12 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { MetersService } from '../../services/meters.service';
 import { MessageService } from '../../../shared/services/message.service';
 import { MenuComponent } from "../menu/menu.component";
+import { DescriptionService } from '../../services/description.service';
+import { InfomodalComponent } from '../../../shared/sharedcomponents/infomodal/infomodal.component';
 import { MessageComponent } from '../../../shared/sharedcomponents/message/message.component';
+import { ConfirmmodalComponent } from '../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
+import { PreviousmetersvaluesComponent } from '../../../shared/sharedcomponents/previousmetersvalues/previousmetersvalues.component';
 import { MeterData } from '../../models/costandmeterdatas.model';
 
 @Component({
@@ -17,9 +21,10 @@ import { MeterData } from '../../models/costandmeterdatas.model';
     NgbPaginationModule, 
     MessageComponent,
     FormsModule,
-    CommonModule],
+    CommonModule,
+    InfomodalComponent,],
   templateUrl: './meters.component.html',
-  styleUrls: ['../../../shared/css/userlist.css']
+  styleUrls: ['../../../shared/css/userlist.css', './meters.component.css']
 })
 export class MetersComponent implements OnInit {
 
@@ -47,16 +52,19 @@ export class MetersComponent implements OnInit {
     heating: ''
   };
 
- 
+  monthAndYear: string = '';
 
   sortedColumn: string | null = null;
 
   constructor(public messageService: MessageService, 
     private metersService: MetersService,
+    private modalService: NgbModal,
+    private descriptionService: DescriptionService
   ) { }
 
   ngOnInit(): void {
     this.messageService.setErrorMessage('Adatok betöltése...');
+    this.monthAndYear = this.getCurrentMonthAndYear();
     this.getMeters();
     this.getAllResidentsAndMeters();
   }
@@ -85,6 +93,7 @@ export class MetersComponent implements OnInit {
 
   getAllResidentsAndMeters() {
     const monthAndYear = this.getCurrentMonthAndYear();
+    console.log("monthAndYear", monthAndYear);
 
     this.metersService.getMetersValues(monthAndYear).subscribe(
       response => {
@@ -219,6 +228,54 @@ export class MetersComponent implements OnInit {
         }
       }
     )
+  }
+
+  closeMeters() {
+    const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true });
+    
+    const message = 'A jóváhagy gomra kattintva, a leadott óraállások alapján kiszámításra kerülnek a lakók költségei.\n'+
+     'A lakók erről mail-ben értesítést kapnak!\n\n' + 
+     'Biztos le akarod zárni az állásokat?\n';
+
+    let formattedMessage = message.replace(/\n/g, '<br>');
+
+    modalRef.componentInstance.confirmMessage = formattedMessage;
+
+    modalRef.result.then(
+      (result) => {
+        if (result === 'confirmed') {
+          console.log('Confirmed');
+        }
+      },
+      (reason) => {
+        console.log('Closed', reason);
+      }
+    );
+  }
+
+  getMetersDetailsDescription() {
+    const message = this.descriptionService.getMetersDetailsDescription();
+    const modalRef = this.modalService.open(InfomodalComponent, { centered: true });
+        modalRef.componentInstance.infoMessage = message;
+
+  }
+
+  getPreviousDatasById(userId: number) {
+    console.log('getPreviousDatasById', userId);
+    this.metersService.getPreviousMetersValues(userId).subscribe(
+      response => {
+        if (response.status === 'success') {
+          const prevValues = response.data;
+          console.log("prev:", prevValues);
+          const modalRef = this.modalService.open(PreviousmetersvaluesComponent, { centered: true });
+          modalRef.componentInstance.prevValues = prevValues;
+          modalRef.componentInstance.meterData = this.meterData;
+
+        } else {
+          this.messageService.setErrorMessage(this.loadErrorMessage);
+        }
+      }
+    );
   }
 }
 

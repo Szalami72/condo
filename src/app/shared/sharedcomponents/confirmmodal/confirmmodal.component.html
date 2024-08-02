@@ -6,12 +6,12 @@
         <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()">
         </button>
       </div>
-      <div class="modal-body">
-        {{ confirmMessage }}
+      <div class="modal-body" [innerHTML]="confirmMessage">
+        
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer d-inline">
         <button type="button" class="btn btn-secondary" (click)="dismiss()">Mégse</button>
-        <button type="button" class="btn btn-danger" (click)="confirm()">Jóváhagy</button>
+        <button type="button" class="btn btn-danger float-end" (click)="confirm()">Jóváhagy</button>
       </div>
     </div>
     

@@ -1,21 +1,20 @@
-<div class="settings-box">
-
-  
-    <p>válaszd ki a kezdő dátumot:</p>
-
-    <div *ngFor="let day of days" class="form-check-inline">
-      <input class="visually-hidden" type="radio" name="startDay" [id]="'startDay-' + day" [value]="day" [(ngModel)]="startDay" (change)="updateEndDayOptions()">
-      <label [ngClass]="{'selected-label': startDay === day}" class="label-day" [for]="'startDay-' + day">{{ day }}</label>
-    </div>
-    
-    <p class="mt-4">Válaszd ki a befejezés dátumát:</p>
-    <div *ngFor="let day of days" class="form-check-inline">
-      <input class="visually-hidden" type="radio" name="endDay" [id]="'endDay-' + day" [value]="day" [(ngModel)]="endDay" [disabled]="!isEndDaySelectable(day)">
-      <label [ngClass]="{'selected-label': endDay === day, 'unselectable': !isEndDaySelectable(day)}" class="label-day" [for]="'endDay-' + day">{{ day }}</label>
-    </div>
-    <br>
-    <button class="btn btn-primary btn-sm float-end mt-2" (click)="saveDates()" [disabled]="!isValid()">Mentés</button>
-    
-
-
+<div class="settings-box p-3 d-flex flex-column h-100">
+  <p>Válaszd ki a kezdő dátumot:</p>
+  <div class="d-flex flex-wrap mb-2 day-options">
+      <div *ngFor="let day of days" class="form-check form-check-inline day-option">
+          <input class="visually-hidden" type="radio" name="startDay" [id]="'startDay-' + day" [value]="day" [(ngModel)]="startDay" (change)="updateEndDayOptions()">
+          <label [ngClass]="{'selected-label': startDay === day}" class="label-day text-right" [for]="'startDay-' + day">{{ day }}</label>
+      </div>
+  </div>
+  <p class="mt-4">Válaszd ki a befejezés dátumát:</p>
+  <div class="d-flex flex-wrap mb-2 day-options">
+      <div *ngFor="let day of days" class="form-check form-check-inline day-option">
+          <input class="visually-hidden" type="radio" name="endDay" [id]="'endDay-' + day" [value]="day" [(ngModel)]="endDay" [disabled]="!isEndDaySelectable(day)">
+          <label [ngClass]="{'selected-label': endDay === day, 'unselectable': !isEndDaySelectable(day)}" class="label-day text-right" [for]="'endDay-' + day">{{ day }}</label>
+      </div>
+  </div>
+  <div class="mt-auto">
+      <button class="btn btn-primary btn-sm float-end" (click)="saveDates()" [disabled]="!isValid()">Mentés</button>
+  </div>
 </div>
+
