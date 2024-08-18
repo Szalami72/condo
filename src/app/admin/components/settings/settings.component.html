@@ -5,7 +5,19 @@
     <app-message></app-message>
 
         <div class="row">
-            <div class="col-lg-6 col-md-12 col-sm-12 mb-4">
+
+            <div class="col-12 mb-4">
+                <div class="p-0 bg-white d-flex flex-column">
+                    <p class="p-2 ps-3 bg-secondary text-white">Diktálási időszak
+                    <span class="info-icon float-end" (click)="getRecDatesDescription()">info</span>
+                        </p>
+                    <div class="">
+                        <app-recdates class="w-100"></app-recdates>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-12 mb-4">
                 <div class="p-0 bg-white d-flex flex-column">
                     <p class="p-2 ps-3 bg-secondary text-white">Költségek
                         <span class="info-icon float-end" (click)="getCostsDescription()">info</span>
@@ -16,7 +28,7 @@
                 </div>
             </div>
            
-            <div class="col-lg-6 col-md-12 col-sm-12 mb-4">
+            <div class="col-12 mb-4">
                 <div class="p-0 bg-white d-flex flex-column">
                     <p class="p-2 ps-3 bg-secondary text-white">Mérőórák
                     <span class="info-icon float-end" (click)="getMetersDescription()">info</span>
@@ -27,18 +39,9 @@
                 </div>
             </div>
             
-            <div class="col-lg-6 col-md-12 col-sm-12 mb-4">
-                <div class="p-0 bg-white d-flex flex-column">
-                    <p class="p-2 ps-3 bg-secondary text-white">Diktálási időszak
-                    <span class="info-icon float-end" (click)="getRecDatesDescription()">info</span>
-                        </p>
-                    <div class="flex-grow-1 d-flex">
-                        <app-recdates class="w-100"></app-recdates>
-                    </div>
-                </div>
-            </div>
+            
 
-            <div class="col-lg-6 col-md-12 col-sm-12 mb-4">
+            <div class="col-12">
                 <div class="p-0 bg-white d-flex flex-column">
                     <p class="p-2 ps-3 bg-secondary text-white">Adatok
                     <span class="info-icon float-end" (click)="getDatasDescription()">info</span>

@@ -47,5 +47,5 @@ $token = $data['token'];
 $newPassword = $data['newPassword'];
 $response = $resetPassword->resetPassword($token, $newPassword);
 echo json_encode($response);
-$conn->close();
+
 ?>

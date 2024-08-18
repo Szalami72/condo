@@ -18,6 +18,10 @@ export class CostsComponent implements OnInit {
   amountFix: number | undefined;
   subDepSmeter: number | undefined;
   subDepFix: number | undefined;
+  extraPayment: number | undefined;
+  extraPaymentMode: string | undefined;
+  extraPaymentTitle: string | undefined;
+
 
   constructor(
     public messageService: MessageService, 
@@ -34,12 +38,16 @@ export class CostsComponent implements OnInit {
 
         if (response.status === 'success') {
           const data = response.data;
+          // console.log('data', data);
 
           this.commonCost = data.commonCost || undefined;
           this.amountSmeter = data.amountSmeter ? Number(data.amountSmeter) : undefined;
           this.amountFix = data.amountFix ? Number(data.amountFix) : undefined;
           this.subDepSmeter = data.subDepSmeter ? Number(data.subDepSmeter) : undefined;
           this.subDepFix = data.subDepFix ? Number(data.subDepFix) : undefined;
+          this.extraPayment = data.extraPayment ? Number(data.extraPayment) : undefined;
+          this.extraPaymentMode = data.extraPaymentMode || undefined;
+          this.extraPaymentTitle = data.extraPaymentTitle || undefined;
         } else {
           this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
         }
@@ -56,9 +64,13 @@ export class CostsComponent implements OnInit {
       amountSmeter: this.amountSmeter,
       amountFix: this.amountFix,
       subDepSmeter: this.subDepSmeter,
-      subDepFix: this.subDepFix
+      subDepFix: this.subDepFix,
+      extraPayment: this.extraPayment,
+      extraPaymentMode: this.extraPaymentMode,
+      extraPaymentTitle: this.extraPaymentTitle
     };
 
+    console.log(costsData);
     this.costsService.saveCosts(costsData).subscribe({
       next: (response) => {
         this.messageService.setMessage('Az adatok mentése sikeres!');
@@ -75,6 +87,5 @@ export class CostsComponent implements OnInit {
     this.amountFix = 0;
     this.subDepSmeter = 0;
     this.subDepFix = 0;
-
   }
 }

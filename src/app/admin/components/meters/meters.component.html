@@ -5,7 +5,7 @@
   <div class="new-resident mt-2 mb-4">
     <h2 class="mb-4 d-inline">Óraállások</h2>
     <span class="ms-4">{{ monthAndYear }}</span>
-    <button class="btn btn-primary float-end" (click)="closeMeters()">Lezárás</button>
+    <button class="btn btn-primary float-end" (click)="closeMeters()">Hónap lezárása</button>
 </div>
     
 
@@ -107,7 +107,7 @@
                 </div>
              
                
-                  <p *ngIf="!user.isMeters" class="col text-center">Nincs vízóra.</p>
+                  <p *ngIf="!user.isMeters" class="col text-center text-danger">Nincs vízóra.</p>
              
 
            

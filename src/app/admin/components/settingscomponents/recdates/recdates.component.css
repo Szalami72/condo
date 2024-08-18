@@ -18,3 +18,12 @@
   color: #ccc;
   cursor: not-allowed;
 }
+
+.title {
+  font-weight: bold;
+  color: #444;
+}
+
+.row {
+  color: #444;
+}

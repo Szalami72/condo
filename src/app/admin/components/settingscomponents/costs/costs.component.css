@@ -1,13 +1,8 @@
-.settings-box {
-    display: flex;
-    flex-direction: column;
-    /* Remove height setting */
-}
 
 .form-inline {
     margin-bottom: 1rem;
     display: flex;
-    align-items: center;
+    align-items: left;
 }
 
 .label-cost {
@@ -48,4 +43,13 @@
 
 .mt-auto {
     margin-top: auto;
+}
+
+.title {
+    font-weight: bold;
+    color: #444;
+}
+
+.row {
+    color: #444;
 }

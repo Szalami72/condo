@@ -21,6 +21,7 @@ export class DescriptionService {
   "Ez esetben a lakók/lakások adatainak rögzítésénél ki lehet választani a közös költség összegét.<br>" +
   "A fix összeg azt jelenti hogy minden lakásnak ugyanannyi a közös költsége.<br>" +
   "A vízóra nélküli lakások albetéti díjának megadása a közös költséghez hasonló." +
+  "<br>Az 'Egyéb befizetés'-nél tudod rögzíteni a közös költségen kívüli kiadásokat. Pl. felújítás." +
   "<br><br>Ha beállítottad az értékeket, a <b>Mentés</b> gombra kattintva véglegesítheted.";
 
   datasDescription: string = "A társasház adatait rögzítheted, pl.: gondnok neve, telefonszámok, ...<br>" +
@@ -31,7 +32,8 @@ export class DescriptionService {
   
   metersDetailsDescription: string = "A lakókat név és lépcsőház szerint rendezheted sorba a bal oldalon található kapcsolóval.<br>" +
   "A jobb oldali <b>Pótolandók</b> kapcsoló aktiválásával a listában csak azok a lakók jelennek meg akiknek még nincs vagy hiányos a rögzítése.<br>" +
-  "A 'Lezárás' gombra kattintva véglegesítheted az adatokat.<br>";
+  "Az <b>Előző</b> gombra kattintva megnézheted a lakó utolsó 12 hónapi óraállásait.<br>" +
+  "A <b>A hónap lezárása</b> gombra kattintva véglegesítheted az adatokat.<br>";
   
   residentDetailsDescription: string = "A lakókat név és lépcsőház szerint rendezheted sorba a bal oldalon található kapcsolóval.<br>" +
   "Új lakó felvételéhez kattints a <b>Új lakó felvétele</b> gombra.<br>" +

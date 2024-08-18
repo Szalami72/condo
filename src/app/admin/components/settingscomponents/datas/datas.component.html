@@ -1,7 +1,7 @@
 
 
 <div class="settings-box h-100 p-3">
-    <p>A társasház adatai:</p>
+    <p class="title">A társasház adatai:</p>
 
     <div class="form-inline mb-3" *ngFor="let data of condoDatas">
         <input class="title-input" type="text" name="title" [(ngModel)]="data.title" [readonly]="!data.isEditable">

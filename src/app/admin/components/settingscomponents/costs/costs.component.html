@@ -1,39 +1,74 @@
-<div class="settings-box p-3 d-flex flex-column">
-    <p>Közös költség fizetésének módja:</p>
+<div class="p-3 row">
+    <p class="title">Közös költség fizetésének módja:</p>
 
-    <div class="form-inline mb-3">
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
         <label for="smeter" class="label-cost" [class.selected-label]="commonCost === 'smeter'">m<sup>2</sup> alapján</label>
         <input class="visually-hidden" type="radio" id="smeter" name="commoncost" [(ngModel)]="commonCost" value="smeter">
 
+        <div class="form-inline amount amount-smeter mt-4" *ngIf="commonCost === 'smeter'">
+            <label class="input-label" for="amountSmeter">Kk. Ft/m<sup>2</sup>:</label>
+            <input class="amount-input text-center" type="number" name="amountSmeter" id="amountSmeter" [(ngModel)]="amountSmeter">
+        </div>
+
+        <div class="form-inline amount amount-smeter" *ngIf="commonCost === 'smeter'">
+            <label class="input-label" for="subDepSmeter">albetét Ft/m<sup>2</sup>:</label>
+            <input class="amount-input text-center" type="number" name="subDepSmeter" id="subDepSmeter" [(ngModel)]="subDepSmeter">
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
         <label for="perflat" class="label-cost" [class.selected-label]="commonCost === 'perflat'">Lakásonként</label>
         <input class="visually-hidden" type="radio" id="perflat" name="commoncost" [(ngModel)]="commonCost" value="perflat">
+    </div>
 
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
         <label for="fix" class="label-cost" [class.selected-label]="commonCost === 'fix'">Fix összeg</label>
         <input class="visually-hidden" type="radio" id="fix" name="commoncost" [(ngModel)]="commonCost" value="fix">
 
-        <span *ngIf="commonCost" class="deleteSelected" (click)="deleteSelected()"><i class="fa-solid fa-square-minus fa-lg"></i></span>
-    </div>
-
-    <div class="form-inline amount amount-smeter" *ngIf="commonCost === 'smeter'">
-        <label class="input-label" for="amountSmeter">Kk. Ft/m<sup>2</sup>:</label>
-        <input class="amount-input text-center" type="number" name="amountSmeter" id="amountSmeter" [(ngModel)]="amountSmeter">
-    </div>
-
-    <div class="form-inline amount amount-fix" *ngIf="commonCost === 'fix'">
-        <label class="input-label" for="amountFix">Kk. fix összeg:</label>
-        <input class="amount-input text-center" type="number" name="amountFix" id="amountFix" [(ngModel)]="amountFix">
-    </div>
-
-    <div class="form-inline amount amount-smeter" *ngIf="commonCost === 'smeter'">
-        <label class="input-label" for="subDepSmeter">albetét Ft/m<sup>2</sup>:</label>
-        <input class="amount-input text-center" type="number" name="subDepSmeter" id="subDepSmeter" [(ngModel)]="subDepSmeter">
-    </div>
-
-    <div class="form-inline amount amount-fix" *ngIf="commonCost === 'fix'">
-        <label class="input-label" for="subDepFix">albetét Ft:</label>
-        <input class="amount-input text-center" type="number" name="subDepFix" id="subDepFix" [(ngModel)]="subDepFix">
-    </div>
+        <div class="form-inline amount amount-fix mt-4" *ngIf="commonCost === 'fix'">
+            <label class="input-label" for="amountFix">Kk. fix összeg:</label>
+            <input class="amount-input text-center" type="number" name="amountFix" id="amountFix" [(ngModel)]="amountFix">
+        </div>
     
+        <div class="form-inline amount amount-fix" *ngIf="commonCost === 'fix'">
+            <label class="input-label" for="subDepFix">albetét Ft:</label>
+            <input class="amount-input text-center" type="number" name="subDepFix" id="subDepFix" [(ngModel)]="subDepFix">
+        </div>
+
+    </div>
+
+    <div class="col-1 text-center">
+        <span *ngIf="commonCost" class="deleteSelected" (click)="deleteSelected()"><i class="fa-solid fa-xmark fa-lg cursor-pointer"></i></span>
+    </div>
+
+    <div class="col-12 mb-3 mt-4">
+        <p class="title">Plussz befizetés:</p>
+
+        <div class="form-inline amount amount-fix">
+            <label class="input-label" for="extraPayment">összeg Ft:</label>
+            <input class="amount-input text-center" type="number" name="extraPayment" id="extraPayment" [(ngModel)]="extraPayment">
+        </div>
+
+        <div class="form-inline amount amount-fix">
+            <label class="input-label" for="extraPaymentTitle">oka:</label>
+            <textarea class="ps-2 text-start" cols="30" rows="2" name="extraPaymentTitle" id="extraPaymentTitle" [(ngModel)]="extraPaymentTitle">
+            </textarea>
+        </div>
+
+        <p class="title">Befizetés módja:</p>
+
+        <div class="form-inline amount amount-fix">
+            <label for="extraPaymentModeFix" class="label-cost me-4" [class.selected-label]="extraPaymentMode === 'fix'">{{extraPayment}} Ft/lakás</label>
+            <input class="visually-hidden" type="radio" id="extraPaymentModeFix" name="extraPaymentMode" [(ngModel)]="extraPaymentMode" value="fix">
+     
+            <label for="extraPaymentModeSquaremeter" class="label-cost ms-4" [class.selected-label]="extraPaymentMode === 'squaremeter'"> {{extraPayment}} Ft/m<sup>2</sup></label>
+            <input class="visually-hidden" type="radio" id="extraPaymentModeSquaremeter" name="extraPaymentMode" [(ngModel)]="extraPaymentMode" value="squaremeter">
+        </div>
+
+
+
+        </div>
+     
     <div class="mt-auto">
         <button class="btn btn-primary btn-sm float-end" (click)="saveCosts()">Mentés</button>
     </div>

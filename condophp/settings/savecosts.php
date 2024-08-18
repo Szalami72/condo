@@ -18,6 +18,10 @@ class SaveCosts
         $this->saveOrUpdateSetting('amountFix', $costsData['amountFix'] ?? null);
         $this->saveOrUpdateSetting('subDepSmeter', $costsData['subDepSmeter'] ?? null);
         $this->saveOrUpdateSetting('subDepFix', $costsData['subDepFix'] ?? null);
+        $this->saveOrUpdateSetting('extraPayment', $costsData['extraPayment'] ?? null);
+        $this->saveOrUpdateSetting('extraPaymentMode', $costsData['extraPaymentMode'] ?? null);
+        $this->saveOrUpdateSetting('extraPaymentTitle', $costsData['extraPaymentTitle'] ?? null);
+
     }
 
     private function saveOrUpdateSetting($title, $value)

@@ -4,6 +4,9 @@ export interface MeterData {
     amountFix?: number;
     subDepSmeter?: number;
     subDepFix?: number;
+    extraPayment?: number;
+    extraPaymentMode?: string;
+    extraPaymentTitle?: string;
     cold1: string;
     cold2: string;
     hot1: string;
