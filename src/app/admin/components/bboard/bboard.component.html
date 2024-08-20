@@ -1,0 +1,46 @@
+<app-menu></app-menu>
+
+<div class="container mb-4">
+
+  <div class="mb-4">
+    <h2 class="mb-4">
+        Faliújság
+        <span class="info-icon float-end mt-3 p-1" (click)="getBulletinBoardDescription()">info</span>
+    </h2>
+  </div>
+
+  <app-message></app-message>
+
+  <angular-editor class="editor mb-4" [(ngModel)]="editorContent" [config]="editorConfig"></angular-editor>
+
+  <div class="editor-buttons mb-4">
+    <a  *ngIf="editorContent" class="btn btn-primary float-end mt-2" (click)="saveOrUpdateBb()">
+        Mentés
+      </a>
+
+    <a *ngIf="isEditing" class="btn btn-secondary float-end me-2 mt-2" (click)="cancelEdit()">
+      Mégse
+    </a>
+
+    <a *ngIf="isDelete" class="btn btn-danger float-end me-2 mt-2" (click)="deleteBb()">
+      Töröl
+      </a>
+    
+  </div>
+
+  <div class="previous">
+    <p class="p-2 ps-3 bg-secondary text-white">Előző tartalmak</p>
+
+    <div class="previous-content row" *ngFor="let bb of bulletinBoards">
+        <p class="blue">Létrehozva: {{bb.created_at}}</p>
+
+        <div [innerHTML]="sanitizeHTML(bb.content)" class="col-lg-10 col-md-12 col-sm-12"></div>
+
+        <div class="col-lg-2col-md-12 col-sm-12 d-flex flex-column justify-content-end">
+            <a class="btn btn-secondary btn-sm align-self-end" (click)="editBb(bb)">Szerkeszt</a>
+        </div>
+  <hr class="mt-2">
+    </div>
+  </div> 
+
+</div>

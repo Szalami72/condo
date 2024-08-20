@@ -1,0 +1,20 @@
+
+h2 {
+    margin-top: 5rem;
+}
+
+.previous {
+    margin-top: 3.5rem;
+}
+
+.info-icon {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffc107;
+    cursor: pointer;
+}
+
+.blue {
+    color: #007bff;
+    text-decoration: underline;
+}

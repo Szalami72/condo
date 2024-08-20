@@ -12,7 +12,11 @@ export class MessageService {
   setMessage(message: string): void {
     this.message = message;
     this.errorMessage = null;
-  }
+
+    setTimeout(() => {
+        this.message = null;
+    }, 3000); 
+}
 
   setErrorMessage(errorMessage: string): void {
     this.errorMessage = errorMessage;

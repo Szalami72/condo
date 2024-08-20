@@ -1,9 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 body {
-    background-color: #ddd;
+    background-color: #fff;
     min-width: 400px;
     font-family: 'Space Mono', monospace;
-
+    color: #444;
 }
 .cursor-pointer{
     cursor: pointer;
@@ -11,4 +11,8 @@ body {
 
 .btn {
     /* border-radius: 0; */
+}
+
+input, textarea {
+    border: 1px solid #444;
 }

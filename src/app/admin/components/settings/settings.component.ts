@@ -36,23 +36,7 @@ export class SettingsComponent {
     private modalService: NgbModal) { }
 
 
-  // getRecDatesDescription(): any {
-  //   const modalRef = this.modalService.open(InfomodalComponent, { centered: true });
-  //   const message = this.descriptionService.getRecDatesDescription();
-  //   modalRef.componentInstance.infoMessage = message;
-  // }
-
-  // getMetersDescription(): string {
-  //   return this.descriptionService.getMetersDescription();
-  // }
-
-  // getCostsDescription(): string {
-  //   return this.descriptionService.getCostsDescription();
-  // }
-
-  // getDatasDescription(): string {
-  //   return this.descriptionService.getDatasDescription();
-  // }
+  
 
   getDescription(type: string, openModal: boolean = false): any | string {
     let message = '';

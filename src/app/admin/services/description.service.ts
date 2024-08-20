@@ -43,6 +43,11 @@ export class DescriptionService {
   "A <b>Törlés</b> gombra kattintva törölheted a lakó adatait.<br>" +
   "A <b>Mentés</b> gombra kattintva véglegesítheted az adatokat.<br>";
 
+  bulletinBoardDescription: string = "Itt hozhatsz létre tartalmakat, amik a lakók felületén fognak megjelenni.<br>" +
+  "A szerkesztő felületen tudod formázni a szöveget, hasonlóképp mint egy szövegszerkesztőn.<br>" +
+  "Az előzőleg feltöltött tartalomra kattintva az bekerül a szerkesztő mezőbe, ahol módosítani illetve törölni tudod.<br>" +
+  "A <b>Mentés</b> gombra kattintva véglegesítheted az adatokat.<br>";
+
   constructor() { }
   getRecDatesDescription(): string {
     return this.recDatesDescription;
@@ -67,4 +72,9 @@ export class DescriptionService {
   getResidentDetailsDescription(): string {
     return this.residentDetailsDescription;
   }
+
+  getBulletinBoardDescription(): string {
+    return this.bulletinBoardDescription;
+  }
+
 }
