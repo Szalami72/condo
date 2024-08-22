@@ -48,6 +48,8 @@ export class DescriptionService {
   "Az előzőleg feltöltött tartalomra kattintva az bekerül a szerkesztő mezőbe, ahol módosítani illetve törölni tudod.<br>" +
   "A <b>Mentés</b> gombra kattintva véglegesítheted az adatokat.<br>";
 
+  filesDescription: string = "fájlok";
+
   constructor() { }
   getRecDatesDescription(): string {
     return this.recDatesDescription;
@@ -75,6 +77,10 @@ export class DescriptionService {
 
   getBulletinBoardDescription(): string {
     return this.bulletinBoardDescription;
+  }
+
+  getFilesDescription(): string {
+    return this.filesDescription;
   }
 
 }

@@ -1,0 +1,25 @@
+<app-menu></app-menu>
+
+<div class="container mb-4">
+
+  <div class="mb-4">
+    <h2 class="mb-4">
+        Fájlok feltöltése
+        <span class="info-icon float-end mt-3 p-1" (click)="getFilesDescription()">info</span>
+    </h2>
+  </div>
+
+  <app-message></app-message>
+
+  <div class="upload-form">
+    <div class="mb-3">
+      <input class="form-control" type="file" id="file-input" (change)="onFileSelected($event)">
+      <input class="form-control mt-2" type="text" placeholder="fájl leírása" [(ngModel)]="description">
+      <button class="btn btn-primary btn-sm mt-4 me-4" (click)="uploadFile()">Feltöltés</button>
+      <button class="btn btn-secondary btn-sm mt-4" (click)="cancel()" *ngIf="selectedFile != null">Mégse</button>
+    </div>
+        
+  </div>
+
+
+</div>

@@ -1,0 +1,10 @@
+h2 {
+    margin-top: 5rem;
+}
+
+.info-icon {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffc107;
+    cursor: pointer;
+}

@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { DatePipe } from '@angular/common';
 
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { AngularEditorModule } from '@kolkov/angular-editor';

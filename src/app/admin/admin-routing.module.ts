@@ -6,6 +6,7 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { ResidentsComponent } from './components/residents/residents.component';
 import { MetersComponent } from './components/meters/meters.component';
 import { BboardComponent } from './components/bboard/bboard.component';
+import { FilesComponent } from './components/files/files.component';
 import { PagenotfoundComponent } from '../shared/authentication/components/pagenotfound/pagenotfound.component';
 
 
@@ -19,6 +20,7 @@ const adminRoutes: Routes = [
           { path: 'residents', component: ResidentsComponent },
           { path: 'meters', component: MetersComponent },
           { path: 'bulletinboard', component: BboardComponent },
+          { path: 'files', component: FilesComponent },
         
          
 
