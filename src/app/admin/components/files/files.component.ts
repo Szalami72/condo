@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
@@ -13,7 +13,6 @@ import { FilesService } from '../../services/files.service';
 
 import { InfomodalComponent } from '../../../shared/sharedcomponents/infomodal/infomodal.component';
 import { ConfirmmodalComponent } from '../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-files',
@@ -22,10 +21,11 @@ import { HttpEventType, HttpResponse } from '@angular/common/http';
   templateUrl: './files.component.html',
   styleUrl: './files.component.css'
 })
-export class FilesComponent {
+export class FilesComponent  implements OnInit {
 
   selectedFile: File | null = null;
   description: string = '';
+  uploadedFiles: any[] = [];
 
 
 
@@ -34,6 +34,13 @@ constructor(public messageService: MessageService,
   public descriptionService: DescriptionService, 
   private modalService: NgbModal,
   private filesService: FilesService) { }
+
+
+ngOnInit(): void {  
+
+  this.getFiles();
+ 
+}
 getFilesDescription(openModal: boolean = false): any | string {
   
   let message = '';
@@ -45,6 +52,23 @@ getFilesDescription(openModal: boolean = false): any | string {
 
 }
 
+getFiles() {
+
+  this.filesService.getFiles().subscribe( 
+    (response: any) => {
+      if (response && response.status === 'success') {  
+        this.uploadedFiles = response.data;
+
+      } else if (response && response.status === 'error') {
+        this.messageService.setErrorMessage('Hiba az adatok betöltése során. Próbáld meg később!');
+      }
+    },
+    (error: any) => {
+      console.log('Hiba:', error);
+      this.messageService.setErrorMessage('Hiba az adatok betöltése során. Próbáld meg később!');
+    }
+  );
+}
 onFileSelected(event: any) {
   this.selectedFile = event.target.files[0] as File;
 }
@@ -60,6 +84,15 @@ cancel() {
 
 uploadFile() {
   if (!this.selectedFile) {
+    this.messageService.setErrorMessage('Nincs kiválasztott fájl.');
+    return;
+  }
+
+  const maxFileSizeInMB = 5;
+  const maxFileSizeInBytes = maxFileSizeInMB * 1024 * 1024;
+  
+  if (this.selectedFile.size > maxFileSizeInBytes) {
+    this.messageService.setErrorMessage('A fájl mérete túl nagy. Kérlek válassz egy kisebb fájlt.');
     return;
   }
 
@@ -72,18 +105,15 @@ uploadFile() {
 
   this.filesService.saveFile(formData).subscribe(
     (response: any) => {
-      console.log('Válasz:', response);
       
       if (response && response.status === 'success') {
-        // Sikeres feltöltés
         this.messageService.setErrorMessage('');
         this.messageService.setMessage('A fájl feltöltése sikerült!');
         this.cancel();
+        this.getFiles();
       } else if (response && response.status === 'error') {
-        // Hibakezelés
         this.messageService.setErrorMessage(response.message || 'Ismeretlen hiba történt.');
       } else {
-        // Ha a válasz nem tartalmaz `status` mezőt
         this.messageService.setErrorMessage('Ismeretlen válasz érkezett a szervertől.');
       }
     },
@@ -94,7 +124,66 @@ uploadFile() {
   );
 }
 
+
+downloadFile(file: any) {
+  this.filesService.getFileById(file.id).subscribe(
+    (response: any) => {
+      if (response.status === 'success') {
+        const fileData = response.data;
+        // const fileUrl = fileData.filePath;
+        const fileUrl = 'http://localhost/condophp/uploads/' + fileData.fileName; // fileData.fileName tartalmazza a fájl nevét
+        console.log('fileUrl:', fileUrl);
+
+        // Egy rejtett link elem létrehozása a fájl letöltéséhez
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.target = '_blank';
+        link.download = fileData.fileName;  // A fájl neve a szerver válaszából
+        link.click();
+      } else {
+        this.messageService.setErrorMessage('Hiba történt a fájl letöltése során.');
+      }
+    },
+    (error: any) => {
+      console.log('Hiba:', error);
+      this.messageService.setErrorMessage('Hiba történt a fájl letöltése során.');
+    }
+  );
 }
 
-//TODO:
-// kilistázni a fájlokat -> törlés és letöltés gombok és funkciók létrehozása
+
+deleteFile(file: any) {
+  const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true, size: 'sm' });
+  modalRef.componentInstance.confirmMessage = 'Biztosan törlöd a fájlt?';
+
+  modalRef.result.then(
+    (result) => {
+      if (result) {
+        this.filesService.deleteFile(file.id).subscribe(
+          (response: any) => {
+            if (response && response.status === 'success') {
+              this.getFiles();
+            } else if (response && response.status === 'error') {
+              this.messageService.setErrorMessage(response.message || 'Ismeretlen hiba történt.');
+              this.getFiles();
+            } else {
+              this.messageService.setErrorMessage('Ismeretlen válasz érkezett a szervertől.');
+            }
+          },
+          (error) => {
+            console.log('Hiba:', error);
+            this.messageService.setErrorMessage('Hiba történt a fájl továbbítás során.');
+          }
+        );
+      }
+    },
+    (reason) => {
+      console.log('Modal closed with reason:', reason);
+    }
+  );
+}
+
+
+    
+  
+}

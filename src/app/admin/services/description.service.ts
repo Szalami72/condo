@@ -48,8 +48,10 @@ export class DescriptionService {
   "Az előzőleg feltöltött tartalomra kattintva az bekerül a szerkesztő mezőbe, ahol módosítani illetve törölni tudod.<br>" +
   "A <b>Mentés</b> gombra kattintva véglegesítheted az adatokat.<br>";
 
-  filesDescription: string = "fájlok";
-
+  filesDescription: string = "Fájlokat tudsz feltölteni, amit a lakók letölthetnek. Pl.: képek, dokumentumok, jegyzőkönyvek stb. <br>" + 
+  "A 'fájl leírása' mezőben ínformációt csatolhatsz a fájlhoz.<br>" +
+  "A fájlok maximális mérete nem lehet több mint 5Mb.<br>" +
+  "A <b>Mentés</b> gombra kattintva töltheted fel a fájlt.<br>";
   constructor() { }
   getRecDatesDescription(): string {
     return this.recDatesDescription;

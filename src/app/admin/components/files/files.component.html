@@ -7,6 +7,7 @@
         Fájlok feltöltése
         <span class="info-icon float-end mt-3 p-1" (click)="getFilesDescription()">info</span>
     </h2>
+    <span class="ms-2">Maximális fájlmeret: 5 MB</span>
   </div>
 
   <app-message></app-message>
@@ -21,5 +22,28 @@
         
   </div>
 
+  <hr>
+
+  <h5 class="mb-4 mt-4" *ngIf="uploadedFiles.length > 0">Feltöltött fájlok:</h5>
+ 
+  <div class="filelist">
+
+  <div class="row" *ngFor="let file of uploadedFiles">
+    <div class="col-lg-9 col-md-12 col-sm-12 mb-2">
+      <b>Fájlnév: </b> {{file.fileName}}
+      <br>
+      <span *ngIf="file.description != 'null'">
+        <b>Fájlleírás: </b> {{file.description}}
+      </span>
+    </div>
+
+    <div class="col-lg-3 col-md-12 col-sm-12 mb-2">
+      <button class="btn btn-secondary btn-sm float-end" (click)="downloadFile(file)">Letöltés</button>
+      <button class="btn btn-danger btn-sm me-2 float-end" (click)="deleteFile(file)">Töröl</button>
+    </div>
+    <hr>
+  </div>
+
+</div>
 
 </div>
