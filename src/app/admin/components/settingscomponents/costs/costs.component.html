@@ -40,7 +40,7 @@
     <div class="col-1 text-center">
         <span *ngIf="commonCost" class="deleteSelected" (click)="deleteSelected()"><i class="fa-solid fa-xmark fa-lg cursor-pointer"></i></span>
     </div>
-
+<hr>
     <div class="col-12 mb-3 mt-4">
         <p class="title">Plussz befizetés:</p>
 
@@ -54,7 +54,7 @@
             <textarea class="ps-2 text-start" cols="30" rows="2" name="extraPaymentTitle" id="extraPaymentTitle" [(ngModel)]="extraPaymentTitle">
             </textarea>
         </div>
-
+        <hr>
         <p class="title">Befizetés módja:</p>
 
         <div class="form-inline amount amount-fix">
@@ -66,7 +66,7 @@
         </div>
 
         </div>
-     
+     <hr>
     <div class="mt-auto">
         <button class="btn btn-primary btn-sm float-end" (click)="saveCosts()">Mentés</button>
     </div>

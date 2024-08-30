@@ -4,14 +4,16 @@
 }
 
 .settings-box .label-cold-hot,
-.settings-box .heating {
+.settings-box .heating,
+.settings-box .meters-perflat {
     cursor: pointer;
     margin-right: 1rem;
 }
 
 .settings-box .selected-cold,
 .settings-box .selected-hot,
-.settings-box .selected-heating {
+.settings-box .selected-heating,
+.settings-box .selected-meters-perflat {
     font-weight: bold;
     color: #007bff;
 }

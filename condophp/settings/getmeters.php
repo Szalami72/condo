@@ -40,7 +40,7 @@ foreach ($result as $row) {
         foreach ($result as $row) {
             $meters[$row['title']] = $row['value'];
         }
-
+        error_log(print_r($meters, true));
         return $meters;
     }
 }
@@ -51,6 +51,7 @@ try {
 
     $getMeters = new GetMeters($conn);
     $meters = $getMeters->getMeters();
+
     echo json_encode(['status' => 'success', 'data' => $meters]);
 } catch(PDOException $e) {
     echo json_encode(['status' => 'error', 'message' => 'Connection failed: ' . $e->getMessage()]);

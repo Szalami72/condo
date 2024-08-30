@@ -31,8 +31,10 @@ export class MetersComponent implements OnInit {
       cold2: this.cold2 || false,
       hot1: this.hot1 || false,
       hot2: this.hot2 || false,
-      heating: this.heating || false
+      heating: this.heating || false,
+  
     };
+    console.log(metersData);
 
     this.metersService.saveMeters(metersData).subscribe({
       next: (response) => {
@@ -52,10 +54,15 @@ export class MetersComponent implements OnInit {
         this.hot1 = data.hot1;
         this.hot2 = data.hot2;
         this.heating = data.heating;
+        console.log('Received data:', data);
       },
       error => {
         this.messageService.setErrorMessage('Hiba történt az adatok letöltése során. Próbáld meg később!');
       }
+      
     );
   }
+
+ 
+
 }

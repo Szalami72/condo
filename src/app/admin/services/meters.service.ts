@@ -33,7 +33,8 @@ export class MetersService {
             cold2: response.data.cold2 || false,
             hot1: response.data.hot1 || false,
             hot2: response.data.hot2 || false,
-            heating: response.data.heating || false
+            heating: response.data.heating || false,
+
           };
         } else {
           throw new Error('Sikertelen adatkérés vagy hiányzó adatok.');

@@ -1,6 +1,6 @@
 <div class="p-3 row">
 
-  <div class="col col-lg-6 col-md-6 col-sm-12 settings-box pe-4 mb-2 day-options">
+  <div class="col-lg-6 col-md-6 col-sm-12 settings-box pe-4 mb-2 day-options">
     <p class="title">Válaszd ki a kezdő dátumot:</p>
       <div *ngFor="let day of days" class="form-check form-check-inline day-option">
           <input class="visually-hidden" type="radio" name="startDay" [id]="'startDay-' + day" [value]="day" [(ngModel)]="startDay" (change)="updateEndDayOptions()">
@@ -8,13 +8,24 @@
       </div>
   </div>
 
-  <div class="col col-lg-6 col-md-6 col-sm-12 settings-box ps-4 mb-2 day-options">
+  <div class="col-lg-6 col-md-6 col-sm-12 settings-box ps-4 mb-2 day-options">
     <p class="title">Válaszd ki a befejezés dátumát:</p>
       <div *ngFor="let day of days" class="form-check form-check-inline day-option">
           <input class="visually-hidden" type="radio" name="endDay" [id]="'endDay-' + day" [value]="day" [(ngModel)]="endDay" [disabled]="!isEndDaySelectable(day)">
           <label [ngClass]="{'selected-label': endDay === day, 'unselectable': !isEndDaySelectable(day)}" class="label-day text-right" [for]="'endDay-' + day">{{ day }}</label>
       </div>
   </div>
+
+  <div class="col-12">
+    <p class="title">Diktálás gyakorisága:</p>
+
+    <label class="label-every-month" [class.selected-every-month]="selectedPeriod === 'everyMonth'" for="everyMonth">Havonta</label>
+    <input class="visually-hidden" type="radio" name="frequency" id="everyMonth" value="everyMonth" [(ngModel)]="selectedPeriod">
+
+    <label class="label-even-months" [class.selected-even-months]="selectedPeriod === 'evenMonths'" for="evenMonths">Páros hónapok</label>
+    <input class="visually-hidden" type="radio" name="frequency" id="evenMonths" value="evenMonths" [(ngModel)]="selectedPeriod">
+</div>
+
 
   <div class="mt-auto">
       <button class="btn btn-primary btn-sm float-end" (click)="saveDates()" [disabled]="!isValid()">Mentés</button>

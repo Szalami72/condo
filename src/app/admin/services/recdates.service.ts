@@ -15,18 +15,19 @@ export class RecdatesService {
 
   constructor(private http: HttpClient) { }
 
-  saveRecordDates(startDay: any, endDay: any): Observable<any> {
-    const body = { startDay, endDay };
+  saveRecordDates(startDay: any, endDay: any, selectedPeriod: string): Observable<any> {
+    const body = { startDay, endDay, selectedPeriod };
     return this.http.post(this.saveRecDatesApi, body);
   }
 
-  getRecordDates(): Observable<{ startDay: number, endDay: number }> {
+  getRecordDates(): Observable<{ startDay: number, endDay: number, selectedPeriod: string }> {
     return this.http.get<any>(this.getRecDatesApi).pipe(
       map(response => {
         if (response.status === 'success') {
           return {
             startDay: Number(response.data.startDate),
-            endDay: Number(response.data.endDate)
+            endDay: Number(response.data.endDate),
+            selectedPeriod: response.data.selectedPeriod
           };
         } else {
           throw new Error('Sikertelen adatkérés.');

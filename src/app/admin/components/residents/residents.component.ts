@@ -53,7 +53,7 @@ export class ResidentsComponent implements OnInit {
     cold2: '',
     hot1: '',
     hot2: '',
-    heating: ''
+    heating: '',
   };
 
   sortedColumn: string | null = null;

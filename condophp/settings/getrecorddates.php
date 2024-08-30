@@ -11,7 +11,7 @@ class GetRecordDates
     }
 
     public function getDates() {
-        $query = "SELECT title, value FROM settings WHERE title IN ('startDate', 'endDate')";
+        $query = "SELECT title, value FROM settings WHERE title IN ('startDate', 'endDate', 'selectedPeriod')";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -22,7 +22,8 @@ class GetRecordDates
 
         $dates = [
             'startDate' => null,
-            'endDate' => null
+            'endDate' => null,
+            'selectedPeriod' => null
         ];
 
         foreach ($result as $row) {

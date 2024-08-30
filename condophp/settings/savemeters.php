@@ -17,6 +17,7 @@ class SaveMeters
             'hot1' => $hot1,
             'hot2' => $hot2,
             'heating' => $heating
+            
         ];
 
         $existingTitles = $this->getExistingTitles();

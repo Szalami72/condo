@@ -37,7 +37,7 @@ export class MetersComponent implements OnInit {
   searchTerm: string = '';
   filterEmptyFields: boolean = false; // Új változó a szűréshez
 
-  loadErrorMessage = "Hiba történt az adatok mentése során. Próbáld meg később!";
+  loadErrorMessage = "Hiba történt az adatok betöltése során. Próbáld meg később!";
 
   meterData: MeterData = {
     commonCost: undefined,
@@ -49,7 +49,8 @@ export class MetersComponent implements OnInit {
     cold2: '',
     hot1: '',
     hot2: '',
-    heating: ''
+    heating: '',
+
   };
 
   monthAndYear: string = '';

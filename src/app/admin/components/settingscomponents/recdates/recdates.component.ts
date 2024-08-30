@@ -18,6 +18,8 @@ export class RecdatesComponent implements OnInit {
   startDay: number | null = null;
   endDay: number | null = null;
 
+  selectedPeriod: string = 'everyMonth';
+
 
   constructor(private recdatesService: RecdatesService, public messageService: MessageService) {
     this.generateDays();
@@ -28,6 +30,7 @@ export class RecdatesComponent implements OnInit {
       data => {
         this.startDay = data.startDay;
         this.endDay = data.endDay;
+        this.selectedPeriod = data.selectedPeriod;
       },
       error => {
         this.messageService.setErrorMessage('Hiba történt az adatok letöltése során. Próbáld meg később!');
@@ -54,9 +57,10 @@ export class RecdatesComponent implements OnInit {
   }
 
   saveDates() {
+    
     if (this.isValid()) {
       if (this.startDay && this.endDay && this.startDay <= this.endDay) {
-        this.recdatesService.saveRecordDates(this.startDay, this.endDay).subscribe({
+        this.recdatesService.saveRecordDates(this.startDay, this.endDay, this.selectedPeriod).subscribe({
           next: (response) => {
             this.messageService.setMessage('A dátumok sikeresen mentve.');
           },

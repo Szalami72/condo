@@ -27,3 +27,17 @@
 .row {
   color: #444;
 }
+
+.label-every-month,
+.label-even-months,
+.label-none-months {
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+.selected-every-month,
+.selected-even-months,
+.selected-none-months {
+  font-weight: bold;
+  color: #007bff;
+}

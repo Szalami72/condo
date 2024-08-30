@@ -1,8 +1,7 @@
 <div class="settings-box p-3 row">
     <p class="title">Válaszd ki a használni kívánt mérőórákat:</p>
     
-    <div class="col col-lg-4 col-md-6 col-sm-12 mb-3">
-
+    <div class="col col-lg-3 col-md-6 col-sm-12 mb-3">
         <div class="form-inline mb-2">
             <label class="label-cold-hot" [class.selected-cold]="cold1" for="cold1">Hideg 1</label>
             <input class="visually-hidden" type="checkbox" name="cold1" id="cold1" [(ngModel)]="cold1">
@@ -11,7 +10,7 @@
         </div>
     </div>
 
-    <div class="col col-lg-4 col-md-6 col-sm-12 mb-3">
+    <div class="col col-lg-3 col-md-6 col-sm-12 mb-3">
         <div class="form-inline mb-2">
             <label class="label-cold-hot" [class.selected-hot]="hot1" for="hot1">Meleg 1</label>
             <input class="visually-hidden" type="checkbox" name="hot1" id="hot1" [(ngModel)]="hot1">
@@ -26,6 +25,7 @@
             <input class="visually-hidden" type="checkbox" name="heating" id="heating" [(ngModel)]="heating">
         </div>
     </div>
+
 
     <div class="mt-auto">
         <button class="btn btn-primary btn-sm float-end" (click)="saveMeters()">Mentés</button>

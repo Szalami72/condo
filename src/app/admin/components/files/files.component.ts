@@ -162,6 +162,7 @@ deleteFile(file: any) {
         this.filesService.deleteFile(file.id).subscribe(
           (response: any) => {
             if (response && response.status === 'success') {
+              this.messageService.setMessage('A fájl törlése sikeres!');
               this.getFiles();
             } else if (response && response.status === 'error') {
               this.messageService.setErrorMessage(response.message || 'Ismeretlen hiba történt.');

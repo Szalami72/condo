@@ -10,8 +10,8 @@ class SaveRecordDates
         $this->conn = $conn;
     }
 
-    public function saveDates($startDate, $endDate) {
-        $query = "SELECT title FROM settings WHERE title IN ('startDate', 'endDate')";
+    public function saveDates($startDate, $endDate, $selectedPeriod) {
+        $query = "SELECT title FROM settings WHERE title IN ('startDate', 'endDate', 'selectedPeriod')";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -44,6 +44,18 @@ class SaveRecordDates
             $stmt->bindParam(':value', $endDate);
             $stmt->execute();
         }
+
+        if (in_array('selectedPeriod', $existingTitles)) {
+            $updateQuery = "UPDATE settings SET value = :value WHERE title = 'selectedPeriod'";
+            $stmt = $this->conn->prepare($updateQuery);
+            $stmt->bindParam(':value', $selectedPeriod);
+            $stmt->execute();
+        } else {
+            $insertQuery = "INSERT INTO settings (title, value) VALUES ('selectedPeriod', :value)";
+            $stmt = $this->conn->prepare($insertQuery);
+            $stmt->bindParam(':value', $selectedPeriod);
+            $stmt->execute();
+        }
     }
 }
 
@@ -55,10 +67,11 @@ try {
     $data = json_decode(file_get_contents("php://input"), true);
 
     if (json_last_error() === JSON_ERROR_NONE) {
-        if (isset($data['startDay']) && isset($data['endDay'])) {
+        if (isset($data['startDay']) && isset($data['endDay']) && isset($data['selectedPeriod'])) {
             $startDate = $data['startDay'];
             $endDate = $data['endDay'];
-            $saveRecordDates->saveDates($startDate, $endDate);
+            $selectedPeriod = $data['selectedPeriod'];
+            $saveRecordDates->saveDates($startDate, $endDate, $selectedPeriod);
             echo json_encode(['status' => 'success']);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
