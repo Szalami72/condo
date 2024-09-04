@@ -5,13 +5,16 @@
 .settings-box .label-day {
   cursor: pointer;
   display: block;
-  width: 1rem; /* or set an appropriate width based on your design */
+  width: 1.75rem; /* or set an appropriate width based on your design */
+  padding-right: 0.25rem;
   text-align: right;
 }
 
 .settings-box .selected-label {
   font-weight: bold;
   color: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 0.25rem;
 }
 
 .settings-box .unselectable {
@@ -33,6 +36,7 @@
 .label-none-months {
   cursor: pointer;
   margin-right: 1rem;
+  padding: 0 0.5rem;
 }
 
 .selected-every-month,
@@ -40,4 +44,7 @@
 .selected-none-months {
   font-weight: bold;
   color: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 0.25rem;
+  padding: 0 0.5rem;
 }

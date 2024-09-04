@@ -18,6 +18,7 @@ export class MetersComponent implements OnInit {
   hot1 = false;
   hot2 = false;
   heating = false;
+  severally = false;
 
   constructor(private metersService: MetersService, public messageService: MessageService) { }
 
@@ -32,6 +33,7 @@ export class MetersComponent implements OnInit {
       hot1: this.hot1 || false,
       hot2: this.hot2 || false,
       heating: this.heating || false,
+      severally: this.severally || false
   
     };
     console.log(metersData);
@@ -54,6 +56,7 @@ export class MetersComponent implements OnInit {
         this.hot1 = data.hot1;
         this.hot2 = data.hot2;
         this.heating = data.heating;
+        this.severally = data.severally;
         console.log('Received data:', data);
       },
       error => {
@@ -63,6 +66,16 @@ export class MetersComponent implements OnInit {
     );
   }
 
- 
+ uncheckSeverally() {
+    this.severally = false;
+    
+  }
 
+  uncheckMeters() {
+    this.cold1 = false;
+    this.cold2 = false;
+    this.hot1 = false;
+    this.hot2 = false;
+    this.heating = false;
+  }
 }

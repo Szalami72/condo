@@ -10,13 +10,14 @@ class SaveMeters
         $this->conn = $conn;
     }
 
-    public function saveMeterSettings($cold1, $cold2, $hot1, $hot2, $heating) {
+    public function saveMeterSettings($cold1, $cold2, $hot1, $hot2, $heating, $severally) {
         $meterSettings = [
             'cold1' => $cold1,
             'cold2' => $cold2,
             'hot1' => $hot1,
             'hot2' => $hot2,
-            'heating' => $heating
+            'heating' => $heating,
+            'severally' => $severally
             
         ];
 
@@ -32,7 +33,7 @@ class SaveMeters
     }
 
     private function getExistingTitles() {
-        $query = "SELECT title FROM settings WHERE title IN ('cold1', 'cold2', 'hot1', 'hot2', 'heating')";
+        $query = "SELECT title FROM settings WHERE title IN ('cold1', 'cold2', 'hot1', 'hot2', 'heating', 'severally')";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -69,13 +70,14 @@ $cold2 = $data['cold2'];
 $hot1 = $data['hot1'];
 $hot2 = $data['hot2'];
 $heating = $data['heating'];
+$severally = $data['severally'];
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $saveMeters = new SaveMeters($conn);
-    $saveMeters->saveMeterSettings($cold1, $cold2, $hot1, $hot2, $heating);
+    $saveMeters->saveMeterSettings($cold1, $cold2, $hot1, $hot2, $heating, $severally);
 
     echo json_encode(['status' => 'success']);
 } catch(PDOException $e) {

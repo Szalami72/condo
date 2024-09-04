@@ -12,7 +12,7 @@ class GetMeters
 
     public function getMeters() {
 
-        $query = "SELECT title, value FROM settings WHERE title IN ('cold1', 'cold2', 'hot1', 'hot2', 'heating')";
+        $query = "SELECT title, value FROM settings WHERE title IN ('cold1', 'cold2', 'hot1', 'hot2', 'heating', 'severally')";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -22,7 +22,8 @@ $meters = [
     'cold2' => false,
     'hot1' => false,
     'hot2' => false,
-    'heating' => false
+    'heating' => false,
+    'severally' => false
 ];
 
 if (!$result) {

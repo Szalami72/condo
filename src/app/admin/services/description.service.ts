@@ -15,6 +15,7 @@ export class DescriptionService {
   "az online felületen.<br>" +
   "Például ha két vízóra van a lakásban, akkor válaszd a <b>Hideg 1</b> és a <b>Meleg 1</b>-et.<br>" + 
   "Ha csak a melegvíz fogyasztást kell leadni akkor válaszd a <b>Meleg 1</b> és/vagy a <b>Meleg 2</b>-őt." +
+  "<br>A <b>Lakásonkénti beállítás</b>t akkor használd ha nem ugyanannyi mérőóra van minden lakásban. " +
   "<br>Ha beállítottad az értékeket, a <b>Mentés</b> gombra kattintva véglegesítheted.";
 
   costsDescription: string = "A közös költség lehet m<sup>2</sup> alapú, lakásonként beállított vagy fix összeg.<br><br>" +

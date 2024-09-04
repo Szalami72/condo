@@ -5,17 +5,23 @@
 
 .settings-box .label-cold-hot,
 .settings-box .heating,
-.settings-box .meters-perflat {
+.settings-box .meters-perflat,
+.settings-box .severally {
     cursor: pointer;
     margin-right: 1rem;
+    padding: 0 0.5rem;
 }
 
 .settings-box .selected-cold,
 .settings-box .selected-hot,
 .settings-box .selected-heating,
-.settings-box .selected-meters-perflat {
+.settings-box .selected-meters-perflat,
+.settings-box .selected-severally {
     font-weight: bold;
     color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 0.25rem;
+    padding: 0 0.5rem;
 }
 
 .visually-hidden {

@@ -8,16 +8,21 @@
 .label-cost {
     cursor: pointer;
     margin-right: 1rem;
+    padding: 0 0.5rem;
 }
 
 .label-check {
     cursor: pointer;
     margin-left: 4rem;
+    padding: 0 0.5rem;
 }
 
 .selected-label {
     font-weight: bold;
     color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 0.25rem;
+    padding: 0 0.5rem;
 }
 
 .amount {
@@ -33,6 +38,7 @@
 .amount-input {
     flex-grow: 1;
     max-width: 100px; /* Control the width of the input fields */
+    border-radius: 0.25rem;
 }
 
 .visually-hidden {
@@ -57,4 +63,8 @@
 
 .row {
     color: #444;
+}
+
+textarea {
+    border-radius: 0.25rem;
 }
