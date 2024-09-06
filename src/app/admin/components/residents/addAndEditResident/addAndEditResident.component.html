@@ -272,31 +272,37 @@
         
 
          <!-- ha egyéni akkor ez jelenjen meg -->
-         <div class="row input-field mb-2" *ngIf="isMeter === 1 && severally">
+         <div class="row input-field mb-2" *ngIf="isMeter === 1">
             <div class="col-3">Mérőórák:</div>
           
             <div class="col-9 row">
               <div class="col">
                 <input class="visually-hidden" type="checkbox" name="cold1" id="cold1" [(ngModel)]="cold1" [checked]="cold1">
-                <label for="cold1" class="selected-meters" [ngClass]="{'selected-cold1': cold1}">H1</label>
+                <label for="cold1" class="selected-meters" [ngClass]="{'selected-cold1': cold1, 'disabled-label': !severally}">H1</label>
               </div>
           
               <div class="col">
                 <input class="visually-hidden" type="checkbox" name="cold2" id="cold2" [(ngModel)]="cold2" [checked]="cold2">
-                <label for="cold2" class="selected-meters" [ngClass]="{'selected-cold2': cold2}">H2</label>
+                <label for="cold2" class="selected-meters" [ngClass]="{'selected-cold2': cold2, 'disabled-label': !severally}">H2</label>
               </div>
           
               <div class="col">
                 <input class="visually-hidden" type="checkbox" name="hot1" id="hot1" [(ngModel)]="hot1" [checked]="hot1">
-                <label for="hot1" class="selected-meters" [ngClass]="{'selected-hot1': hot1}">M1</label>
+                <label for="hot1" class="selected-meters" [ngClass]="{'selected-hot1': hot1, 'disabled-label': !severally}">M1</label>
               </div>
           
               <div class="col">
                 <input class="visually-hidden" type="checkbox" name="hot2" id="hot2" [(ngModel)]="hot2" [checked]="hot2">
-                <label for="hot2" class="selected-meters" [ngClass]="{'selected-hot2': hot2}">M2</label>
+                <label for="hot2" class="selected-meters" [ngClass]="{'selected-hot2': hot2, 'disabled-label': !severally}">M2</label>
+              </div>
+          
+              <div class="col">
+                <input class="visually-hidden" type="checkbox" name="heating" id="heating" [(ngModel)]="heating" [checked]="heating">
+                <label for="heating" class="selected-meters" [ngClass]="{'selected-heating': heating, 'disabled-label': !severally}">Hm</label>
               </div>
             </div>
           </div>
+          
           
           
           
@@ -306,25 +312,29 @@
 
         <!--  -->
   <!-- ha egyéni akkor ne jelenjen meg -->
-        <div class="row input-field mb-2" *ngIf="isMeter === 1">
-            <div class="col-3">
-                Vízórák gyári száma:
-            </div>
-            <div class="col-9 row">
-                <div class="col" *ngIf="cold1">
-                  <input type="text" class="form-control" name="cold1SerialNumber" placeholder="hideg 1" [(ngModel)]="cold1SerialNumber">
-                </div>
-                <div class="col" *ngIf="cold2">
-                  <input type="text" class="form-control" name="cold2SerialNumber" placeholder="hideg 2" [(ngModel)]="cold2SerialNumber">
-                </div>
-                <div class="col" *ngIf="hot1">
-                  <input type="text" class="form-control" name="hot1SerialNumber" placeholder="meleg 1" [(ngModel)]="hot1SerialNumber">
-                </div>
-                <div class="col" *ngIf="hot2">
-                  <input type="text" class="form-control" name="hot2SerialNumber" placeholder="meleg 2" [(ngModel)]="hot2SerialNumber">
-                </div>
-              </div>
+  <div class="row input-field mb-2" *ngIf="isMeter === 1">
+    <div class="col-3">
+        Órák gyári száma:
+    </div>
+    <div class="col-9 row">
+        <div class="col">
+          <input type="text" class="form-control" name="cold1SerialNumber" placeholder="hideg 1" [(ngModel)]="cold1SerialNumber" [disabled]="!cold1">
         </div>
+        <div class="col">
+          <input type="text" class="form-control" name="cold2SerialNumber" placeholder="hideg 2" [(ngModel)]="cold2SerialNumber" [disabled]="!cold2">
+        </div>
+        <div class="col">
+          <input type="text" class="form-control" name="hot1SerialNumber" placeholder="meleg 1" [(ngModel)]="hot1SerialNumber" [disabled]="!hot1">
+        </div>
+        <div class="col">
+          <input type="text" class="form-control" name="hot2SerialNumber" placeholder="meleg 2" [(ngModel)]="hot2SerialNumber" [disabled]="!hot2">
+        </div>
+        <div class="col">
+          <input type="text" class="form-control" name="heatingSerialNumber" placeholder="fűtés" [(ngModel)]="heatingSerialNumber" [disabled]="!heating">
+        </div>
+      </div>
+  </div>
+  
         <!--  -->
 
        

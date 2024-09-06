@@ -40,13 +40,20 @@
   .selected-cold1,
   .selected-cold2,
   .selected-hot1,
-  .selected-hot2 {
+  .selected-hot2,
+  .selected-heating{
     font-weight: bold;
     color: #007bff;
     border: 1px solid #007bff;
     border-radius: 0.25rem;
     padding: 0 0.5rem;
   }
+
+  .disabled-label {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  
   
   
   

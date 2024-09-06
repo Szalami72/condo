@@ -83,6 +83,8 @@ export class AddAndEditResidentComponent implements OnInit {
   hot1SerialNumber: string = '';
   hot2SerialNumber: string = '';
 
+  heatingSerialNumber: string = '';
+
   isLoading = false;
   pendingRequests: number = 0;
 
@@ -156,6 +158,7 @@ loadUserData(userId: number): void {
         this.cold2SerialNumber = data.cold2SerialNumber;
         this.hot1SerialNumber = data.hot1SerialNumber;
         this.hot2SerialNumber = data.hot2SerialNumber;
+        this.heatingSerialNumber = data.heatingSerialNumber;
 
         // Check if serial numbers are non-empty and set true/false accordingly
         if(this.severally) {
@@ -163,6 +166,7 @@ loadUserData(userId: number): void {
           this.cold2 = data.cold2SerialNumber ? true : false;
           this.hot1 = data.hot1SerialNumber ? true : false;
           this.hot2 = data.hot2SerialNumber ? true : false;
+          this.heating = data.heatingSerialNumber ? true : false;
         }
         
         
@@ -213,6 +217,7 @@ loadUserData(userId: number): void {
       cold2SerialNumber: new FormControl(''),
       hot1SerialNumber: new FormControl(''),
       hot2SerialNumber: new FormControl(''),
+      heatingSerialNumber: new FormControl(''),
   
     });
    }
@@ -314,11 +319,13 @@ loadUserData(userId: number): void {
         cold2: this.cold2,
         hot1: this.hot1,
         hot2: this.hot2,
+        heating: this.heating,
         severally: this.severally,
         cold1SerialNumber: this.cold1SerialNumber || 0,  // Ha üres, akkor 0
         cold2SerialNumber: this.cold2SerialNumber || 0,  // Ha üres, akkor 0
         hot1SerialNumber: this.hot1SerialNumber || 0,    // Ha üres, akkor 0
         hot2SerialNumber: this.hot2SerialNumber || 0,    // Ha üres, akkor 0
+        heatingSerialNumber: this.heatingSerialNumber || 0,    // Ha üres, akkor 0
         subDeposit: this.subDeposit || this.newSubDeposit || 0
       };
       console.log('setResidentData', data);
