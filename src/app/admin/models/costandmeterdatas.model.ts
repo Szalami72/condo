@@ -7,6 +7,7 @@ export interface MeterData {
     extraPayment?: number;
     extraPaymentMode?: string;
     extraPaymentTitle?: string;
+    severally?: string;
     cold1: string;
     cold2: string;
     hot1: string;

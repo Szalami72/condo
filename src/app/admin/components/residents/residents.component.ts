@@ -54,6 +54,7 @@ export class ResidentsComponent implements OnInit {
     hot1: '',
     hot2: '',
     heating: '',
+    severally: '',
   };
 
   sortedColumn: string | null = null;
@@ -106,6 +107,7 @@ export class ResidentsComponent implements OnInit {
         this.meterData.subDepSmeter = data.subDepSmeter ? Number(data.subDepSmeter) : undefined;
         this.meterData.subDepFix = data.subDepFix ? Number(data.subDepFix) : undefined;
 
+
       } else {
         this.messageService.setErrorMessage(this.loadErrorMessage);
       }
@@ -122,11 +124,13 @@ export class ResidentsComponent implements OnInit {
         this.meterData.hot1 = data.hot1;
         this.meterData.hot2 = data.hot2;
         this.meterData.heating = data.heating;
+        this.meterData.severally = data.severally;
       },
       error => {
         this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     );
+    // console.log(this.meterData);
   }
 
   onPageSizeChange() {
@@ -210,6 +214,7 @@ getSortableValue(value: any): any {
     modalRef.componentInstance.hot1 = this.meterData.hot1;
     modalRef.componentInstance.hot2 = this.meterData.hot2;
     modalRef.componentInstance.heating = this.meterData.heating;
+    modalRef.componentInstance.severally = this.meterData.severally;
     modalRef.componentInstance.userId = userId;
 
     modalRef.result.then(

@@ -1,6 +1,7 @@
 <?php
 require '../vendor/autoload.php';
 require '../config/header.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 define('RESET_LINK', 'http://localhost:4200/reset-password?token=');
 
@@ -78,7 +79,7 @@ class CheckUserByEmail {
     }
 
     private function configureSMTP() {
-        $smtpConfig = require 'config/smtp_config.php';
+        $smtpConfig = require '../config/smtp_config.php'; 
 
         $this->mailer->isSMTP();
         $this->mailer->Host = $smtpConfig['host'];

@@ -16,7 +16,7 @@ class GetResidents {
             $sql = "SELECT 
                 users.id AS userId, 
                 users.username, 
-                users.email, 
+                users.email,
                 buildings.typeOfBuildings, 
                 floors.typeOfFloors, 
                 doors.typeOfDoors 

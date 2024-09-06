@@ -169,39 +169,55 @@ class SaveResidentDataUpdate
     }
 
     private function saveMeterSerialNumbers($userId, $data)
-    {
-        // Megjegyezzük a létrejött id-t és a megfelelő meterId-t
-        $meterSerials = [
-            ['field' => 'cold1', 'serial' => 'cold1SerialNumber', 'typeOfMeter' => 'cold1'],
-            ['field' => 'hot1', 'serial' => 'hot1SerialNumber', 'typeOfMeter' => 'hot1'],
-            ['field' => 'cold2', 'serial' => 'cold2SerialNumber', 'typeOfMeter' => 'cold2'],
-            ['field' => 'hot2', 'serial' => 'hot2SerialNumber', 'typeOfMeter' => 'hot2'],
-        ];
+{
+    $meterSerials = [
+        ['field' => 'cold1', 'serial' => 'cold1SerialNumber', 'typeOfMeter' => 'cold1'],
+        ['field' => 'hot1', 'serial' => 'hot1SerialNumber', 'typeOfMeter' => 'hot1'],
+        ['field' => 'cold2', 'serial' => 'cold2SerialNumber', 'typeOfMeter' => 'cold2'],
+        ['field' => 'hot2', 'serial' => 'hot2SerialNumber', 'typeOfMeter' => 'hot2'],
+    ];
 
-        foreach ($meterSerials as $meter) {
-            if ($data[$meter['field']] == 1 && !empty($data[$meter['serial']])) {
-                // Ellenőrizzük, hogy a serial number létezik-e
-                $sql = "SELECT id FROM metersserialnumber WHERE userId = :userId AND typeOfMeter = :typeOfMeter AND serialNum = :serialNum";
+    foreach ($meterSerials as $meter) {
+        if ($data[$meter['field']] == 1) {
+            // Ellenőrizzük, hogy a serial number létezik-e
+            $sql = "SELECT id FROM metersserialnumber WHERE userId = :userId AND typeOfMeter = :typeOfMeter";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':userId', $userId);
+            $stmt->bindParam(':typeOfMeter', $meter['typeOfMeter']);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result) {
+                // Ha létezik, akkor frissítjük a serial számot
+                $sql = "UPDATE metersserialnumber 
+                        SET serialNum = :serialNum 
+                        WHERE userId = :userId AND typeOfMeter = :typeOfMeter";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(':serialNum', $data[$meter['serial']]);
+                $stmt->bindParam(':userId', $userId);
+                $stmt->bindParam(':typeOfMeter', $meter['typeOfMeter']);
+                $stmt->execute();
+            } else {
+                // Ha nem létezik, akkor beszúrjuk az új adatot
+                $sql = "INSERT INTO metersserialnumber (userId, typeOfMeter, serialNum) 
+                        VALUES (:userId, :typeOfMeter, :serialNum)";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(':userId', $userId);
                 $stmt->bindParam(':typeOfMeter', $meter['typeOfMeter']);
                 $stmt->bindParam(':serialNum', $data[$meter['serial']]);
                 $stmt->execute();
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                if (!$result) {
-                    // Ha nem létezik, akkor beszúrjuk az új adatot
-                    $sql = "INSERT INTO metersserialnumber (userId, typeOfMeter, serialNum) 
-                            VALUES (:userId, :typeOfMeter, :serialNum)";
-                    $stmt = $this->conn->prepare($sql);
-                    $stmt->bindParam(':userId', $userId);
-                    $stmt->bindParam(':typeOfMeter', $meter['typeOfMeter']);
-                    $stmt->bindParam(':serialNum', $data[$meter['serial']]);
-                    $stmt->execute();
-                }
             }
+        } elseif ($data[$meter['field']] == 0) {
+            // Ha az érték false, akkor töröljük a meglévő adatot
+            $sql = "DELETE FROM metersserialnumber WHERE userId = :userId AND typeOfMeter = :typeOfMeter";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':userId', $userId);
+            $stmt->bindParam(':typeOfMeter', $meter['typeOfMeter']);
+            $stmt->execute();
         }
     }
+}
+
 }
 
 // Adatok fogadása és frissítése

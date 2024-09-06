@@ -25,11 +25,12 @@ export class AddAndEditResidentComponent implements OnInit {
   @Input() amountFix: number | undefined;
   @Input() subDepSmeter: number | undefined;
   @Input() subDepFix: number | undefined;
-  @Input() cold1: string = '';
-  @Input() cold2: string = '';
-  @Input() hot1: string = '';
-  @Input() hot2: string = '';
-  @Input() heating: string = '';
+  @Input() cold1: boolean = false;
+  @Input() cold2: boolean = false;
+  @Input() hot1: boolean = false;
+  @Input() hot2: boolean = false;
+  @Input() heating: boolean = false;
+  @Input() severally: boolean = false;
   @Input() userId: number | undefined;
 
   
@@ -121,40 +122,57 @@ export class AddAndEditResidentComponent implements OnInit {
 }
   
 
-   loadUserData(userId: number): void {
-    this.residentsService.getResidentDatasById(userId).subscribe({
-      next: (response) => {
-        if (response.status === 'success') {
+loadUserData(userId: number): void {
+  this.residentsService.getResidentDatasById(userId).subscribe({
+    next: (response) => {
+      if (response.status === 'success') {
 
-        
-          console.log('rd', response.data);
-          const data = response.data;
+        console.log('rd', response.data);
+        console.log('cold1: ', this.cold1);
+        console.log('cold2: ', this.cold2);
+        console.log('hot1: ', this.hot1);
+        console.log('hot2: ', this.hot2);
+        console.log('heating: ', this.heating);
 
-          const { areaNum, phoneNum } = this.splitPhoneNumber(data.phone);
-          this.phoneAreaNum = areaNum;
-          this.phoneNum = phoneNum;
+        console.log('severally: ', this.severally);
+        const data = response.data;
 
-          this.username = data.username;
-          this.email = data.email;
-          this.building = data.typeOfBuildings;
-          this.floor = data.typeOfFloors;
-          this.door = data.typeOfDoors;
-          this.squareMeter = data.typeOfSquareMeters;
-          this.commoncostBase = data.typeOfCommoncosts;
-          this.subDeposit = data.typeOfSubdeposits;
-          this.balance = data.balance;
-          this.adminLevel = data.adminLevel;
-          this.isMeter = data.isMeters;
-          this.cold1SerialNumber = data.cold1SerialNumber;
-          this.cold2SerialNumber = data.cold2SerialNumber;
-          this.hot1SerialNumber = data.hot1SerialNumber;
-          this.hot2SerialNumber = data.hot2SerialNumber;
-        } else {
-          this.messageService.setErrorMessage(this.loadErrorMessage);
+        const { areaNum, phoneNum } = this.splitPhoneNumber(data.phone);
+        this.phoneAreaNum = areaNum;
+        this.phoneNum = phoneNum;
+
+        this.username = data.username;
+        this.email = data.email;
+        this.building = data.typeOfBuildings;
+        this.floor = data.typeOfFloors;
+        this.door = data.typeOfDoors;
+        this.squareMeter = data.typeOfSquareMeters;
+        this.commoncostBase = data.typeOfCommoncosts;
+        this.subDeposit = data.typeOfSubdeposits;
+        this.balance = data.balance;
+        this.adminLevel = data.adminLevel;
+        this.isMeter = data.isMeters;
+        this.cold1SerialNumber = data.cold1SerialNumber;
+        this.cold2SerialNumber = data.cold2SerialNumber;
+        this.hot1SerialNumber = data.hot1SerialNumber;
+        this.hot2SerialNumber = data.hot2SerialNumber;
+
+        // Check if serial numbers are non-empty and set true/false accordingly
+        if(this.severally) {
+          this.cold1 = data.cold1SerialNumber ? true : false;
+          this.cold2 = data.cold2SerialNumber ? true : false;
+          this.hot1 = data.hot1SerialNumber ? true : false;
+          this.hot2 = data.hot2SerialNumber ? true : false;
         }
-      },  
-    });
-  }
+        
+        
+      } else {
+        this.messageService.setErrorMessage(this.loadErrorMessage);
+      }
+    },
+  });
+}
+
   
   splitPhoneNumber(phoneNumber: string): { areaNum: string, phoneNum: string } {
     const parts = phoneNumber.split(' ');
@@ -194,7 +212,8 @@ export class AddAndEditResidentComponent implements OnInit {
       cold1SerialNumber: new FormControl(''),
       cold2SerialNumber: new FormControl(''),
       hot1SerialNumber: new FormControl(''),
-      hot2SerialNumber: new FormControl('')
+      hot2SerialNumber: new FormControl(''),
+  
     });
    }
    
@@ -261,7 +280,7 @@ export class AddAndEditResidentComponent implements OnInit {
     this.errorMessage = '';
     if (this.validateForm()) {
       const data = this.setResidentData();
-      console.log(data);
+      console.log("update-datas:", data);
 
       this.residentsService.updateData(data)
       .subscribe(
@@ -277,32 +296,35 @@ export class AddAndEditResidentComponent implements OnInit {
       }
     }
   
-   setResidentData() {
-    const data = {
-      id: this.userId,
-      username: this.username,
-      email: this.email,
-      phone: `${this.phoneAreaNum} ${this.phoneNum}`,
-      building: this.building || this.newBuilding,
-      floor: this.floor || this.newFloor,
-      door: this.door || this.newDoor,
-      squareMeter: this.squareMeter || this.newSquareMeter,
-      commoncost: this.commoncostBase || this.newCommoncost || 0,
-      balance: this.balance,
-      adminLevel: this.adminLevel,
-      isMeter: this.isMeter,
-      cold1: this.cold1,
-      cold2: this.cold2,
-      hot1: this.hot1,
-      hot2: this.hot2,
-      cold1SerialNumber: this.cold1SerialNumber,
-      cold2SerialNumber: this.cold2SerialNumber,
-      hot1SerialNumber: this.hot1SerialNumber,
-      hot2SerialNumber: this.hot2SerialNumber,
-      subDeposit: this.subDeposit || this.newSubDeposit || 0
-    };
-    return data;
-   }
+    setResidentData() {
+      const data = {
+        id: this.userId,
+        username: this.username,
+        email: this.email,
+        phone: `${this.phoneAreaNum} ${this.phoneNum}`,
+        building: this.building || this.newBuilding,
+        floor: this.floor || this.newFloor,
+        door: this.door || this.newDoor,
+        squareMeter: this.squareMeter || this.newSquareMeter,
+        commoncost: this.commoncostBase || this.newCommoncost || 0,
+        balance: this.balance,
+        adminLevel: this.adminLevel,
+        isMeter: this.isMeter,
+        cold1: this.cold1,
+        cold2: this.cold2,
+        hot1: this.hot1,
+        hot2: this.hot2,
+        severally: this.severally,
+        cold1SerialNumber: this.cold1SerialNumber || 0,  // Ha üres, akkor 0
+        cold2SerialNumber: this.cold2SerialNumber || 0,  // Ha üres, akkor 0
+        hot1SerialNumber: this.hot1SerialNumber || 0,    // Ha üres, akkor 0
+        hot2SerialNumber: this.hot2SerialNumber || 0,    // Ha üres, akkor 0
+        subDeposit: this.subDeposit || this.newSubDeposit || 0
+      };
+      console.log('setResidentData', data);
+      return data;
+    }
+    
 
    deleteUser(userId: number) {
     const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true, size: 'sm' });
@@ -484,25 +506,6 @@ updateSubDeposit(): void {
   }
 }
 
-
-
-
-  
-  get showCold1Input(): boolean {
-    return this.cold1 === '1';
-  }
-
-  get showCold2Input(): boolean {
-    return this.cold2 === '1';
-  }
-
-  get showHot1Input(): boolean {
-    return this.hot1 === '1';
-  }
-
-  get showHot2Input(): boolean {
-    return this.hot2 === '1';
-  }
   
   sortArrayAlphabetically(data: any[], key: string): any[] {
     return data.sort((a, b) => {
