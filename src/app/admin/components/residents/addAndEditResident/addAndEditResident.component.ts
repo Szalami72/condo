@@ -88,6 +88,8 @@ export class AddAndEditResidentComponent implements OnInit {
   isLoading = false;
   pendingRequests: number = 0;
 
+  metersTypes: any[] = [];
+
 
 
   constructor(private activeModal: NgbActiveModal,
@@ -129,14 +131,6 @@ loadUserData(userId: number): void {
     next: (response) => {
       if (response.status === 'success') {
 
-        console.log('rd', response.data);
-        console.log('cold1: ', this.cold1);
-        console.log('cold2: ', this.cold2);
-        console.log('hot1: ', this.hot1);
-        console.log('hot2: ', this.hot2);
-        console.log('heating: ', this.heating);
-
-        console.log('severally: ', this.severally);
         const data = response.data;
 
         const { areaNum, phoneNum } = this.splitPhoneNumber(data.phone);
@@ -321,11 +315,11 @@ loadUserData(userId: number): void {
         hot2: this.hot2,
         heating: this.heating,
         severally: this.severally,
-        cold1SerialNumber: this.cold1SerialNumber || 0,  // Ha üres, akkor 0
-        cold2SerialNumber: this.cold2SerialNumber || 0,  // Ha üres, akkor 0
-        hot1SerialNumber: this.hot1SerialNumber || 0,    // Ha üres, akkor 0
-        hot2SerialNumber: this.hot2SerialNumber || 0,    // Ha üres, akkor 0
-        heatingSerialNumber: this.heatingSerialNumber || 0,    // Ha üres, akkor 0
+        cold1SerialNumber: this.cold1SerialNumber || 0,
+        cold2SerialNumber: this.cold2SerialNumber || 0,  
+        hot1SerialNumber: this.hot1SerialNumber || 0,  
+        hot2SerialNumber: this.hot2SerialNumber || 0,    
+        heatingSerialNumber: this.heatingSerialNumber || 0,    
         subDeposit: this.subDeposit || this.newSubDeposit || 0
       };
       console.log('setResidentData', data);
@@ -481,6 +475,7 @@ loadUserData(userId: number): void {
 
 
   updateCommonCost(): void {
+ 
     const selectedSquareMeterOption = this.squareMeterOptions.find(option => option.typeOfSquaremeters === this.squareMeter);
     if (selectedSquareMeterOption) {
         const matchingCommonCostOption = this.commoncostOptions.find(option => option.id === selectedSquareMeterOption.ccostForThis);
@@ -497,7 +492,56 @@ loadUserData(userId: number): void {
         this.updateSubDeposit();
 
     }
+    if (this.squareMeter && this.severally) {
+      this.updateUsedMeters(this.squareMeter);
+    }
 }
+
+updateUsedMeters(squareMeter: string): void {
+
+  this.residentsService.getUsedMeters(squareMeter).subscribe({
+    
+    next: (response) => {
+      if (response.status === 'success') {
+        this.metersTypes = response.metersTypes;
+        this.setUsedMeters();
+      } else {
+        console.error('Error:', response.message); 
+      }
+    },
+    error: (err) => {
+      console.error('Request failed', err); 
+    }
+  });
+ 
+ 
+}
+
+setUsedMeters(): void {
+
+  this.cold1 = this.cold2 = this.hot1 = this.hot2 = this.heating = false;
+
+  this.metersTypes.forEach((meterType) => {
+    switch (meterType) {
+      case 'cold1':
+        this.cold1 = true;
+        break;
+      case 'cold2':
+        this.cold2 = true;
+        break;
+      case 'hot1':
+        this.hot1 = true;
+        break;
+      case 'hot2':
+        this.hot2 = true;
+        break;
+      case 'heating':
+        this.heating = true;
+        break;
+    }
+  });
+}
+
 
 updateSubDeposit(): void {
   const selectedSquareMeterOption = this.squareMeterOptions.find(option => option.typeOfSquaremeters === this.squareMeter);

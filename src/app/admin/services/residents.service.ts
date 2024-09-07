@@ -21,6 +21,8 @@ export class ResidentsService {
 
   private deleteResidentApi = API_BASE_URL + 'residents/deleteresident.php';
 
+  private getUsedMetersApi = API_BASE_URL + 'residents/getusedmeters.php';
+
   constructor(private http: HttpClient) { }
 
   getData(action: string): Observable<any> {
@@ -69,5 +71,9 @@ export class ResidentsService {
 
   deleteResident(userId: number): Observable<any> {
     return this.http.post<any>(this.deleteResidentApi, { id: userId });
+  }
+
+  getUsedMeters(squareMeter: string): Observable<any> {
+    return this.http.post<any>(this.getUsedMetersApi, { squareMeter: squareMeter });
   }
 }

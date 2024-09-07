@@ -39,7 +39,8 @@ class DataFetcher
     MAX(CASE WHEN metersserialnumber.typeOfMeter = 'cold1' THEN metersserialnumber.serialNum END) AS cold1SerialNumber,
     MAX(CASE WHEN metersserialnumber.typeOfMeter = 'cold2' THEN metersserialnumber.serialNum END) AS cold2SerialNumber,
     MAX(CASE WHEN metersserialnumber.typeOfMeter = 'hot1' THEN metersserialnumber.serialNum END) AS hot1SerialNumber,
-    MAX(CASE WHEN metersserialnumber.typeOfMeter = 'hot2' THEN metersserialnumber.serialNum END) AS hot2SerialNumber
+    MAX(CASE WHEN metersserialnumber.typeOfMeter = 'hot2' THEN metersserialnumber.serialNum END) AS hot2SerialNumber,
+    MAX(CASE WHEN metersserialnumber.typeOfMeter = 'heating' THEN metersserialnumber.serialNum END) AS heatingSerialNumber
 FROM 
     users
 LEFT JOIN 

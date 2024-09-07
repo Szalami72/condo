@@ -227,7 +227,6 @@ getSortableValue(value: any): any {
   
   editResident(id: number) {
     this.addAndEditResident(id);
-    console.log('goToResident', id);
   }
 
   getResidentDetailsDescription() {

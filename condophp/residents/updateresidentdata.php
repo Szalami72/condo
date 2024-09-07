@@ -175,6 +175,7 @@ class SaveResidentDataUpdate
         ['field' => 'hot1', 'serial' => 'hot1SerialNumber', 'typeOfMeter' => 'hot1'],
         ['field' => 'cold2', 'serial' => 'cold2SerialNumber', 'typeOfMeter' => 'cold2'],
         ['field' => 'hot2', 'serial' => 'hot2SerialNumber', 'typeOfMeter' => 'hot2'],
+        ['field' => 'heating', 'serial' => 'heatingSerialNumber', 'typeOfMeter' => 'heating'],
     ];
 
     foreach ($meterSerials as $meter) {
