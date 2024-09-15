@@ -35,7 +35,7 @@ export class MetersComponent implements OnInit {
   pageSize: number = 10;
 
   searchTerm: string = '';
-  filterEmptyFields: boolean = false; // Új változó a szűréshez
+  filterEmptyFields: boolean = false;
 
   loadErrorMessage = "Hiba történt az adatok betöltése során. Próbáld meg később!";
 
@@ -50,6 +50,7 @@ export class MetersComponent implements OnInit {
     hot1: '',
     hot2: '',
     heating: '',
+    severally: '',
 
   };
 
@@ -94,6 +95,7 @@ export class MetersComponent implements OnInit {
 
   getAllResidentsAndMeters() {
     const monthAndYear = this.getCurrentMonthAndYear();
+
     console.log("monthAndYear", monthAndYear);
 
     this.metersService.getMetersValues(monthAndYear).subscribe(
@@ -123,11 +125,13 @@ export class MetersComponent implements OnInit {
         this.meterData.hot1 = data.hot1 || '';
         this.meterData.hot2 = data.hot2 || '';
         this.meterData.heating = data.heating || '';
+        this.meterData.severally = data.severally || '';
       },
       error => {
         this.messageService.setErrorMessage(this.loadErrorMessage);
       }
     );
+    console.log("meterData", this.meterData);
   }
   
 
@@ -278,5 +282,23 @@ export class MetersComponent implements OnInit {
       }
     );
   }
+
+  // getSerialNumberPlaceholder(user: any, meterType: string): string {
+  //   if (user.serialNumbers && user.serialNumbers.length > 0) {
+  //     const meter = user.serialNumbers.find((sn: any) => sn.typeOfMeter === meterType);
+  //     return meter ? meter.serialNum : '';
+  //   }
+  //   return '';
+  // }
+
+  getSerialNumberPlaceholder(user: any, meterType: string): string {
+    if (user.serialNumbers && user.serialNumbers.length > 0) {
+        const meter = user.serialNumbers.find((sn: any) => sn.typeOfMeter === meterType);
+        return meter ? meter.serialNum : '';
+    }
+    return '';
+}
+
+  
 }
 

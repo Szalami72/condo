@@ -181,7 +181,7 @@ class SaveResidentData
         ];
 
         foreach ($meterSerials as $meter) {
-            if ($data[$meter['field']] == 1 && !empty($data[$meter['serial']])) {
+            if ($data[$meter['field']] == 1) {
                 $sql = "INSERT INTO metersserialnumber (userId, typeOfMeter, serialNum) 
                         VALUES (:userId, :typeOfMeter, :serialNum)";
                 $stmt = $this->conn->prepare($sql);

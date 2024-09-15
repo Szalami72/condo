@@ -78,42 +78,85 @@
                     {{ user.typeOfBuildings }}/{{ user.typeOfFloors }}/{{ user.typeOfDoors }}
                   </span>
                 </div>
-        
-                
-                <div class="col text-center" *ngIf="meterData.cold1 ==='1' && user.isMeters">Hideg1:
-                  <input class="w-100 text-center border border-primary-subtle bg-primary-subtle" type="number" name="cold1" [(ngModel)]="user.cold1" (ngModelChange)="validatePositiveNumber(user, 'cold1')" min="0" step="1">
+              
+                <div class="col text-center" *ngIf="user.isMeters && (meterData.cold1 === '1' || (getSerialNumberPlaceholder(user, 'cold1')) && meterData.severally)">
+                  Hideg1:
+                  <input
+                    class="w-100 text-center border border-primary-subtle bg-primary-subtle"
+                    type="number"
+                    name="cold1"
+                    [(ngModel)]="user.cold1"
+                    (ngModelChange)="validatePositiveNumber(user, 'cold1')"
+                    min="0"
+                    step="1"
+                    [placeholder]="getSerialNumberPlaceholder(user, 'cold1')"
+                  >
                 </div>
                 
-                <div class="col text-center" *ngIf="meterData.cold2 ==='1' && user.isMeters">Hideg2:
-                  <input class="w-100 text-center border border-primary-subtle bg-primary-subtle" type="number" name="cold2" [(ngModel)]="user.cold2" (ngModelChange)="validatePositiveNumber(user, 'cold2')" min="0" step="1">
-                </div>
                 
-                <div class="col text-center" *ngIf="meterData.hot1 ==='1' && user.isMeters">Meleg1:
-                  <input class="w-100 text-center border border-danger-subtle bg-danger-subtle" type="number" name="hot1" [(ngModel)]="user.hot1" (ngModelChange)="validatePositiveNumber(user, 'hot1')" min="0" step="1">
+              
+                <div class="col text-center" *ngIf="user.isMeters && (meterData.cold2 === '1' || (getSerialNumberPlaceholder(user, 'cold2')) && meterData.severally)">Hideg2:
+                  <input
+                    class="w-100 text-center border border-primary-subtle bg-primary-subtle"
+                    type="number"
+                    name="cold2"
+                    [(ngModel)]="user.cold2"
+                    (ngModelChange)="validatePositiveNumber(user, 'cold2')"
+                    min="0"
+                    step="1"
+                    [placeholder]="getSerialNumberPlaceholder(user, 'cold2')"
+                  >
                 </div>
-                
-                <div class="col text-center" *ngIf="meterData.hot2 ==='1' && user.isMeters">Meleg2:
-                  <input class="w-100 text-center border border-danger-subtle bg-danger-subtle" type="number" name="hot2" [(ngModel)]="user.hot2" (ngModelChange)="validatePositiveNumber(user, 'hot2')" min="0" step="1">
+              
+                <div class="col text-center" *ngIf="user.isMeters && (meterData.hot1 === '1' || (getSerialNumberPlaceholder(user, 'hot1')) && meterData.severally)">Meleg1:
+                  <input
+                    class="w-100 text-center border border-danger-subtle bg-danger-subtle"
+                    type="number"
+                    name="hot1"
+                    [(ngModel)]="user.hot1"
+                    (ngModelChange)="validatePositiveNumber(user, 'hot1')"
+                    min="0"
+                    step="1"
+                    [placeholder]="getSerialNumberPlaceholder(user, 'hot1')"
+                  >
                 </div>
-                
-                <div class="col text-center" *ngIf="meterData.heating ==='1' && user.isMeters">Fűtés:
-                  <input class="w-100 text-center border border-warning-subtle bg-warning-subtle" type="number" name="heating" [(ngModel)]="user.heating" (ngModelChange)="validatePositiveNumber(user, 'heating')" min="0" step="1">
+              
+                <div class="col text-center" *ngIf="user.isMeters && (meterData.hot2 === '1' || (getSerialNumberPlaceholder(user, 'hot2')) && meterData.severally)">Meleg2:
+                  <input
+                    class="w-100 text-center border border-danger-subtle bg-danger-subtle"
+                    type="number"
+                    name="hot2"
+                    [(ngModel)]="user.hot2"
+                    (ngModelChange)="validatePositiveNumber(user, 'hot2')"
+                    min="0"
+                    step="1"
+                    [placeholder]="getSerialNumberPlaceholder(user, 'hot2')"
+                  >
                 </div>
-                
-        
+              
+                <div class="col text-center" *ngIf="user.isMeters && (meterData.heating === '1' || (getSerialNumberPlaceholder(user, 'heating')) && meterData.severally)">Fűtés:
+                  <input
+                    class="w-100 text-center border border-warning-subtle bg-warning-subtle"
+                    type="number"
+                    name="heating"
+                    [(ngModel)]="user.heating"
+                    (ngModelChange)="validatePositiveNumber(user, 'heating')"
+                    min="0"
+                    step="1"
+                    [placeholder]="getSerialNumberPlaceholder(user, 'heating')"
+                  >
+                </div>
+              
                 <div class="col text-center mt-4 mb-2" *ngIf="user.isMeters">
-                  <button class="btn btn-sm btn-primary float-end ms-2" (click)="saveMetersById(user)" >Mentés</button>
-                  <button class="btn btn-sm btn-secondary float-end" (click)="getPreviousDatasById(user.userId)" >Előző</button>      
+                  <button class="btn btn-sm btn-primary float-end ms-2" (click)="saveMetersById(user)">Mentés</button>
+                  <button class="btn btn-sm btn-secondary float-end" (click)="getPreviousDatasById(user.userId)">Előző</button>      
                 </div>
-             
-               
-                  <p *ngIf="!user.isMeters" class="col text-center text-danger">Nincs vízóra.</p>
-             
-
-           
-
+              
+                <p *ngIf="!user.isMeters" class="col text-center text-danger">Nincs vízóra.</p>
+                
                 <hr>
               </div>
+              
               
             </div>
         
