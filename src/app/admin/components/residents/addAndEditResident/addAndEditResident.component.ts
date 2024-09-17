@@ -96,6 +96,7 @@ export class AddAndEditResidentComponent implements OnInit {
     private modalService: NgbModal,
     private residentsService: ResidentsService,
     public messageService: MessageService,
+
   ) { }
 
   ngOnInit(): void {
@@ -257,21 +258,40 @@ loadUserData(userId: number): void {
 
   addNewResident() {
     this.errorMessage = '';
+    
     if (this.validateForm()) {
       const data = this.setResidentData();
   
       this.residentsService.saveData(data)
         .subscribe(
-          () => {
-            this.messageService.setMessage('Lakó sikeresen mentve.');
-            this.activeModal.close();
+          (response: any) => {
+            if (response.success) {
+              this.messageService.setMessage('Lakó sikeresen mentve.');
+              this.activeModal.close();
+            } else {
+              this.messageService.setErrorMessage(response.message);
+              this.errorMessage = response.message;
+            }
           },
           () => {
-            this.messageService.setErrorMessage(this.loadErrorMessage);
-            this.errorMessage = this.loadErrorMessage;
+            this.messageService.setErrorMessage('Ismeretlen hiba történt.');
+            this.errorMessage = 'Ismeretlen hiba történt.';
           }
         );
-        }
+    }
+  }
+  
+  
+
+
+  generatePassword(length: number): string {
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      password += charset[randomIndex];
+    }
+    return password;
   }
 
   updateResident(userId: number) {

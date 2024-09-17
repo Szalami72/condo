@@ -1,23 +1,89 @@
 <?php
 require '../config/header.php';
+require '../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
 
 class SaveResidentData
 {
     private $conn;
+    private $mailer;
 
     public function __construct($conn)
     {
         $this->conn = $conn;
+        $this->mailer = new PHPMailer(true);
+        $this->configureSMTP(); 
     }
 
+    private function configureSMTP() {
+        $smtpConfig = require '../config/smtp_config.php'; 
+    
+        $this->mailer->isSMTP();
+        $this->mailer->Host = $smtpConfig['host'];
+        $this->mailer->Port = $smtpConfig['port'];
+        $this->mailer->SMTPAuth = $smtpConfig['smtp_auth'];
+        $this->mailer->Username = $smtpConfig['username'];
+        $this->mailer->Password = $smtpConfig['password'];
+        $this->mailer->SMTPSecure = $smtpConfig['smtp_secure'];
+        $this->mailer->CharSet = $smtpConfig['charset'];
+    
+        // Debug üzemmód beállítása
+        $this->mailer->SMTPDebug = 2;  // 2 a teljes debug információ, 1 pedig csak az alapok
+        $this->mailer->Debugoutput = 'error_log'; // Logolás az error_log-ba
+    }
+    
+
+    private function sendEmailToNewResident($email, $password) {
+        try {
+            // Email beállítások
+            $this->mailer->setFrom('admin@mycondo.hu', 'MyCondo.hu');
+            $this->mailer->addAddress($email);
+            $this->mailer->isHTML(true);
+            $this->mailer->Subject = 'Új regisztráció';
+            $this->mailer->Body  = "A társasház honlapján regisztrálták önt.<br>" .
+            "<a href='https://mycondo.hu'>MyCondo.hu</a><br><br>" .
+            "Belépési adatok:<br>" .
+            "Email: {$email}<br>" .
+            "Jelszó: {$password}<br>" .
+            "Az adatai biztonsága érdekében változtassa meg a jelszavát!<br>";
+    
+            $this->mailer->send();
+        } catch (Exception $e) {
+            // Hiba logolása
+            error_log("Email could not be sent. PHPMailer Error: {$e->getMessage()}");
+            echo "Email could not be sent. PHPMailer Error: {$e->getMessage()}";
+        }
+    }
+    
+
+    function generatePassword($length = 8) {
+        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $password = '';
+        $charactersLength = strlen($characters);
+        
+        for ($i = 0; $i < $length; $i++) {
+            $password .= $characters[rand(0, $charactersLength - 1)];
+        }
+        
+        return $password;
+    }
     public function saveData($data)
     {
         try {
+
+            if ($this->emailExists($data['email'])) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Ez az email cím már használatban van."
+                ]);
+                return;
+            }
             // Tranzakció indítása
             $this->conn->beginTransaction();
 
             // Felhasználó jelszavának hashelése
-            $newPassword = '12345678'; // Állandó jelszó
+            $newPassword = $this->generatePassword();
             $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
             // Felhasználó létrehozása a users táblában
@@ -96,13 +162,33 @@ class SaveResidentData
 
             // Tranzakció befejezése
             $this->conn->commit();
+
+            $this->sendEmailToNewResident($data['email'], $newPassword);
+
+            echo json_encode([
+                "success" => true,
+                "message" => "Felhasználó sikeresen létrehozva."
+            ]);
+    
         } catch (Exception $e) {
-            // Hiba esetén rollback
             $this->conn->rollBack();
-            throw $e;
+            echo json_encode([
+                "success" => false,
+                "message" => "Hiba történt a mentés során: " . $e->getMessage()
+            ]);
         }
     }
 
+    private function emailExists($email)
+{
+    $sql = "SELECT id FROM users WHERE email = :email";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $result ? true : false;
+}
     private function saveOrUpdate($table, $columnName, $value)
     {
         // Ellenőrizzük, hogy van-e már ilyen érték a táblában
