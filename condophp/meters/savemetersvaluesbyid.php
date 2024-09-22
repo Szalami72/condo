@@ -1,6 +1,7 @@
 <?php
 
 require '../config/header.php';
+require 'calculateCost.php';  // Az új osztály behívása
 
 class SaveMetersValuesById
 {
@@ -29,21 +30,21 @@ class SaveMetersValuesById
             $mayId = $stmt->fetchColumn();
 
             if (!$mayId) {
-                // Ha nincs, akkor hozzáadunk egy új bejegyzést a monthandyear táblához
+                // Ha nincs, új bejegyzés a monthandyear táblába
                 $sql = "INSERT INTO monthandyear (monthAndYear) VALUES (:monthAndYear)";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->execute([':monthAndYear' => $monthAndYear]);
                 $mayId = $this->conn->lastInsertId();
             }
 
-            // Ellenőrizzük, hogy van-e már bejegyzés a metersvalues táblában a userId és mayId páros alapján
+            // Ellenőrizzük, hogy van-e bejegyzés a metersvalues táblában
             $sql = "SELECT id FROM metersvalues WHERE userId = :userId AND mayId = :mayId";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([':userId' => $userId, ':mayId' => $mayId]);
             $metersValueId = $stmt->fetchColumn();
 
             if ($metersValueId) {
-                // Ha van, frissítsük az értékeket
+                // Frissítés
                 $sql = "UPDATE metersvalues SET cold1 = :cold1, cold2 = :cold2, hot1 = :hot1, hot2 = :hot2, heating = :heating WHERE id = :id";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->execute([
@@ -55,7 +56,7 @@ class SaveMetersValuesById
                     ':id' => $metersValueId
                 ]);
             } else {
-                // Ha nincs, akkor hozzáadunk egy új bejegyzést a metersvalues táblához
+                // Új bejegyzés
                 $sql = "INSERT INTO metersvalues (userId, mayId, cold1, cold2, hot1, hot2, heating) VALUES (:userId, :mayId, :cold1, :cold2, :hot1, :hot2, :heating)";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->execute([
@@ -69,7 +70,25 @@ class SaveMetersValuesById
                 ]);
             }
 
-            return ['status' => 'success'];
+            // Ellenőrizzük a calculateCost értékét a settings táblában
+            $sql = "SELECT value FROM settings WHERE title = 'calculateCost' LIMIT 1";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            $calculateCost = $stmt->fetchColumn();
+
+            // Csak akkor futtatjuk a CalculateCost számításokat, ha calculateCost értéke 1
+            if ($calculateCost == 1) {
+                // Ha a mentés sikeres volt, most hívjuk meg a CalculateCost osztályt
+                $calculator = new CalculateCost($this->conn);
+                $result = $calculator->calculate($data);
+
+                // Ha a számítás is sikeres, visszatérünk a "success" státusszal
+                return ['status' => 'success', 'calculatedData' => $result];
+            }
+
+            // Ha a calculateCost nem 1, akkor is visszatérünk "success" státusszal, de számítás nélkül
+            return ['status' => 'success', 'message' => 'Calculation skipped due to settings'];
+
         } catch (PDOException $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];
         }

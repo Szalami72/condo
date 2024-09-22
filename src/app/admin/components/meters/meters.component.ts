@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+
 import { NgbModal, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { MetersService } from '../../services/meters.service';
@@ -188,20 +189,20 @@ export class MetersComponent implements OnInit {
 
   getCurrentMonthAndYear(): string {
     const currentDate = new Date();
-    const month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // Hónap (01-12)
-    const year = currentDate.getFullYear(); // Év (YYYY)
+    const month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+    const year = currentDate.getFullYear();
 
     return `${month}-${year}`;
   }
 
   justEmptyFields() {
-    this.filterEmptyFields = !this.filterEmptyFields; // Változtatja a filterEmptyFields értékét
+    this.filterEmptyFields = !this.filterEmptyFields;
     this.filterUsers();
   }
 
   validatePositiveNumber(user: any, field: string) {
     if (user[field] < 0) {
-      user[field] = 0; // Visszaállítja az értéket 0-ra, ha negatív számot adtak meg
+      user[field] = 0;
     }
   }
   
@@ -238,9 +239,7 @@ export class MetersComponent implements OnInit {
   closeMeters() {
     const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true });
     
-    const message = 'A jóváhagy gomra kattintva, a leadott óraállások alapján kiszámításra kerülnek a lakók költségei.\n'+
-     'A lakók erről mail-ben értesítést kapnak!\n\n' + 
-     'Biztos le akarod zárni az állásokat?\n';
+    const message = 'Biztosan le akarod zárni az állásokat?\n';
 
     let formattedMessage = message.replace(/\n/g, '<br>');
 
@@ -250,6 +249,7 @@ export class MetersComponent implements OnInit {
       (result) => {
         if (result === 'confirmed') {
           console.log('Confirmed');
+
         }
       },
       (reason) => {
@@ -283,13 +283,6 @@ export class MetersComponent implements OnInit {
     );
   }
 
-  // getSerialNumberPlaceholder(user: any, meterType: string): string {
-  //   if (user.serialNumbers && user.serialNumbers.length > 0) {
-  //     const meter = user.serialNumbers.find((sn: any) => sn.typeOfMeter === meterType);
-  //     return meter ? meter.serialNum : '';
-  //   }
-  //   return '';
-  // }
 
   getSerialNumberPlaceholder(user: any, meterType: string): string {
     if (user.serialNumbers && user.serialNumbers.length > 0) {

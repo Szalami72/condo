@@ -67,6 +67,21 @@
 
         </div>
      <hr>
+
+     <div class="col-12 mb-3 mt-4">
+        <p class="title">A mérőórák adatainak rögzítése után a fizetendő összeg kiszámítása:</p>
+
+        <div class="form-inline amount amount-fix">
+            <label for="calculate-yes" class="label-check me-4" [class.selected-label]="calculate === '1'">Igen</label>
+            <input class="visually-hidden" type="radio" id="calculate-yes" name="calculate" [(ngModel)]="calculate" value="1">
+     
+            <label for="calculate-no" class="label-cost ms-4" [class.selected-label]="calculate === '0'"> Nem</label>
+            <input class="visually-hidden" type="radio" id="calculate-no" name="calculate" [(ngModel)]="calculate" value="0">
+        </div>
+
+     </div>
+
+     <hr>
     <div class="mt-auto">
         <button class="btn btn-primary btn-sm float-end" (click)="saveCosts()">Mentés</button>
     </div>

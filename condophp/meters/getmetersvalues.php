@@ -9,8 +9,7 @@ class GetMetersValues
     public function __construct($conn)
     {
         $this->conn = $conn;
-    }
-
+    } 
 
     public function fetchMeters($monthAndYear)
     {
@@ -21,11 +20,7 @@ class GetMetersValues
             $stmt->execute([':monthAndYear' => $monthAndYear]);
             $monthAndYearId = $stmt->fetchColumn();
 
-            // if (!$monthAndYearId) {
-            //     return ['status' => 'error', 'message' => 'Invalid monthAndYear value'];
-            // }
-
-            // Lekérdezés a residents és metersvalues adatainak megszerzésére
+            // Lekérdezés a residents, metersvalues és metersserialnumber adatainak megszerzésére
             $sql = "SELECT 
                 users.id AS userId, 
                 users.username,
@@ -37,7 +32,9 @@ class GetMetersValues
                 metersvalues.cold2,
                 metersvalues.hot1,
                 metersvalues.hot2,
-                metersvalues.heating
+                metersvalues.heating,
+                metersserialnumber.serialNum,
+                metersserialnumber.typeOfMeter
             FROM 
                 users 
             LEFT JOIN 
@@ -62,9 +59,14 @@ class GetMetersValues
                 users.id = metersvalues.userId
             AND 
                 metersvalues.mayId = :monthAndYearId
+            LEFT JOIN
+                metersserialnumber
+            ON 
+                users.id = metersserialnumber.userId
             WHERE
                 users.adminLevel != 0
-            ;"; 
+            ;";
+            
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([':monthAndYearId' => $monthAndYearId]);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -85,9 +87,15 @@ class GetMetersValues
                         'cold2' => $row['cold2'],
                         'hot1' => $row['hot1'],
                         'hot2' => $row['hot2'],
-                        'heating' => $row['heating']
+                        'heating' => $row['heating'],
+                        'serialNumbers' => [] // Itt létrehozunk egy tömböt a mérőszámokhoz
                     ];
                 }
+                // Hozzáadjuk az összes serialNum és typeOfMeter értéket a felhasználóhoz tartozó tömbbe
+                $meters[$userId]['serialNumbers'][] = [
+                    'serialNum' => $row['serialNum'],
+                    'typeOfMeter' => $row['typeOfMeter']
+                ];
             }
             return array_values($meters);
         } catch (PDOException $e) {
@@ -97,7 +105,6 @@ class GetMetersValues
 }
 
 try {
-  
 
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -110,10 +117,11 @@ try {
         $data = $fetcher->fetchMeters($monthAndYear);
         echo json_encode(['status' => 'success', 'data' => $data]);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Missing user ID']);
+        echo json_encode(['status' => 'error', 'message' => 'Missing monthAndYear parameter']);
     }
 
 } catch (PDOException $e) {
     echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
 }
 
+?>

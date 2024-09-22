@@ -21,6 +21,7 @@ class SaveCosts
         $this->saveOrUpdateSetting('extraPayment', $costsData['extraPayment'] ?? null);
         $this->saveOrUpdateSetting('extraPaymentMode', $costsData['extraPaymentMode'] ?? null);
         $this->saveOrUpdateSetting('extraPaymentTitle', $costsData['extraPaymentTitle'] ?? null);
+        $this->saveOrUpdateSetting('calculateCost', $costsData['calculate'] ?? null);
 
     }
 
