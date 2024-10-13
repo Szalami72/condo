@@ -10,14 +10,26 @@ class SaveMeters
         $this->conn = $conn;
     }
 
-    public function saveMeterSettings($cold1, $cold2, $hot1, $hot2, $heating, $severally) {
+    public function saveMeterSettings(
+        $cold1, 
+        $cold2, 
+        $hot1, 
+        $hot2, 
+        $heating, 
+        $severally, 
+        $coldAmount,
+        $hotAmount,
+        $heatingAmount) {
         $meterSettings = [
             'cold1' => $cold1,
             'cold2' => $cold2,
             'hot1' => $hot1,
             'hot2' => $hot2,
             'heating' => $heating,
-            'severally' => $severally
+            'severally' => $severally,
+            'coldAmount' => $coldAmount,
+            'hotAmount' => $hotAmount,
+            'heatingAmount' => $heatingAmount
             
         ];
 
@@ -33,7 +45,7 @@ class SaveMeters
     }
 
     private function getExistingTitles() {
-        $query = "SELECT title FROM settings WHERE title IN ('cold1', 'cold2', 'hot1', 'hot2', 'heating', 'severally')";
+        $query = "SELECT title FROM settings WHERE title IN ('cold1', 'cold2', 'hot1', 'hot2', 'heating', 'severally', 'coldAmount', 'hotAmount', 'heatingAmount')";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -71,13 +83,16 @@ $hot1 = $data['hot1'];
 $hot2 = $data['hot2'];
 $heating = $data['heating'];
 $severally = $data['severally'];
+$coldAmount = $data['coldAmount'];
+$hotAmount = $data['hotAmount'];
+$heatingAmount = $data['heatingAmount'];
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $saveMeters = new SaveMeters($conn);
-    $saveMeters->saveMeterSettings($cold1, $cold2, $hot1, $hot2, $heating, $severally);
+    $saveMeters->saveMeterSettings($cold1, $cold2, $hot1, $hot2, $heating, $severally, $coldAmount, $hotAmount, $heatingAmount);
 
     echo json_encode(['status' => 'success']);
 } catch(PDOException $e) {

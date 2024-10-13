@@ -14,6 +14,12 @@ class CalculateCost
     public function calculate($data)
     {
         $userId = $data['userId'];
+        $monthAndYear = $data['mayId'];
+        $cold1 = $data['cold1'];
+        $cold2 = $data['cold2'];
+        $hot1 = $data['hot1'];
+        $hot2 = $data['hot2'];
+        $heating = $data['heating'];
 
         // Lekérdezzük a beállításokat
         $settings = $this->getSettings();
@@ -79,7 +85,7 @@ class CalculateCost
                 squaremeters s ON r.squareMeterId = s.id
             JOIN 
                 commoncosts c ON s.ccostForThis = c.id
-            JOIN 
+            LEFT JOIN 
                 subdeposits sd ON s.subDepForThis = sd.id
             WHERE 
                 r.userId = :userId
@@ -103,6 +109,7 @@ class CalculateCost
                 'balance' => $firstResident['balance'],
 
             ];
+            return $data;
         } else {
             return ['status' => 'error', 'message' => 'No resident data found'];
         }

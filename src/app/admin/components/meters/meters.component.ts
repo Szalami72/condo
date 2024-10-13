@@ -218,16 +218,18 @@ export class MetersComponent implements OnInit {
     const data = {
       userId: user.userId,
       mayId: this.getCurrentMonthAndYear(),
-      cold1: user.cold1,
-      cold2: user.cold2,
-      hot1: user.hot1,
-      hot2: user.hot2,
-      heating: user.heating
+      cold1: user.cold1 !== null ? user.cold1 : 0,
+      cold2: user.cold2 !== null ? user.cold2 : 0,
+      hot1: user.hot1 !== null ? user.hot1 : 0,
+      hot2: user.hot2 !== null ? user.hot2 : 0,
+      heating: user.heating !== null ? user.heating : 0
     };
+    
 
     this.metersService.saveMetersValuesById(data).subscribe(
       response => {
         if (response.status === 'success') {
+          console.log('saveMetersById', response.calculatedData);
           this.messageService.setMessage('Adatok mentése sikeres!');
         } else {
           this.messageService.setErrorMessage('Hiba történt a mentés során. Próbáld meg később!');

@@ -19,6 +19,9 @@ export class MetersComponent implements OnInit {
   hot2 = false;
   heating = false;
   severally = false;
+  coldAmount: number = 0;
+  hotAmount: number = 0;
+  heatingAmount: number = 0;
 
   constructor(private metersService: MetersService, public messageService: MessageService) { }
 
@@ -33,10 +36,13 @@ export class MetersComponent implements OnInit {
       hot1: this.hot1 || false,
       hot2: this.hot2 || false,
       heating: this.heating || false,
-      severally: this.severally || false
+      severally: this.severally || false,
+      coldAmount: this.coldAmount || 0,
+      hotAmount: this.hotAmount || 0,
+      heatingAmount: this.heatingAmount || 0
   
     };
-    console.log(metersData);
+    console.log('mdata', metersData);
 
     this.metersService.saveMeters(metersData).subscribe({
       next: (response) => {
@@ -57,6 +63,9 @@ export class MetersComponent implements OnInit {
         this.hot2 = data.hot2;
         this.heating = data.heating;
         this.severally = data.severally;
+        this.coldAmount = data.coldAmount;
+        this.hotAmount = data.hotAmount;
+        this.heatingAmount = data.heatingAmount;
         console.log('Received data:', data);
       },
       error => {

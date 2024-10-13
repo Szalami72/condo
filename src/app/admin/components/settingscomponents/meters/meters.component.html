@@ -34,7 +34,31 @@
     </div>
     <hr>
 
+    <div class="settings-box p-3 row">
 
+        <p class="title">Add meg a költségeket:</p>
+
+        <div class="col col-lg-3 col-md-6 col-sm-12 mb-3">
+        <div class="form-inline mb-2">
+            <label for="cold-amount" class="label-cost">Hideg víz Ft/m<sup>2</sup>:</label>
+            <input class="amount-input text-center" type="number" name="cold-amount" id="cold-amount" [(ngModel)]="coldAmount">
+        </div>
+        </div>
+        <div class="col col-lg-3 col-md-6 col-sm-12 mb-3">
+        <div class="form-inline mb-2">
+            <label for="hot-amount" class="label-cost">Meleg víz Ft/m<sup>2</sup>:</label>
+            <input class="amount-input text-center" type="number" name="hot-amount" id="hot-amount" [(ngModel)]="hotAmount">
+        </div>
+        </div>
+
+        <div class="col col-lg-3 col-md-12 col-sm-12 mb-3">
+        <div class="form-inline mb-2">
+            <label for="heating-amount" class="label-cost">Fűtés Ft/egység:</label>
+            <input class="amount-input text-center" type="number" name="heating-amount" id="heating-amount" [(ngModel)]="heatingAmount">
+        </div>
+        </div>
+    </div>
+   
     <div class="mt-auto">
         <button class="btn btn-primary btn-sm float-end" (click)="saveMeters()">Mentés</button>
     </div>

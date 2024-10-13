@@ -20,7 +20,15 @@ export class MetersService {
 
   constructor(private http: HttpClient) { }
 
-  saveMeters(metersData: { cold1: boolean, cold2: boolean, hot1: boolean, hot2: boolean, heating: boolean, severally: boolean }): Observable<any> {
+  saveMeters(metersData: { cold1: boolean, 
+    cold2: boolean, 
+    hot1: boolean, 
+    hot2: boolean, 
+    heating: boolean, 
+    severally: boolean
+    coldAmount: number, 
+    hotAmount: number, 
+    heatingAmount: number }): Observable<any> {
     return this.http.post(this.saveMetersApi, metersData);
   }
 
@@ -34,6 +42,10 @@ export class MetersService {
             hot1: response.data.hot1 || false,
             hot2: response.data.hot2 || false,
             heating: response.data.heating || false,
+
+            coldAmount: response.data.coldAmount || 0,
+            hotAmount: response.data.hotAmount || 0,
+            heatingAmount: response.data.heatingAmount || 0,
 
             severally: response.data.severally || false
 
