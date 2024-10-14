@@ -14,108 +14,154 @@ class CalculateCost
     public function calculate($data)
     {
         $userId = $data['userId'];
-        $monthAndYear = $data['mayId'];
-        $cold1 = $data['cold1'];
-        $cold2 = $data['cold2'];
-        $hot1 = $data['hot1'];
-        $hot2 = $data['hot2'];
-        $heating = $data['heating'];
-
-        // Lekérdezzük a beállításokat
         $settings = $this->getSettings();
-
-        // Lekérdezzük a resident adatokat
         $residentData = $this->getResidentData($userId);
 
-        // Számítási műveletek itt
-        // Például, ha van szükség a residentData és settings adatokra
-        // $result = $someCalculationBasedOn($settings, $residentData);
-        
-        // Példa: csak egy dummy érték
-        $result = [
+        $payable = 0;
+        $balance = $residentData['balance'];
+
+        // Közös költség alapú fizetés számítása
+        switch ($settings['commonCost']) {
+            case 'fix':
+                $payable += $settings['amountFix'];
+                break;
+            case 'smeter':
+                $payable += $settings['amountSmeter'] * $residentData['squareMeter'];
+                break;
+            case 'perflat':
+                $payable += $residentData['commonCost'];
+                break;
+        }
+
+        // Közös költségek számítása
+        $payable += $this->calcMetersCosts($settings, $data);
+        $payable += $this->calcSubDepCosts($settings, $residentData);
+        $payable += $this->calcExtraPayment($settings, $residentData);
+
+        // Végső egyenleg kiszámítása
+        $balance += $payable;
+
+        return [
             'settings' => $settings,
             'residentData' => $residentData,
-            // Itt add hozzá a valódi számításokat
+            'payable' => $payable,
+            'balance' => $balance,
+            'receivedData' => $data
         ];
+    }
 
-        return $result; // Visszaadod a számítás eredményét
+    private function calcMetersCosts($settings, $data)
+    {
+        $cold1 = $data['cold1'] ?? 0;
+        $cold2 = $data['cold2'] ?? 0;
+        $hot1 = $data['hot1'] ?? 0;
+        $hot2 = $data['hot2'] ?? 0;
+        $heating = $data['heating'] ?? 0;
+
+        $coldAmount = $settings['coldAmount'] ?? 0;
+        $hotAmount = $settings['hotAmount'] ?? 0;
+        $heatingAmount = $settings['heatingAmount'] ?? 0;
+
+        return ($coldAmount * ($cold1 + $cold2)) + ($hotAmount * ($hot1 + $hot2)) + ($heatingAmount * $heating);
+    }
+
+    private function calcSubDepCosts($settings, $residentData)
+    {
+        if (empty($residentData['subDeposit'])) {
+            return 0;
+        }
+
+        if (!empty($settings['subDepFix'])) {
+            return $settings['subDepFix'];
+        }
+
+        if (!empty($settings['subDepSmeter'])) {
+            return $settings['subDepSmeter'] * $residentData['squareMeter'];
+        }
+
+        return 0;
+    }
+
+    private function calcExtraPayment($settings, $residentData)
+    {
+        if (empty($settings['extraPayment'])) {
+            return 0;
+        }
+
+        if ($settings['extraPaymentMode'] == 'fix') {
+            return $settings['extraPayment'];
+        }
+
+        if ($settings['extraPaymentMode'] == 'smeter') {
+            return $settings['extraPayment'] * $residentData['squareMeter'];
+        }
+
+        return 0;
     }
 
     public function getSettings()
-{
-    try {
-        // Lekérdezés a settings táblából
-        $sql = "SELECT title, value FROM settings";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
+    {
+        try {
+            $sql = "SELECT title, value FROM settings";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
 
-        // Az összes sor lekérése
-        $settingsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $settingsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Átalakítás asszociatív tömbbé
-        $settings = [];
-        foreach ($settingsData as $setting) {
-            $settings[$setting['title']] = $setting['value'];
+            $settings = [];
+            foreach ($settingsData as $setting) {
+                $settings[$setting['title']] = $setting['value'];
+            }
+
+            return $settings;
+        } catch (PDOException $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
         }
-
-        // Visszatérünk az asszociatív tömbbel
-        return $settings;
-    } catch (PDOException $e) {
-        return ['status' => 'error', 'message' => $e->getMessage()];
     }
-}
-
 
     public function getResidentData($userId)
-{
-    try {
-        // Lekérdezés a residents táblából
-        $sql = "
-            SELECT 
-                r.squareMeterId, 
-                r.balance, 
-                s.typeOfSquareMeters, 
-                s.ccostForThis, 
-                s.subDepForThis, 
-                c.typeOfCommonCosts,
-                sd.typeOfSubDeposits
-            FROM 
-                residents r
-            JOIN 
-                squaremeters s ON r.squareMeterId = s.id
-            JOIN 
-                commoncosts c ON s.ccostForThis = c.id
-            LEFT JOIN 
-                subdeposits sd ON s.subDepForThis = sd.id
-            WHERE 
-                r.userId = :userId
-        ";
-        
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([':userId' => $userId]);
-        
-        // Lekérjük az adatokat
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Ellenőrizzük, hogy van-e adat
-        if (!empty($data)) {
-            // Kiválasztjuk az első resident adatot
-            $firstResident = $data[0];
-            return [
-                'status' => 'success',
-                'commonCost' => $firstResident['typeOfCommonCosts'],
-                'squareMeter' => $firstResident['typeOfSquareMeters'],
-                'subDeposit' => $firstResident['typeOfSubDeposits'],
-                'balance' => $firstResident['balance'],
-
-            ];
-            return $data;
-        } else {
-            return ['status' => 'error', 'message' => 'No resident data found'];
+    {
+        try {
+            $sql = "
+                SELECT 
+                    r.squareMeterId, 
+                    r.balance, 
+                    s.typeOfSquareMeters, 
+                    s.ccostForThis, 
+                    s.subDepForThis, 
+                    c.typeOfCommonCosts,
+                    sd.typeOfSubDeposits
+                FROM 
+                    residents r
+                JOIN 
+                    squaremeters s ON r.squareMeterId = s.id
+                JOIN 
+                    commoncosts c ON s.ccostForThis = c.id
+                LEFT JOIN 
+                    subdeposits sd ON s.subDepForThis = sd.id
+                WHERE 
+                    r.userId = :userId
+            ";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':userId' => $userId]);
+            
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            if (!empty($data)) {
+                $firstResident = $data[0];
+                return [
+                    'status' => 'success',
+                    'commonCost' => $firstResident['typeOfCommonCosts'],
+                    'squareMeter' => $firstResident['typeOfSquareMeters'],
+                    'subDeposit' => $firstResident['typeOfSubDeposits'],
+                    'balance' => $firstResident['balance'],
+                ];
+            } else {
+                return ['status' => 'error', 'message' => 'No resident data found'];
+            }
+        } catch (PDOException $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
         }
-    } catch (PDOException $e) {
-        return ['status' => 'error', 'message' => $e->getMessage()];
     }
-}
-
 }
