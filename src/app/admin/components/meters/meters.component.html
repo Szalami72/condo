@@ -147,12 +147,22 @@
                   >
                 </div>
               
-                <div class="col text-center mt-4 mb-2" *ngIf="user.isMeters">
+                <div *ngIf="!user.isMeters" class="col text-center text-danger">Nincs vízóra.</div>
+                
+                <div class="col text-center mt-4 mb-2 float-end">
                   <button class="btn btn-sm btn-primary float-end ms-2" (click)="saveMetersById(user)">Mentés</button>
-                  <button class="btn btn-sm btn-secondary float-end" (click)="getPreviousDatasById(user.userId)">Előző</button>      
-                </div>
+                  
+                  <button 
+                      class="btn btn-sm btn-secondary float-end" 
+                      (click)="getPreviousDatasById(user.userId)" 
+                      [disabled]="!user.isMeters">
+                      Előző
+                  </button>
+              </div>
               
-                <p *ngIf="!user.isMeters" class="col text-center text-danger">Nincs vízóra.</p>
+              
+              
+                
                 
                 <hr>
               </div>

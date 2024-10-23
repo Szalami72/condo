@@ -16,6 +16,7 @@ class CalculateCost
         $userId = $data['userId'];
         $settings = $this->getSettings();
         $residentData = $this->getResidentData($userId);
+        $bankAccount = $this->getBankAccount();
 
         $payable = 0;
         $balance = $residentData['balance'];
@@ -54,7 +55,10 @@ class CalculateCost
                 'heatingValue' => $data['heating'],
                 'squareMeter' => $residentData['squareMeter'],
                 'subDeposit' => $residentData['subDeposit'],
-                'ccost' => $residentData['commonCost']
+                'ccost' => $residentData['commonCost'],
+                'email' => $residentData['email'],
+                'bankAccount' => $bankAccount,
+                'isMeters' => $residentData['isMeters'],
             ],
             $settings
         );
@@ -130,48 +134,76 @@ class CalculateCost
     }
 
     public function getResidentData($userId)
-    {
-        try {
-            $sql = "
-                SELECT 
-                    r.squareMeterId, 
-                    r.balance, 
-                    s.typeOfSquareMeters, 
-                    s.ccostForThis, 
-                    s.subDepForThis, 
-                    c.typeOfCommonCosts,
-                    sd.typeOfSubDeposits
-                FROM 
-                    residents r
-                JOIN 
-                    squaremeters s ON r.squareMeterId = s.id
-                JOIN 
-                    commoncosts c ON s.ccostForThis = c.id
-                LEFT JOIN 
-                    subdeposits sd ON s.subDepForThis = sd.id
-                WHERE 
-                    r.userId = :userId
-            ";
-            
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':userId' => $userId]);
-            
-            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            if (!empty($data)) {
-                $firstResident = $data[0];
-                return [
-                    'status' => 'success',
-                    'commonCost' => $firstResident['typeOfCommonCosts'],
-                    'squareMeter' => $firstResident['typeOfSquareMeters'],
-                    'subDeposit' => $firstResident['typeOfSubDeposits'],
-                    'balance' => $firstResident['balance'],
-                ];
-            } else {
-                return ['status' => 'error', 'message' => 'No resident data found'];
-            }
-        } catch (PDOException $e) {
-            return ['status' => 'error', 'message' => $e->getMessage()];
+{
+    try {
+        $sql = "
+            SELECT 
+                r.squareMeterId, 
+                r.balance,
+                r.isMeters,
+                s.typeOfSquareMeters, 
+                s.ccostForThis, 
+                s.subDepForThis, 
+                c.typeOfCommonCosts,
+                sd.typeOfSubDeposits,
+                u.email
+            FROM 
+                residents r
+            JOIN 
+                squaremeters s ON r.squareMeterId = s.id
+            JOIN 
+                commoncosts c ON s.ccostForThis = c.id
+            LEFT JOIN 
+                subdeposits sd ON s.subDepForThis = sd.id
+            JOIN 
+                users u ON r.userId = u.id
+            WHERE 
+                r.userId = :userId
+        ";
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':userId' => $userId]);
+        
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if (!empty($data)) {
+            $firstResident = $data[0];
+            return [
+                'status' => 'success',
+                'commonCost' => $firstResident['typeOfCommonCosts'],
+                'squareMeter' => $firstResident['typeOfSquareMeters'],
+                'subDeposit' => $firstResident['typeOfSubDeposits'],
+                'balance' => $firstResident['balance'],
+                'email' => $firstResident['email'],
+                'isMeters' => $firstResident['isMeters'],
+            ];
+        } else {
+            return ['status' => 'error', 'message' => 'No resident data found'];
         }
+    } catch (PDOException $e) {
+        return ['status' => 'error', 'message' => $e->getMessage()];
+    }
+}
+
+
+    private function getBankAccount(){
+        $sql = "SELECT data FROM condodatas WHERE title = :title";
+        $stmt = $this->conn->prepare($sql);
+        $title = "Bankszámlaszám:";
+
+    // Paraméter kötés
+    $stmt->bindParam(':title', $title);
+
+    // Lekérdezés végrehajtása
+    $stmt->execute();
+
+    // Eredmény lekérése
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($result) {
+        return $result['data'];
+    } else {
+        return null; // Ha nincs találat
+    }
     }
 }
