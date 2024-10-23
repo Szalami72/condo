@@ -2,6 +2,7 @@
 
 require '../config/header.php';
 require 'calculateCost.php';  // Az új osztály behívása
+require 'sendcalcdata.php';
 
 class SaveMetersValuesById
 {
@@ -80,10 +81,14 @@ class SaveMetersValuesById
             if ($calculateCost == 1) {
                 // Ha a mentés sikeres volt, most hívjuk meg a CalculateCost osztályt
                 $calculator = new CalculateCost($this->conn);
-                $result = $calculator->calculate($data);
+                $calculatedData = $calculator->calculate($data);
 
-                // Ha a számítás is sikeres, visszatérünk a "success" státusszal
-                return ['status' => 'success', 'calculatedData' => $result];
+                // Ha a számítás sikeres, hívjuk meg a SendCalcData osztályt, generálja az emailt /html/
+                $generate = new SendCalcData($this->conn);
+                $generatedData = $generate->generate($calculatedData);
+
+                // Ha  sikeres, visszatérünk a "success" státusszal
+                return ['status' => 'success', 'calculatedData' => $generatedData];
             }
 
             // Ha a calculateCost nem 1, akkor is visszatérünk "success" státusszal, de számítás nélkül

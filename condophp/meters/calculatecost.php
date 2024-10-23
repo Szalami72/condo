@@ -39,15 +39,25 @@ class CalculateCost
         $payable += $this->calcExtraPayment($settings, $residentData);
 
         // Végső egyenleg kiszámítása
-        $balance += $payable;
+        $balance -= $payable;
 
-        return [
-            'settings' => $settings,
-            'residentData' => $residentData,
-            'payable' => $payable,
-            'balance' => $balance,
-            'receivedData' => $data
-        ];
+
+        return array_merge(
+            [
+                'mayId' => $data['mayId'],
+                'balance' => $balance,
+                'payable' => $payable,
+                'cold1Value' => $data['cold1'],
+                'cold2Value' => $data['cold2'],
+                'hot1Value' => $data['hot1'],
+                'hot2Value' => $data['hot2'],
+                'heatingValue' => $data['heating'],
+                'squareMeter' => $residentData['squareMeter'],
+                'subDeposit' => $residentData['subDeposit'],
+                'ccost' => $residentData['commonCost']
+            ],
+            $settings
+        );
     }
 
     private function calcMetersCosts($settings, $data)
