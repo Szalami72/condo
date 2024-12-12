@@ -83,8 +83,10 @@ export class MetersComponent implements OnInit {
       (user.username.toLowerCase().includes(term) ||
       (user.typeOfBuildings && user.typeOfBuildings.toLowerCase().includes(term))) &&
       (!this.filterEmptyFields || // Csak akkor alkalmazzuk a szűrőt, ha a filterEmptyFields igaz
-        (user.cold1 === null || user.cold2 === null || user.hot1 === null || user.hot2 === null || user.heating === null) ||
-        (user.cold1 === 0 || user.cold2 === 0 || user.hot1 === 0 || user.hot2 === 0 || user.heating === 0)
+        ((user.cold1 === null && this.meterData.cold1) || (user.cold2 === null && this.meterData.cold2) || (user.hot1 === null && this.meterData.hot1)
+         || (user.hot2 === null && this.meterData.hot2) || (user.heating === null && this.meterData.heating)) ||
+         ((user.cold1 === 0 && this.meterData.cold1) || (user.cold2 === 0 && this.meterData.cold2) || (user.hot1 === 0 && this.meterData.hot1)
+         || (user.hot2 === 0 && this.meterData.hot2) || (user.heating === 0 && this.meterData.heating))
       )
     );
   
@@ -207,13 +209,17 @@ export class MetersComponent implements OnInit {
   }
   
   saveMetersById(user: any) {
-    // console.log('saveMetersById', user.userId);
-    // console.log('mayId:', this.getCurrentMonthAndYear());
-    // console.log('Cold1:', user.cold1);
-    // console.log('Cold2:', user.cold2);
-    // console.log('Hot1:', user.hot1);
-    // console.log('Hot2:', user.hot2);
-    // console.log('Heating:', user.heating);
+ 
+    if (
+      (this.meterData.cold1 === "1" && (user.cold1 === null || user.cold1 <= 0)) ||
+      (this.meterData.cold2 === "1" && (user.cold2 === null || user.cold2 <= 0)) ||
+      (this.meterData.hot1 === "1" && (user.hot1 === null || user.hot1 <= 0)) ||
+      (this.meterData.hot2 === "1" && (user.hot2 === null || user.hot2 <= 0)) ||
+      (this.meterData.heating === "1" && (user.heating === null || user.heating <= 0))
+    ) {
+      this.messageService.setErrorMessage('Nem adtál meg vagy hibás adatokat adtál meg!');
+      return false;
+    }
 
     const data = {
       userId: user.userId,
@@ -236,6 +242,7 @@ export class MetersComponent implements OnInit {
         }
       }
     )
+    return true;
   }
 
   closeMeters() {
@@ -251,7 +258,7 @@ export class MetersComponent implements OnInit {
       (result) => {
         if (result === 'confirmed') {
           console.log('Confirmed');
-
+//TODO : CLOSE METERS
         }
       },
       (reason) => {

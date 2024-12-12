@@ -39,37 +39,13 @@ class SaveResidentDataUpdate
             $stmt->bindParam(':userId', $userId);
             $stmt->execute();
 
-            // Épület, emelet, ajtó, közös költség, albetéti díj és négyzetméter adatok frissítése vagy beszúrása
-            $buildingId = 0;
-            $floorId = 0;
-            $doorId = 0;
-            $commonCostId = 0;
-            $squareMeterId = 0;
-            $subDepositId = 0;
-
-            if (!empty($data['building'])) {
-                $buildingId = $this->saveOrUpdate('buildings', 'typeOfBuildings', $data['building']);
-            }
-
-            if (!empty($data['floor'])) {
-                $floorId = $this->saveOrUpdate('floors', 'typeOfFloors', $data['floor']);
-            }
-
-            if (!empty($data['door'])) {
-                $doorId = $this->saveOrUpdate('doors', 'typeOfDoors', $data['door']);
-            }
-
-            if (!empty($data['commoncost'])) {
-                $commonCostId = $this->saveOrUpdate('commoncosts', 'typeOfCommoncosts', $data['commoncost']);
-            }
-
-            if (!empty($data['subDeposit'])) {
-                $subDepositId = $this->saveOrUpdate('subdeposits', 'typeOfSubdeposits', $data['subDeposit']);
-            }
-
-            if (!empty($data['squareMeter'])) {
-                $squareMeterId = $this->saveOrUpdateSquareMeters('squaremeters', 'typeOfSquareMeters', $data['squareMeter'], $subDepositId, $commonCostId);
-            }
+            // Épület, emelet, ajtó stb. kezelése
+            $buildingId = $this->saveOrUpdate('buildings', 'typeOfBuildings', $data['building'] ?? null);
+            $floorId = $this->saveOrUpdate('floors', 'typeOfFloors', $data['floor'] ?? null);
+            $doorId = $this->saveOrUpdate('doors', 'typeOfDoors', $data['door'] ?? null);
+            $commonCostId = $this->saveOrUpdate('commoncosts', 'typeOfCommoncosts', $data['commoncost'] ?? null);
+            $subDepositId = $this->saveOrUpdate('subdeposits', 'typeOfSubdeposits', $data['subDeposit'] ?? null);
+            $squareMeterId = $this->saveOrUpdateSquareMeters('squaremeters', 'typeOfSquareMeters', $data['squareMeter'] ?? null, $subDepositId, $commonCostId);
 
             // Balance tábla frissítése
             $sql = "UPDATE balance SET value = :balance WHERE userId = :userId";
@@ -78,8 +54,9 @@ class SaveResidentDataUpdate
             $stmt->bindParam(':userId', $userId);
             $stmt->execute();
 
-            // Meters serial number tábla frissítése
+            // Meter serial number frissítése
             $this->saveMeterSerialNumbers($userId, $data);
+            $this->updateLastMetersValues($userId, $data);
 
             // Residences tábla frissítése
             $sql = "UPDATE residents SET buildingId = :buildingId, floorId = :floorId, doorId = :doorId, squareMeterId = :squareMeterId, isMeters = :isMeters, commonCost = :commonCost 
@@ -94,18 +71,23 @@ class SaveResidentDataUpdate
             $stmt->bindParam(':userId', $userId);
             $stmt->execute();
 
-            // Tranzakció befejezése
+            // Ha minden sikeres, commit
             $this->conn->commit();
+            echo json_encode(["message" => "Update successful"]);
         } catch (Exception $e) {
-            // Hiba esetén rollback
+            // Hibák esetén rollback
             $this->conn->rollBack();
-            throw $e;
+            http_response_code(500);
+            echo json_encode(["error" => $e->getMessage()]);
         }
     }
 
     private function saveOrUpdate($table, $columnName, $value)
     {
-        // Ellenőrizzük, hogy van-e már ilyen érték a táblában
+        if (!$value) {
+            return 0; // Ha nincs érték, nullát adunk vissza
+        }
+
         $sql = "SELECT id FROM $table WHERE $columnName = :value";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':value', $value);
@@ -113,9 +95,8 @@ class SaveResidentDataUpdate
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($result) {
-            return $result['id']; // Ha már van ilyen érték, visszaadjuk az id-t
+            return $result['id'];
         } else {
-            // Ha nincs, beszúrjuk az új értéket és visszaadjuk az újonnan generált id-t
             $sql = "INSERT INTO $table ($columnName) VALUES (:value)";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':value', $value);
@@ -123,6 +104,10 @@ class SaveResidentDataUpdate
             return $this->conn->lastInsertId();
         }
     }
+
+   
+
+
 
     private function saveOrUpdateSquareMeters($table, $columnName, $value, $subDepositId, $commonCostId)
     {
@@ -219,6 +204,50 @@ class SaveResidentDataUpdate
     }
 }
 
+    private function updateLastMetersValues($userId, $data) {
+         // utolsó óraállás rögzítése
+         $monthAndYear = $data['monthAndYear'];
+         $cold1LastValue = $data['cold1LastValue'];
+         $cold2LastValue = $data['cold2LastValue'];
+         $hot1LastValue = $data['hot1LastValue'];
+         $hot2LastValue = $data['hot2LastValue'];
+         $heatingLastValue = $data['heatingLastValue'];
+
+         // Ellenőrizzük, hogy van-e már bejegyzés a monthandyear táblában
+         $sql = "SELECT id FROM monthandyear WHERE monthAndYear = :monthAndYear";
+         $stmt = $this->conn->prepare($sql);
+         $stmt->execute([':monthAndYear' => $monthAndYear]);
+         $mayId = $stmt->fetchColumn();
+
+         if (!$mayId) {
+             // Ha nincs, új bejegyzés a monthandyear táblába
+             $sql = "INSERT INTO monthandyear (monthAndYear) VALUES (:monthAndYear)";
+             $stmt = $this->conn->prepare($sql);
+             $stmt->execute([':monthAndYear' => $monthAndYear]);
+             $mayId = $this->conn->lastInsertId();
+         }
+
+        // Megkeressük az adott `userId` legutolsó rekordját a `metersvalues` táblában
+        $sql = "SELECT id FROM metersvalues WHERE userId = :userId ORDER BY id DESC LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':userId' => $userId]);
+        $lastRecordId = $stmt->fetchColumn();
+
+        $sql = "UPDATE metersvalues 
+        SET mayId = :mayId, cold1 = :cold1, cold2 = :cold2, hot1 = :hot1, hot2 = :hot2, heating = :heating 
+        WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            ':mayId' => $mayId,
+            ':cold1' => $cold1LastValue,
+            ':cold2' => $cold2LastValue,
+            ':hot1' => $hot1LastValue,
+            ':hot2' => $hot2LastValue,
+            ':heating' => $heatingLastValue,
+            ':id' => $lastRecordId
+        ]);
+
+    }
 }
 
 // Adatok fogadása és frissítése

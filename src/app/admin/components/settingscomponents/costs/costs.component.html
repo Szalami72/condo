@@ -57,15 +57,15 @@
  
  
         <div *ngIf="extraPayment">
-            <hr>
+          
         <p class="title">Befizetés módja:</p>
 
         <div class="form-inline amount amount-fix">
             <label for="extraPaymentModeFix" class="label-check me-4" [class.selected-label]="extraPaymentMode === 'fix'">{{extraPayment}} Ft/lakás</label>
             <input class="visually-hidden" type="radio" id="extraPaymentModeFix" name="extraPaymentMode" [(ngModel)]="extraPaymentMode" value="fix">
      
-            <label for="extraPaymentModeSquaremeter" class="label-cost ms-4" [class.selected-label]="extraPaymentMode === 'squaremeter'"> {{extraPayment}} Ft/m<sup>2</sup></label>
-            <input class="visually-hidden" type="radio" id="extraPaymentModeSquaremeter" name="extraPaymentMode" [(ngModel)]="extraPaymentMode" value="squaremeter">
+            <label for="extraPaymentModeSquaremeter" class="label-cost ms-4" [class.selected-label]="extraPaymentMode === 'smeter'"> {{extraPayment}} Ft/m<sup>2</sup></label>
+            <input class="visually-hidden" type="radio" id="extraPaymentModeSquaremeter" name="extraPaymentMode" [(ngModel)]="extraPaymentMode" value="smeter">
         </div>
         </div>
         </div>

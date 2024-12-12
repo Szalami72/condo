@@ -160,6 +160,48 @@ class SaveResidentData
             $stmt->bindParam(':commonCost', $commonCostId);
             $stmt->execute();
 
+
+            // utolsó óraállás rögzítése
+            $monthAndYear = $data['monthAndYear'];
+            $cold1LastValue = $data['cold1LastValue'];
+            $cold2LastValue = $data['cold2LastValue'];
+            $hot1LastValue = $data['hot1LastValue'];
+            $hot2LastValue = $data['hot2LastValue'];
+            $heatingLastValue = $data['heatingLastValue'];
+
+            // Ellenőrizzük, hogy van-e már bejegyzés a monthandyear táblában
+            $sql = "SELECT id FROM monthandyear WHERE monthAndYear = :monthAndYear";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':monthAndYear' => $monthAndYear]);
+            $mayId = $stmt->fetchColumn();
+
+            if (!$mayId) {
+                // Ha nincs, új bejegyzés a monthandyear táblába
+                $sql = "INSERT INTO monthandyear (monthAndYear) VALUES (:monthAndYear)";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute([':monthAndYear' => $monthAndYear]);
+                $mayId = $this->conn->lastInsertId();
+            }
+
+            $sql = "INSERT INTO metersvalues (userId, mayId, cold1, cold2, hot1, hot2, heating) 
+        VALUES (:userId, :mayId, :cold1, :cold2, :hot1, :hot2, :heating)";
+
+            $stmt = $this->conn->prepare($sql); 
+
+
+            // Paraméterek bindelése
+            $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':mayId', $mayId, PDO::PARAM_INT);
+            $stmt->bindParam(':cold1', $cold1LastValue);
+            $stmt->bindParam(':cold2', $cold2LastValue);
+            $stmt->bindParam(':hot1', $hot1LastValue);
+            $stmt->bindParam(':hot2', $hot2LastValue);
+            $stmt->bindParam(':heating', $heatingLastValue);
+
+            // Lekérdezés futtatása
+            $stmt->execute();
+
+            
             // Tranzakció befejezése
             $this->conn->commit();
 

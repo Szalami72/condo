@@ -38,7 +38,7 @@ class SaveMetersValuesById
                 $mayId = $this->conn->lastInsertId();
             }
 
-            // Ellenőrizzük, hogy van-e bejegyzés a metersvalues táblában
+            // Ellenőrizzük, hogy van-e bejegyzés a metersvalues táblában az adott hónapra
             $sql = "SELECT id FROM metersvalues WHERE userId = :userId AND mayId = :mayId";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([':userId' => $userId, ':mayId' => $mayId]);
@@ -88,7 +88,9 @@ class SaveMetersValuesById
                 $generatedData = $generate->generate($calculatedData);
 
                 // Ha  sikeres, visszatérünk a "success" státusszal
-                return ['status' => 'success', 'calculatedData' => $generatedData];
+                return ['status' => 'success', 'calculatedData' => $generatedData]; //ez kell majd vissza
+              // A CALCULATEDDATA-BAN IDEIGLENESEN A KÉT LEKÉRT SOR AMIBEN AZ UTOLSÓ KÉT HAVI ADAT VAN
+                //return ['status' => 'success', 'calculatedData' => $calculatedData];
             }
 
             // Ha a calculateCost nem 1, akkor is visszatérünk "success" státusszal, de számítás nélkül

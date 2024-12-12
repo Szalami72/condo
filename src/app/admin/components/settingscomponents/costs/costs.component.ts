@@ -61,6 +61,18 @@ export class CostsComponent implements OnInit {
   }
 
   saveCosts(): void { 
+    // const costsData = {
+    //   commonCost: this.commonCost,
+    //   amountSmeter: this.amountSmeter,
+    //   amountFix: this.amountFix,
+    //   subDepSmeter: this.commonCost === 'fix' ? 0 : this.subDepSmeter,
+    //   subDepFix: this.commonCost === 'perflat' ? 0 : this.subDepFix,
+    //   extraPayment: this.extraPayment,
+    //   extraPaymentMode: this.extraPaymentMode,
+    //   extraPaymentTitle: this.extraPaymentTitle,
+    //   calculate: this.calculate,
+    // };
+    
     const costsData = {
       commonCost: this.commonCost,
       amountSmeter: this.amountSmeter,
@@ -70,7 +82,7 @@ export class CostsComponent implements OnInit {
       extraPayment: this.extraPayment,
       extraPaymentMode: this.extraPaymentMode,
       extraPaymentTitle: this.extraPaymentTitle,
-      calculate: this.calculate
+      calculate: this.calculate,
     };
 
     console.log(costsData);

@@ -15,29 +15,25 @@ class CalculateCost
     {
         $userId = $data['userId'];
         $settings = $this->getSettings();
-        $residentData = $this->getResidentData($userId);
+        $getPrevValues = $this->getPreviousMetersValues($userId); //lekéri az utolsó és utolsó előtti óraállásokat
+        $prevValues = $this->checkPrevValues($getPrevValues, $settings); //ellenőrzi hogy van-e előző óraállás  
+        $residentData = $this->getResidentData($userId, $settings);
         $bankAccount = $this->getBankAccount();
 
         $payable = 0;
         $balance = $residentData['balance'];
 
-        // Közös költség alapú fizetés számítása
-        switch ($settings['commonCost']) {
-            case 'fix':
-                $payable += $settings['amountFix'];
-                break;
-            case 'smeter':
-                $payable += $settings['amountSmeter'] * $residentData['squareMeter'];
-                break;
-            case 'perflat':
-                $payable += $residentData['commonCost'];
-                break;
-        }
+      
 
-        // Közös költségek számítása
-        $payable += $this->calcMetersCosts($settings, $data);
-        $payable += $this->calcSubDepCosts($settings, $residentData);
-        $payable += $this->calcExtraPayment($settings, $residentData);
+        // költségek számítása
+        $metersCost = $this->calcMetersCosts($settings, $data, $prevValues);
+        $payable += $metersCost;
+        $subDepCost= $this->calcSubDepCosts($settings, $residentData);
+        $payable += $subDepCost;
+        $extraCost = $this->calcExtraPayment($settings, $residentData);
+        $payable += $extraCost;
+        $commonCost = $this->calculateCommonCosts($settings,$residentData, $subDepCost);
+        $payable += $commonCost;
 
         // Végső egyenleg kiszámítása
         $balance -= $payable;
@@ -59,43 +55,162 @@ class CalculateCost
                 'email' => $residentData['email'],
                 'bankAccount' => $bankAccount,
                 'isMeters' => $residentData['isMeters'],
+                'prevCold1Value' => $prevValues['cold1'],
+                'prevCold2Value' => $prevValues['cold2'],
+                'prevHot1Value' => $prevValues['hot1'],
+                'prevHot2Value' => $prevValues['hot2'],
+                'prevHeatingValue' => $prevValues['heating'],
+                'metersCost' => $metersCost,
+                'subDepCost' => $subDepCost,
+                'extraCost' => $extraCost,
+                'commonCostValue' => $commonCost
+                
             ],
             $settings
         );
+
     }
 
-    private function calcMetersCosts($settings, $data)
+    private function calculateCommonCosts($settings, $residentData, $subDepCost)
     {
-        $cold1 = $data['cold1'] ?? 0;
-        $cold2 = $data['cold2'] ?? 0;
-        $hot1 = $data['hot1'] ?? 0;
-        $hot2 = $data['hot2'] ?? 0;
-        $heating = $data['heating'] ?? 0;
+        if ($residentData['isMeters'] == 0) return $subDepCost;
 
+     
+        switch ($settings['commonCost']) {
+            case 'fix':
+                return $settings['amountFix'];
+                break;
+            case 'smeter':
+                return $settings['amountSmeter'] * $residentData['squareMeter'];
+                break;
+            case 'perflat':
+                return $residentData['commonCost'];
+                break;
+            }
+        
+    }
+    
+
+    private function calcMetersCosts($settings, $data, $prevValues)
+    {
+        // Jelenlegi értékek (ha hiányzik, 0-val helyettesítjük)
+        $current = [
+            'cold1' => $data['cold1'] ?? 0,
+            'cold2' => $data['cold2'] ?? 0,
+            'hot1' => $data['hot1'] ?? 0,
+            'hot2' => $data['hot2'] ?? 0,
+            'heating' => $data['heating'] ?? 0,
+        ];
+    
+        // Előző értékek (ha hiányzik, 0-val helyettesítjük)
+        $prev = [
+            'cold1' => $prevValues['cold1'] ?? 0,
+            'cold2' => $prevValues['cold2'] ?? 0,
+            'hot1' => $prevValues['hot1'] ?? 0,
+            'hot2' => $prevValues['hot2'] ?? 0,
+            'heating' => $prevValues['heating'] ?? 0,
+        ];
+    
+        // Fogyasztások kiszámítása
+        $consumption = [
+            'cold1' => $current['cold1'] - $prev['cold1'],
+            'cold2' => $current['cold2'] - $prev['cold2'],
+            'hot1' => $current['hot1'] - $prev['hot1'],
+            'hot2' => $current['hot2'] - $prev['hot2'],
+            'heating' => $current['heating'] - $prev['heating'],
+        ];
+    
+        // Költségek kiszámítása
         $coldAmount = $settings['coldAmount'] ?? 0;
         $hotAmount = $settings['hotAmount'] ?? 0;
         $heatingAmount = $settings['heatingAmount'] ?? 0;
-
-        return ($coldAmount * ($cold1 + $cold2)) + ($hotAmount * ($hot1 + $hot2)) + ($heatingAmount * $heating);
+    
+        // Összköltség visszatérítése
+        return ($coldAmount * ($consumption['cold1'] + $consumption['cold2'])) +
+               ($hotAmount * ($consumption['hot1'] + $consumption['hot2'])) +
+               ($heatingAmount * $consumption['heating']);
     }
+    
+
+    private function getPreviousMetersValues($userId){
+
+        //ellenőrzés hogy van-e két érték, azaz van-e már diktált adat
+        try {
+            // SQL lekérdezés: userId szűrése, rendezés mayId szerint csökkenő sorrendben, 2 sor limit
+            $sql = "
+                SELECT id, userId, mayId, cold1, cold2, hot1, hot2, heating
+                FROM metersvalues
+                WHERE userId = :userId
+                ORDER BY mayId DESC
+                LIMIT 2
+            ";
+            
+            // PDO előkészítés és végrehajtás
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+    
+            // Az eredmények visszaadása asszociatív tömbként
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Hibakezelés
+            error_log("Hiba a lekérdezés során: " . $e->getMessage());
+            return [];
+        }
+    }
+
+     
+
+        private function checkPrevValues($getPrevValues, $settings) {
+            $values = [
+                'cold1' => 0,
+                'cold2' => 0,
+                'hot1' => 0,
+                'hot2' => 0,
+                'heating' => 0,
+            ];
+        
+            if (array_key_exists(1, $getPrevValues)) {
+                if ($settings['cold1']) {
+                    $values['cold1'] = $getPrevValues[1]['cold1'] ?? 0;
+                }
+                if ($settings['cold2']) {
+                    $values['cold2'] = $getPrevValues[1]['cold2'] ?? 0;
+                }
+                if ($settings['hot1']) {
+                    $values['hot1'] = $getPrevValues[1]['hot1'] ?? 0;
+                }
+                if ($settings['hot2']) {
+                    $values['hot2'] = $getPrevValues[1]['hot2'] ?? 0;
+                }
+                if ($settings['heating']) {
+                    $values['heating'] = $getPrevValues[1]['heating'] ?? 0;
+                }
+            }
+        
+            return $values;
+        }
+        
+    
 
     private function calcSubDepCosts($settings, $residentData)
     {
-        if (empty($residentData['subDeposit'])) {
-            return 0;
+        if ($settings['commonCost'] == 'perflat') {
+            return $residentData['subDeposit'];
         }
 
-        if (!empty($settings['subDepFix'])) {
+        if ($settings['commonCost'] == 'fix') {
             return $settings['subDepFix'];
         }
 
-        if (!empty($settings['subDepSmeter'])) {
+        if ($settings['commonCost'] == 'smeter') {
             return $settings['subDepSmeter'] * $residentData['squareMeter'];
         }
 
         return 0;
     }
 
+ 
     private function calcExtraPayment($settings, $residentData)
     {
         if (empty($settings['extraPayment'])) {
@@ -133,7 +248,7 @@ class CalculateCost
         }
     }
 
-    public function getResidentData($userId)
+    public function getResidentData($userId, $settings)
 {
     try {
         $sql = "
@@ -172,7 +287,7 @@ class CalculateCost
                 'status' => 'success',
                 'commonCost' => $firstResident['typeOfCommonCosts'],
                 'squareMeter' => $firstResident['typeOfSquareMeters'],
-                'subDeposit' => $firstResident['typeOfSubDeposits'],
+                'subDeposit' => ($settings['commonCost'] == 'perflat' ?? 0) ? $firstResident['typeOfSubDeposits'] : 0,
                 'balance' => $firstResident['balance'],
                 'email' => $firstResident['email'],
                 'isMeters' => $firstResident['isMeters'],
@@ -180,6 +295,7 @@ class CalculateCost
         } else {
             return ['status' => 'error', 'message' => 'No resident data found'];
         }
+        
     } catch (PDOException $e) {
         return ['status' => 'error', 'message' => $e->getMessage()];
     }

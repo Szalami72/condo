@@ -3,7 +3,7 @@
     <div *ngIf="isLoading" class="loading-icon">
         <div class="d-flex justify-content-center align-items-center vh-100">
           <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">Töltés...</span>
           </div>
         </div>
       </div>
@@ -336,7 +336,28 @@
   </div>
   
         <!--  -->
-
+        <div class="row input-field mb-2" *ngIf="isMeter === 1">
+            <div class="col-3">
+                Utolsó állás:
+            </div>
+            <div class="col-9 row">
+                <div class="col">
+                  <input type="text" class="form-control" name="cold1LastValue" placeholder="hideg 1" [(ngModel)]="cold1LastValue" [disabled]="!cold1">
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" name="cold2LastValue" placeholder="hideg 2" [(ngModel)]="cold2LastValue" [disabled]="!cold2">
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" name="hot1LastValue" placeholder="meleg 1" [(ngModel)]="hot1LastValue" [disabled]="!hot1">
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" name="hot2LastValue" placeholder="meleg 2" [(ngModel)]="hot2LastValue" [disabled]="!hot2">
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" name="heatingLastValue" placeholder="fűtés" [(ngModel)]="heatingLastValue" [disabled]="!heating">
+                </div>
+              </div>
+          </div>
        
 
 

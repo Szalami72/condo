@@ -85,6 +85,12 @@ export class AddAndEditResidentComponent implements OnInit {
 
   heatingSerialNumber: string = '';
 
+  cold1LastValue: number = 0;
+  cold2LastValue: number = 0;
+  hot1LastValue: number = 0;
+  hot2LastValue: number = 0;
+  heatingLastValue: number = 0;
+
   isLoading = false;
   pendingRequests: number = 0;
 
@@ -131,6 +137,7 @@ loadUserData(userId: number): void {
   this.residentsService.getResidentDatasById(userId).subscribe({
     next: (response) => {
       if (response.status === 'success') {
+        console.log(response);
 
         const data = response.data;
 
@@ -154,6 +161,12 @@ loadUserData(userId: number): void {
         this.hot1SerialNumber = data.hot1SerialNumber;
         this.hot2SerialNumber = data.hot2SerialNumber;
         this.heatingSerialNumber = data.heatingSerialNumber;
+
+        this.cold1LastValue = data.cold1LastValue;
+        this.cold2LastValue = data.cold2LastValue;
+        this.hot1LastValue = data.hot1LastValue;
+        this.hot2LastValue = data.hot2LastValue;
+        this.heatingLastValue = data.heatingLastValue;
 
         // Check if serial numbers are non-empty and set true/false accordingly
         if(this.severally) {
@@ -213,6 +226,12 @@ loadUserData(userId: number): void {
       hot1SerialNumber: new FormControl(''),
       hot2SerialNumber: new FormControl(''),
       heatingSerialNumber: new FormControl(''),
+
+      cold1LastValue: new FormControl(''),
+      cold2LastValue: new FormControl(''),
+      hot1LastValue: new FormControl(''),
+      hot2LastValue: new FormControl(''),
+      heatingLastValue: new FormControl(''),
   
     });
    }
@@ -282,7 +301,13 @@ loadUserData(userId: number): void {
   }
   
   
+  getCurrentMonthAndYear(): string {
+    const currentDate = new Date();
+    const month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+    const year = currentDate.getFullYear();
 
+    return `${month}-${year}`;
+  }
 
   generatePassword(length: number): string {
     const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -340,7 +365,13 @@ loadUserData(userId: number): void {
         hot1SerialNumber: this.hot1SerialNumber || 0,  
         hot2SerialNumber: this.hot2SerialNumber || 0,    
         heatingSerialNumber: this.heatingSerialNumber || 0,    
-        subDeposit: this.subDeposit || this.newSubDeposit || 0
+        subDeposit: this.subDeposit || this.newSubDeposit || 0,
+        cold1LastValue: this.cold1LastValue || 0,
+        cold2LastValue: this.cold2LastValue || 0,
+        hot1LastValue: this.hot1LastValue || 0,
+        hot2LastValue: this.hot2LastValue || 0,
+        heatingLastValue: this.heatingLastValue || 0,
+        monthAndYear: this.getCurrentMonthAndYear(),
       };
       console.log('setResidentData', data);
       return data;
