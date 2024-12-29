@@ -22,6 +22,7 @@ export class CostsComponent implements OnInit {
   extraPaymentMode: string | undefined;
   extraPaymentTitle: string | undefined;
   calculate: string = '1';
+  countAverage: string = '1';
 
 
   constructor(
@@ -50,6 +51,7 @@ export class CostsComponent implements OnInit {
           this.extraPaymentMode = data.extraPaymentMode || undefined;
           this.extraPaymentTitle = data.extraPaymentTitle || undefined;
           this.calculate = data.calculateCost || undefined;
+          this.countAverage = data.countAverage || undefined;
         } else {
           this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
         }
@@ -61,18 +63,7 @@ export class CostsComponent implements OnInit {
   }
 
   saveCosts(): void { 
-    // const costsData = {
-    //   commonCost: this.commonCost,
-    //   amountSmeter: this.amountSmeter,
-    //   amountFix: this.amountFix,
-    //   subDepSmeter: this.commonCost === 'fix' ? 0 : this.subDepSmeter,
-    //   subDepFix: this.commonCost === 'perflat' ? 0 : this.subDepFix,
-    //   extraPayment: this.extraPayment,
-    //   extraPaymentMode: this.extraPaymentMode,
-    //   extraPaymentTitle: this.extraPaymentTitle,
-    //   calculate: this.calculate,
-    // };
-    
+   
     const costsData = {
       commonCost: this.commonCost,
       amountSmeter: this.amountSmeter,
@@ -83,6 +74,7 @@ export class CostsComponent implements OnInit {
       extraPaymentMode: this.extraPaymentMode,
       extraPaymentTitle: this.extraPaymentTitle,
       calculate: this.calculate,
+      countAverage: this.countAverage
     };
 
     console.log(costsData);

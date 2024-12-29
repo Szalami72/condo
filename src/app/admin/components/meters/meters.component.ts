@@ -23,8 +23,7 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
     NgbPaginationModule, 
     MessageComponent,
     FormsModule,
-    CommonModule,
-    InfomodalComponent,],
+    CommonModule,],
   templateUrl: './meters.component.html',
   styleUrls: ['../../../shared/css/userlist.css', './meters.component.css']
 })
@@ -53,13 +52,14 @@ export class MetersComponent implements OnInit {
     hot2: '',
     heating: '',
     severally: '',
+    calculateCost: '',
+    countAverage: '',
 
   };
 
   monthAndYear: string = '';
 
   sortedColumn: string | null = null;
-
   constructor(public messageService: MessageService, 
     private metersService: MetersService,
     private modalService: NgbModal,
@@ -130,6 +130,8 @@ export class MetersComponent implements OnInit {
         this.meterData.hot2 = data.hot2 || '';
         this.meterData.heating = data.heating || '';
         this.meterData.severally = data.severally || '';
+        this.meterData.calculateCost = data.calculateCost || '';
+        this.meterData.countAverage = data.countAverage || '';
       },
       error => {
         this.messageService.setErrorMessage(this.loadErrorMessage);
@@ -246,92 +248,206 @@ export class MetersComponent implements OnInit {
     return true;
   }
 
-  closeMeters() {
-    const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true });
+//   closeMeters() {
+//     const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true });
     
-    const message = 'Biztosan le akarod zárni az állásokat?\n';
+//     const message = 'Biztosan le akarod zárni az állásokat?\n';
 
-    let formattedMessage = message.replace(/\n/g, '<br>');
+//     let formattedMessage = message.replace(/\n/g, '<br>');
 
-    modalRef.componentInstance.confirmMessage = formattedMessage;
+//     modalRef.componentInstance.confirmMessage = formattedMessage;
 
-    modalRef.result.then(
-      (result) => {
-        if (result === 'confirmed') {
-          console.log('Confirmed');
-//TODO : CLOSE METERS
-        this.justEmptyFields();
+//     modalRef.result.then(
+//       (result) => {
+//         if (result === 'confirmed') {
+//           console.log('Confirmed');
+// //TODO : CLOSE METERS
+//         this.justEmptyFields();
         
-        this.filteredUsers.forEach(user => {
-          this.getPreviousDatasById(user.userId, user.username, false).subscribe(
-            prevValues => {
-              const data = prevValues.data;
+//         this.filteredUsers.forEach(user => {
+//           this.getPreviousDatasById(user.userId, user.username, false).subscribe(
+//             prevValues => {
+//               const data = prevValues.data;
         
-              if (data.length > 1) {
-                const lastValues = {
-                  cold1: data[0].cold1,
-                  cold2: data[0].cold2,
-                  hot1: data[0].hot1,
-                  hot2: data[0].hot2,
-                  heating: data[0].heating
-                };
-        
-                const firstValues = {
-                  cold1: data[data.length - 1].cold1,
-                  cold2: data[data.length - 1].cold2,
-                  hot1: data[data.length - 1].hot1,
-                  hot2: data[data.length - 1].hot2,
-                  heating: data[data.length - 1].heating
-                };
-        
-                const avgCold1 = ((lastValues.cold1 - firstValues.cold1) / data.length).toFixed(2);
-                const avgCold2 = ((lastValues.cold2 - firstValues.cold2) / data.length).toFixed(2);
-                const avgHot1 = ((lastValues.hot1 - firstValues.hot1) / data.length).toFixed(2);
-                const avgHot2 = ((lastValues.hot2 - firstValues.hot2) / data.length).toFixed(2);
-                const avgHeating = ((lastValues.heating - firstValues.heating) / data.length).toFixed(2);
-
-                const newCold1 = parseFloat((lastValues.cold1 ?? 0) + (avgCold1 ?? 0));
-                const newCold2 = parseFloat((lastValues.cold2 ?? 0) + (avgCold2 ?? 0));
-                const newHot1 = parseFloat((lastValues.hot1 ?? 0) + (avgHot1 ?? 0));
-                const newHot2 = parseFloat((lastValues.hot2 ?? 0) + (avgHot2 ?? 0));
-                const newHeating = parseFloat((lastValues.heating ?? 0) + (avgHeating ?? 0));                
-
-                console.log('Data array is not empty for user:', user.userId);
-                console.log('First values:', firstValues);
-                console.log('Last values:', lastValues);
-                console.log('Array length:', data.length);
-                console.log('Average cold1:', avgCold1);
-                console.log('Average cold2:', avgCold2);
-                console.log('Average hot1:', avgHot1);
-                console.log('Average hot2:', avgHot2);
-                console.log('Average heating:', avgHeating);
-
-                console.log('New cold1:', newCold1);
-                console.log('New cold2:', newCold2);
-                console.log('New hot1:', newHot1);
-                console.log('New hot2:', newHot2);
-                console.log('New heating:', newHeating);
+                  
+//                         if (data.length > 1) {
 
 
+//                           let newCold1: any, newCold2: any, newHot1: any, newHot2: any, newHeating: any;
 
-              } else {
-                console.log('Data array is empty or less than 2 for user:', user.userId);
-              }
-            },
-            error => {
-              console.error('Error fetching previous values:', error);
-            }
-          );
-        });
+//                           const lastValues = {
+//                             cold1: data[0].cold1,
+//                             cold2: data[0].cold2,
+//                             hot1: data[0].hot1,
+//                             hot2: data[0].hot2,
+//                             heating: data[0].heating
+//                           };
+                  
+//                           const firstValues = {
+//                             cold1: data[data.length - 1].cold1,
+//                             cold2: data[data.length - 1].cold2,
+//                             hot1: data[data.length - 1].hot1,
+//                             hot2: data[data.length - 1].hot2,
+//                             heating: data[data.length - 1].heating
+//                           };
+                  
+//                   if(this.meterData.countAverage === "1") {
+                    
+//                           const avgCold1 = ((lastValues.cold1 - firstValues.cold1) / data.length).toFixed(2);
+//                           const avgCold2 = ((lastValues.cold2 - firstValues.cold2) / data.length).toFixed(2);
+//                           const avgHot1 = ((lastValues.hot1 - firstValues.hot1) / data.length).toFixed(2);
+//                           const avgHot2 = ((lastValues.hot2 - firstValues.hot2) / data.length).toFixed(2);
+//                           const avgHeating = ((lastValues.heating - firstValues.heating) / data.length).toFixed(2);
+
+//                           newCold1 = parseFloat(lastValues.cold1 ?? 0) + parseFloat(avgCold1 ?? 0);
+//                           newCold2 = parseFloat(lastValues.cold2 ?? 0) + parseFloat(avgCold2 ?? 0);
+//                           newHot1 = parseFloat(lastValues.hot1 ?? 0) + parseFloat(avgHot1 ?? 0);
+//                           newHot2 = parseFloat(lastValues.hot2 ?? 0) + parseFloat(avgHot2 ?? 0);
+//                           newHeating = parseFloat(lastValues.heating ?? 0) + parseFloat(avgHeating ?? 0);      
+                          
+//                           console.log('Average cold1:', avgCold1);
+//                           console.log('Average cold2:', avgCold2);
+//                           console.log('Average hot1:', avgHot1);
+//                           console.log('Average hot2:', avgHot2);
+//                           console.log('Average heating:', avgHeating);
+                          
+//                   }
+
+//                   if(this.meterData.countAverage === "0") {
+//                         newCold1 = lastValues.cold1;
+//                         newCold2 = lastValues.cold2;
+//                         newHot1 = lastValues.hot1;
+//                         newHot2 = lastValues.hot2;
+//                         newHeating = lastValues.heating;
+//                   }
+
+//                 console.log('Data array is not empty for user:', user.userId);
+//                 console.log('First values:', firstValues);
+//                 console.log('Last values:', lastValues);
+//                 console.log('Array length:', data.length);
+               
+
+//                 console.log('New cold1:', newCold1);
+//                 console.log('New cold2:', newCold2);
+//                 console.log('New hot1:', newHot1);
+//                 console.log('New hot2:', newHot2);
+//                 console.log('New heating:', newHeating);
+
+
+
+//               } else {
+//                 console.log('Data array is empty or less than 2 for user:', user.userId);
+//               }
+//             },
+//             error => {
+//               console.error('Error fetching previous values:', error);
+//             }
+//           );
+//         });
            
         
+//         }
+//       },
+//       (reason) => {
+//         console.log('Closed', reason);
+//       }
+//     );
+//   }
+
+closeMeters() {
+  const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true });
+
+  const messages = {
+    withAverage: 'Biztosan le akarod zárni az állásokat?\n Akiknek nem lett rögzítve óraállás, azoknak átlagfogyasztás kerül elszámolásra.',
+    withoutAverage: 'Biztosan le akarod zárni az állásokat?\n Akiknek nem lett rögzítve óraállás, azoknak nem lesz fogyasztás elszámolva.'
+  };
+  
+  const message = this.meterData.countAverage === "1" ? messages.withAverage : messages.withoutAverage;
+  
+
+  modalRef.componentInstance.confirmMessage = message.replace(/\n/g, '<br>');
+
+  modalRef.result.then(
+    (result) => {
+      if (result === 'confirmed') {
+        console.log('Confirmed');
+        this.justEmptyFields();
+        this.processFilteredUsers();
+      }
+    },
+    (reason) => {
+      console.log('Closed', reason);
+    }
+  );
+}
+
+processFilteredUsers() {
+  this.filteredUsers.forEach(user => {
+    this.getPreviousDatasById(user.userId, user.username, false).subscribe(
+      prevValues => {
+        const data = prevValues.data;
+        if (data.length > 1) {
+          this.calculateNewValues(data, user.userId);
+        } else {
+          console.log('Data array is empty or less than 2 for user:', user.userId);
         }
       },
-      (reason) => {
-        console.log('Closed', reason);
+      error => {
+        console.error('Error fetching previous values:', error);
       }
     );
+  });
+}
+
+calculateNewValues(data: any[], userId: number) {
+  const lastValues = this.getLastValues(data);
+  const firstValues = this.getFirstValues(data);
+  let newCold1, newCold2, newHot1, newHot2, newHeating;
+
+  if (this.meterData.countAverage === "1") {
+    const averages = this.calculateAverages(lastValues, firstValues, data.length);
+    newCold1 = lastValues.cold1 + averages.cold1;
+    newCold2 = lastValues.cold2 + averages.cold2;
+    newHot1 = lastValues.hot1 + averages.hot1;
+    newHot2 = lastValues.hot2 + averages.hot2;
+    newHeating = lastValues.heating + averages.heating;
+  } else {
+    ({ cold1: newCold1, cold2: newCold2, hot1: newHot1, hot2: newHot2, heating: newHeating } = lastValues);
   }
+
+  console.log('Processed user:', userId);
+  console.log('New Values:', { newCold1, newCold2, newHot1, newHot2, newHeating });
+}
+
+getLastValues(data: any[]) {
+  return {
+    cold1: data[0].cold1 ?? 0,
+    cold2: data[0].cold2 ?? 0,
+    hot1: data[0].hot1 ?? 0,
+    hot2: data[0].hot2 ?? 0,
+    heating: data[0].heating ?? 0,
+  };
+}
+
+getFirstValues(data: any[]) {
+  return {
+    cold1: data[data.length - 1].cold1 ?? 0,
+    cold2: data[data.length - 1].cold2 ?? 0,
+    hot1: data[data.length - 1].hot1 ?? 0,
+    hot2: data[data.length - 1].hot2 ?? 0,
+    heating: data[data.length - 1].heating ?? 0,
+  };
+}
+
+calculateAverages(lastValues: any, firstValues: any, length: number) {
+  return {
+    cold1: parseFloat(((lastValues.cold1 - firstValues.cold1) / length).toFixed(2)) || 0,
+    cold2: parseFloat(((lastValues.cold2 - firstValues.cold2) / length).toFixed(2)) || 0,
+    hot1: parseFloat(((lastValues.hot1 - firstValues.hot1) / length).toFixed(2)) || 0,
+    hot2: parseFloat(((lastValues.hot2 - firstValues.hot2) / length).toFixed(2)) || 0,
+    heating: parseFloat(((lastValues.heating - firstValues.heating) / length).toFixed(2)) || 0,
+  };
+}
 
   getMetersDetailsDescription() {
     const message = this.descriptionService.getMetersDetailsDescription();

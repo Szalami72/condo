@@ -47,7 +47,9 @@ export class MetersService {
             hotAmount: response.data.hotAmount || 0,
             heatingAmount: response.data.heatingAmount || 0,
 
-            severally: response.data.severally || false
+            severally: response.data.severally || false,
+            calculateCost: response.data.calculateCost || false,
+            countAverage: response.data.countAverage || false
 
           };
         } else {

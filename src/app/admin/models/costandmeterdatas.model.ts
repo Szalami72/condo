@@ -1,4 +1,6 @@
 export interface MeterData {
+    countAverage?: string;
+    calculateCost?: string;
     commonCost?: string;
     amountSmeter?: number;
     amountFix?: number;

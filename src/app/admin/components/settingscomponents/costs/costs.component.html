@@ -72,7 +72,7 @@
      <hr>
 
      <div class="col-12 mb-3 mt-4">
-        <p class="title">A mérőórák adatainak rögzítése után a fizetendő összeg kiszámítása:</p>
+        <p class="title">A mérőórák adatainak rögzítése után a fizetendő összeg kiszámítása és küldése emailben:</p>
 
         <div class="form-inline amount amount-fix">
             <label for="calculate-yes" class="label-check me-4" [class.selected-label]="calculate === '1'">Igen</label>
@@ -81,7 +81,19 @@
             <label for="calculate-no" class="label-cost ms-4" [class.selected-label]="calculate === '0'"> Nem</label>
             <input class="visually-hidden" type="radio" id="calculate-no" name="calculate" [(ngModel)]="calculate" value="0">
         </div>
+     </div>
 
+     <div *ngIf="calculate === '1'" class="col-12 mb-3 mt-4">
+        <p class="title">A hónap lezárásakor átlagot számoljon a fogyasztásra vagy az előző havi érték maradjon:</p>
+        <p class="title">(Abban az esetben ha a lakó nem ad le óraállást.)</p>
+
+        <div class="form-inline amount amount-fix">
+            <label for="count-average-yes" class="label-check me-4" [class.selected-label]="countAverage === '1'">Átlag számítás</label>
+            <input class="visually-hidden" type="radio" id="count-average-yes" name="count-average" [(ngModel)]="countAverage" value="1">
+     
+            <label for="count-average-no" class="label-cost ms-4" [class.selected-label]="countAverage === '0'">Előző hónap értéke</label>
+            <input class="visually-hidden" type="radio" id="count-average-no" name="count-average" [(ngModel)]="countAverage" value="0">
+        </div>
      </div>
 
      <hr>
