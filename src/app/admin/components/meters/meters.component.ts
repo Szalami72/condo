@@ -284,15 +284,36 @@ export class MetersComponent implements OnInit {
                   heating: data[data.length - 1].heating
                 };
         
+                const avgCold1 = ((lastValues.cold1 - firstValues.cold1) / data.length).toFixed(2);
+                const avgCold2 = ((lastValues.cold2 - firstValues.cold2) / data.length).toFixed(2);
+                const avgHot1 = ((lastValues.hot1 - firstValues.hot1) / data.length).toFixed(2);
+                const avgHot2 = ((lastValues.hot2 - firstValues.hot2) / data.length).toFixed(2);
+                const avgHeating = ((lastValues.heating - firstValues.heating) / data.length).toFixed(2);
+
+                const newCold1 = parseFloat((lastValues.cold1 ?? 0) + (avgCold1 ?? 0));
+                const newCold2 = parseFloat((lastValues.cold2 ?? 0) + (avgCold2 ?? 0));
+                const newHot1 = parseFloat((lastValues.hot1 ?? 0) + (avgHot1 ?? 0));
+                const newHot2 = parseFloat((lastValues.hot2 ?? 0) + (avgHot2 ?? 0));
+                const newHeating = parseFloat((lastValues.heating ?? 0) + (avgHeating ?? 0));                
+
                 console.log('Data array is not empty for user:', user.userId);
                 console.log('First values:', firstValues);
                 console.log('Last values:', lastValues);
                 console.log('Array length:', data.length);
-                console.log('Average cold1:', ((lastValues.cold1 - firstValues.cold1) / data.length).toFixed(2));
-                console.log('Average cold2:', ((lastValues.cold2 - firstValues.cold2) / data.length).toFixed(2));
-                console.log('Average hot1:', ((lastValues.hot1 - firstValues.hot1) / data.length).toFixed(2));
-                console.log('Average hot2:', ((lastValues.hot2 - firstValues.hot2) / data.length).toFixed(2));
-                console.log('Average heating:', ((lastValues.heating - firstValues.heating) / data.length).toFixed(2));
+                console.log('Average cold1:', avgCold1);
+                console.log('Average cold2:', avgCold2);
+                console.log('Average hot1:', avgHot1);
+                console.log('Average hot2:', avgHot2);
+                console.log('Average heating:', avgHeating);
+
+                console.log('New cold1:', newCold1);
+                console.log('New cold2:', newCold2);
+                console.log('New hot1:', newHot1);
+                console.log('New hot2:', newHot2);
+                console.log('New heating:', newHeating);
+
+
+
               } else {
                 console.log('Data array is empty or less than 2 for user:', user.userId);
               }
