@@ -13,6 +13,9 @@ export class PreviousmetersvaluesComponent {
 
   @Input() prevValues: any;
   @Input() meterData: any;
+  @Input() userName: any;
+ 
+
   constructor(public activeModal: NgbActiveModal) {}
 
   dismiss() {

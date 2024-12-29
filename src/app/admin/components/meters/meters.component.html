@@ -154,7 +154,7 @@
                   
                   <button 
                       class="btn btn-sm btn-secondary float-end" 
-                      (click)="getPreviousDatasById(user.userId)" 
+                      (click)="getPreviousDatasById(user.userId, user.username, true).subscribe()"  
                       [disabled]="!user.isMeters">
                       Előző
                   </button>

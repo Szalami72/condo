@@ -14,6 +14,7 @@ import { MessageComponent } from '../../../shared/sharedcomponents/message/messa
 import { ConfirmmodalComponent } from '../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
 import { PreviousmetersvaluesComponent } from '../../../shared/sharedcomponents/previousmetersvalues/previousmetersvalues.component';
 import { MeterData } from '../../models/costandmeterdatas.model';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-meters',
@@ -259,6 +260,50 @@ export class MetersComponent implements OnInit {
         if (result === 'confirmed') {
           console.log('Confirmed');
 //TODO : CLOSE METERS
+        this.justEmptyFields();
+        
+        this.filteredUsers.forEach(user => {
+          this.getPreviousDatasById(user.userId, user.username, false).subscribe(
+            prevValues => {
+              const data = prevValues.data;
+        
+              if (data.length > 1) {
+                const lastValues = {
+                  cold1: data[0].cold1,
+                  cold2: data[0].cold2,
+                  hot1: data[0].hot1,
+                  hot2: data[0].hot2,
+                  heating: data[0].heating
+                };
+        
+                const firstValues = {
+                  cold1: data[data.length - 1].cold1,
+                  cold2: data[data.length - 1].cold2,
+                  hot1: data[data.length - 1].hot1,
+                  hot2: data[data.length - 1].hot2,
+                  heating: data[data.length - 1].heating
+                };
+        
+                console.log('Data array is not empty for user:', user.userId);
+                console.log('First values:', firstValues);
+                console.log('Last values:', lastValues);
+                console.log('Array length:', data.length);
+                console.log('Average cold1:', ((lastValues.cold1 - firstValues.cold1) / data.length).toFixed(2));
+                console.log('Average cold2:', ((lastValues.cold2 - firstValues.cold2) / data.length).toFixed(2));
+                console.log('Average hot1:', ((lastValues.hot1 - firstValues.hot1) / data.length).toFixed(2));
+                console.log('Average hot2:', ((lastValues.hot2 - firstValues.hot2) / data.length).toFixed(2));
+                console.log('Average heating:', ((lastValues.heating - firstValues.heating) / data.length).toFixed(2));
+              } else {
+                console.log('Data array is empty or less than 2 for user:', user.userId);
+              }
+            },
+            error => {
+              console.error('Error fetching previous values:', error);
+            }
+          );
+        });
+           
+        
         }
       },
       (reason) => {
@@ -274,23 +319,24 @@ export class MetersComponent implements OnInit {
 
   }
 
-  getPreviousDatasById(userId: number) {
-    console.log('getPreviousDatasById', userId);
-    this.metersService.getPreviousMetersValues(userId).subscribe(
-      response => {
-        if (response.status === 'success') {
+  getPreviousDatasById(userId: number, userName: string = '', showModal: boolean = true): Observable<any> {
+    return this.metersService.getPreviousMetersValues(userId).pipe(
+      tap(response => {
+        if (response.status === 'success' && showModal) {
           const prevValues = response.data;
-          console.log("prev:", prevValues);
           const modalRef = this.modalService.open(PreviousmetersvaluesComponent, { centered: true });
           modalRef.componentInstance.prevValues = prevValues;
           modalRef.componentInstance.meterData = this.meterData;
-
-        } else {
-          this.messageService.setErrorMessage(this.loadErrorMessage);
+          modalRef.componentInstance.userName = userName;
         }
-      }
+      }),
+      catchError(error => {
+        this.messageService.setErrorMessage(this.loadErrorMessage);
+        return throwError(error);
+      })
     );
   }
+  
 
 
   getSerialNumberPlaceholder(user: any, meterType: string): string {
