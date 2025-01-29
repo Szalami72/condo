@@ -1,0 +1,50 @@
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CommonModule } from '@angular/common';
+import { ConfirmmodalComponent } from '../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
+import { ScrollService } from '../../services/scroll.service';
+
+@Component({
+  selector: 'app-menu',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './menu.component.html',
+  styleUrls: ['./menu.component.css']
+})
+export class MenuComponent implements OnInit {
+
+  isHidden = false;
+
+  constructor(private router: Router, private modalService: NgbModal, private scrollService: ScrollService) {}
+
+  ngOnInit(): void {
+    this.scrollService.isScrollingDown$.subscribe(isScrollingDown => {
+      this.isHidden = isScrollingDown;
+    });
+  }
+   logout(): void {
+    const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true, size: 'sm' });
+    modalRef.componentInstance.confirmMessage = 'Biztosan ki szeretne jelentkezni?'; 
+
+    modalRef.result.then(
+      (result) => {
+        if (result === 'confirmed') {
+          localStorage.removeItem('currentUser');
+          sessionStorage.removeItem('currentUser');
+          this.router.navigate(['/login']);
+        }
+      },
+      (reason) => {
+        //console.log('Hiba a modal bezárásakor:', reason);
+      }
+    );
+  }
+
+  private getCurrentUserDatas() {
+    let currentUserData = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+    if (currentUserData) {
+      return JSON.parse(currentUserData);
+    }
+  }
+}

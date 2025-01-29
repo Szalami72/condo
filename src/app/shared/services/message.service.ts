@@ -9,14 +9,17 @@ export class MessageService {
 
   constructor() { }
 
-  setMessage(message: string): void {
+  setMessage(message: string, autoClose: boolean = true): void {
     this.message = message;
     this.errorMessage = null;
 
-    setTimeout(() => {
-        this.message = null;
-    }, 3000); 
+    if (autoClose) {
+        setTimeout(() => {
+            this.message = null;
+        }, 3000); // 3 másodperc után bezáródik
+    }
 }
+
 
   setErrorMessage(errorMessage: string): void {
     this.errorMessage = errorMessage;

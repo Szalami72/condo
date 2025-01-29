@@ -1,0 +1,26 @@
+<div class="menu-container" [class.hidden]="isHidden">
+  <div class="container mt-2">
+    <div class="row text-center">
+      <div class="col">
+        <span class="d-none d-md-inline">Főoldal</span>
+        <i class="fa-solid fa-house fa-xl d-inline d-md-none"></i>
+      </div>
+      <div class="col">
+        <span class="d-none d-md-inline">Diktálás</span>
+        <i class="fa-solid fa-faucet-drip fa-xl d-inline d-md-none"></i>
+      </div>
+      <div class="col">
+        <span class="d-none d-md-inline">Adatok</span>
+        <i class="fa-solid fa-table fa-xl d-inline d-md-none"></i>
+      </div>
+      <div class="col">
+        <span class="d-none d-md-inline">Profilom</span>
+        <i class="fa-solid fa-user fa-xl d-inline d-md-none"></i>
+      </div>
+      <div class="col">
+        <span class="d-none d-md-inline" (click)="logout()">Kijelentkezés</span>
+        <i class="fa-solid fa-right-from-bracket fa-xl d-inline d-md-none"></i>
+      </div>
+    </div>
+  </div>
+</div>

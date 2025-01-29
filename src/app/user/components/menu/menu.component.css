@@ -1,0 +1,25 @@
+.menu-container {
+  position: sticky; /* Fontos, hogy a menü mindig látható helyen legyen */
+  top: 0;
+  left: 0;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  width: 100%;
+  background: #fff;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  z-index: 1000; /* Biztosítsd, hogy a menü a többi tartalom felett maradjon */
+}
+
+.menu-container.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+
+
+  
+  
+  
+  
+  
+  
