@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { MenuComponent } from '../menu/menu.component';
 import { MessageService } from '../../../shared/services/message.service';
@@ -20,13 +20,11 @@ import { MeterData } from '../../models/costandmeterdatas.model';
   selector: 'app-residents',
   standalone: true,
   imports: [MenuComponent,
-            CommonModule, 
-            FormsModule, 
-            NgbPaginationModule, 
-            NgbModule, 
-            AddAndEditResidentComponent,
-            MessageComponent,
-            InfomodalComponent],
+    CommonModule,
+    FormsModule,
+    NgbPaginationModule,
+    NgbModule,
+    MessageComponent],
   templateUrl: './residents.component.html',
   styleUrls: ['../../../shared/css/userlist.css', './residents.component.css']
 })

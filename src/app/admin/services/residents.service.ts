@@ -23,6 +23,8 @@ export class ResidentsService {
 
   private getUsedMetersApi = API_BASE_URL + 'residents/getusedmeters.php';
 
+  private getLoginHistoryApi = API_BASE_URL + 'residents/getloginhistory.php';
+
   constructor(private http: HttpClient) { }
 
   getData(action: string): Observable<any> {
@@ -75,5 +77,9 @@ export class ResidentsService {
 
   getUsedMeters(squareMeter: string): Observable<any> {
     return this.http.post<any>(this.getUsedMetersApi, { squareMeter: squareMeter });
+  }
+
+  getLoginHistory(userId: number): Observable<any> {
+    return this.http.post<any>(this.getLoginHistoryApi, { id: userId });
   }
 }
