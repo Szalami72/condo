@@ -7,6 +7,7 @@
   width: 100%;
   background: #f5efeb;
   color: #2f4156;
+  border-bottom: #2f4156 solid 2px;
   transition: transform 0.2s ease, opacity 0.2s ease;
   z-index: 1000; /* Biztosítsd, hogy a menü a többi tartalom felett maradjon */
 }
@@ -33,15 +34,43 @@ img {
   width: 4rem;
 }
 
-.row{ 
-  padding: 0.25rem 1rem 0.5rem 1rem;
+.menu-items {
+  display: flex;
+  justify-content: space-between; /* A szélső menüpontok a széleken, a középsőek egyenlő távolságra */
+  align-items: center;
+  width: 100%;
 }
 
+.menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+}
 
+.icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
 
-  
-  
-  
-  
-  
-  
+.notification-dot {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.25rem;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+}
+
+.underline {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 35%;
+  height: 4px;
+  background-color: red;
+}

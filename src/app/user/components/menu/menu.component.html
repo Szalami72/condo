@@ -1,34 +1,42 @@
 <div class="menu-container" [class.hidden]="isHidden">
   <div class="container mt-2">
-    <div class="row">
-      <div class="col">
-        <a href="user/home">
+    <div class="menu-items">
+      <!-- Bal szélső menüpont -->
+      <a href="user/home" class="menu-item">
         <span class="d-none d-md-inline">Főoldal</span>
-        <img src="assets/icons/home.png" class="d-inline d-md-none" alt="homepage">
+        <div class="icon-wrapper d-inline d-md-none">
+          <img src="assets/icons/home.png" alt="főoldal">
+          <span *ngIf="hasNewBulletin" class="notification-dot"></span>
+        </div>
+        <span *ngIf="hasNewBulletin" class="underline d-none d-md-inline"></span>
       </a>
-      </div>
-      <div class="col text-center">
-        <a href="user/record">
+
+      <!-- Középső menüpontok -->
+      <a href="user/record" class="menu-item d-flex flex-column align-items-center">
         <span class="d-none d-md-inline">Diktálás</span>
-        <img src="assets/icons/meter.png" class="d-inline d-md-none" alt="homepage">
-        </a>
-      </div>
-      <div class="col text-center">
-        <a href="user/datas">
+        <div class="icon-wrapper d-inline d-md-none">
+          <img src="assets/icons/meter.png" alt="diktálás">
+          <span *ngIf="hasNewRecord" class="notification-dot"></span>
+        </div>
+        <span *ngIf="hasNewRecord" class="underline d-none d-md-inline"></span>
+      </a>
+
+      <a href="user/datas" class="menu-item d-flex flex-column align-items-center">
         <span class="d-none d-md-inline">Adatok</span>
-        <img src="assets/icons/datas.png" class="d-inline d-md-none" alt="homepage">
-        </a>
-      </div>
-      <div class="col text-end">
-        <a href="user/profile">
+        <div class="icon-wrapper d-inline d-md-none">
+          <img src="assets/icons/datas.png" alt="adatok">
+          <span *ngIf="hasNewDatas" class="notification-dot"></span>
+        </div>
+        <span *ngIf="hasNewDatas" class="underline d-none d-md-inline"></span>
+      </a>
+
+      <!-- Jobb szélső menüpont -->
+      <a href="user/profile" class="menu-item">
         <span class="d-none d-md-inline">Profilom</span>
-        <img src="assets/icons/profile.png" class="d-inline d-md-none" alt="homepage">
-        </a>
-      </div>
-      <!-- <div class="col cursor-pointer">
-        <span class="d-none d-md-inline" (click)="logout()">Kijelentkezés</span>
-        <i class="fa-solid fa-right-from-bracket fa-xl d-inline d-md-none"></i>
-      </div> -->
+        <div class="icon-wrapper d-inline d-md-none">
+          <img src="assets/icons/profile.png" alt="profilom">
+        </div>
+      </a>
     </div>
   </div>
 </div>

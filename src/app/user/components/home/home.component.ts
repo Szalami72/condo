@@ -7,6 +7,7 @@ import { MenuComponent } from '../menu/menu.component';
 import { BboardService } from '../../../admin/services/bboard.service';
 import { MessageService } from '../../../shared/services/message.service';
 import { ResidentsService } from '../../../admin/services/residents.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +27,8 @@ export class HomeComponent implements OnInit {
     private bboardService: BboardService,
     private router: Router,
     private sanitizer: DomSanitizer,
-    private residentsService: ResidentsService
+    private residentsService: ResidentsService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +61,9 @@ export class HomeComponent implements OnInit {
     this.bboardService.getPreviousBbs().subscribe({
       next: (response) => {
         this.bulletinBoards = response.data;
+        // Ha van új bejegyzés, frissítjük a szolgáltatást
+        const hasNewBulletin = this.bulletinBoards.some(bulletin => this.isNewBulletin(bulletin.created_at));
+        this.notificationService.setNewBulletinStatus(hasNewBulletin);
       },
       error: (error) => {
         this.messageService.setErrorMessage('Hiba az adatok betöltése során. Próbáld meg később!');

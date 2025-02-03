@@ -4,6 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { ConfirmmodalComponent } from '../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
 import { ScrollService } from '../../services/scroll.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-menu',
@@ -15,12 +16,22 @@ import { ScrollService } from '../../services/scroll.service';
 export class MenuComponent implements OnInit {
 
   isHidden = false;
+  hasNewBulletin: boolean = false;
+  hasNewRecord: boolean = false;
+  hasNewDatas: boolean = false;
 
-  constructor(private router: Router, private modalService: NgbModal, private scrollService: ScrollService) {}
+
+  constructor(private router: Router, 
+    private notificationService: NotificationService, 
+    private modalService: NgbModal,
+    private scrollService: ScrollService) {}
 
   ngOnInit(): void {
     this.scrollService.isScrollingDown$.subscribe(isScrollingDown => {
       this.isHidden = isScrollingDown;
+    });
+    this.notificationService.newBulletin$.subscribe(status => {
+      this.hasNewBulletin = status;
     });
   }
    logout(): void {

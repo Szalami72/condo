@@ -3,7 +3,8 @@
     <p></p>
 
         <div class="content mt-4">
-
+            <h2>Bejegyzések</h2>
+            <hr>
           <div *ngFor="let bboard of bulletinBoards" 
           [ngClass]="{'new-bulletin': isNewBulletin(bboard.created_at)}">
           <div *ngIf="isNewBulletin(bboard.created_at)" class="new-bb-sign">Új bejegyzés!</div>
