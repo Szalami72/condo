@@ -1,5 +1,6 @@
 .container {
     padding: 0;
+    color: #2f4156;
 }
 
 .content {
@@ -10,16 +11,16 @@
     margin-bottom: 1rem;
     font-size: 0.8rem;
     font-weight: bold;
-    color: #2f4156;
+
 }
 
 .create-at span {
     font-weight: normal;
-    color: #2f4156;
+ 
 }
 
 .new-bb-sign {
-    color: #2f4156;
+   
     font-weight: bold;
 }
 .new-bulletin {

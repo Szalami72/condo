@@ -20,21 +20,29 @@ export class MenuComponent implements OnInit {
   hasNewRecord: boolean = false;
   hasNewDatas: boolean = false;
 
-
-  constructor(private router: Router, 
+  constructor(
+    private router: Router, 
     private notificationService: NotificationService, 
     private modalService: NgbModal,
-    private scrollService: ScrollService) {}
+    private scrollService: ScrollService
+  ) {}
 
   ngOnInit(): void {
     this.scrollService.isScrollingDown$.subscribe(isScrollingDown => {
       this.isHidden = isScrollingDown;
     });
+
     this.notificationService.newBulletin$.subscribe(status => {
       this.hasNewBulletin = status;
     });
+
+    // Feliratkozunk az enableRecord változóra
+    this.notificationService.enableRecord$.subscribe(status => {
+      this.hasNewRecord = status;
+    });
   }
-   logout(): void {
+
+  logout(): void {
     const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true, size: 'sm' });
     modalRef.componentInstance.confirmMessage = 'Biztosan ki szeretne jelentkezni?'; 
 
@@ -51,6 +59,4 @@ export class MenuComponent implements OnInit {
       }
     );
   }
-
-
 }

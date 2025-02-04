@@ -5,9 +5,17 @@
         <div class="content mt-4">
             <h2>Mérőórák</h2>
             <hr>
-    
-     
-                
+            <div *ngIf="enableRecord; else noRecord">Az óraállások leadhatók.</div>
+            <ng-template #noRecord>
+                <ng-container *ngIf="selectedPeriod === 'evenMonths' && !evenMonths">
+                  Az óraleadások minden páros hónap {{ startDate }}. és {{ endDate }}. között lehetséges.
+                </ng-container>
+                <ng-container *ngIf="!(selectedPeriod === 'evenMonths' && !evenMonths)">
+                  Az óraállások leadása minden hónap {{ startDate }}. és {{ endDate }}. között lehetséges.
+                </ng-container>
+              </ng-template>
+              
+                                            
         </div>
       
   </div>
