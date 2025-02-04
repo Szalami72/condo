@@ -19,7 +19,7 @@ import { NotificationService } from '../../services/notification.service';
 export class HomeComponent implements OnInit {
   bulletinBoards: any[] = [];
   lastLoginTime: Date | null = null;
-  lastVisitedTime: Date | null = null; // Utolsó oldalmegtekintés
+  lastVisitedTime: Date | null = null;
 
   constructor(
     private cookieService: CookieService,
@@ -32,36 +32,33 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadLastVisitedTime();
-    this.loadData();
-  }
-
-  private loadLastVisitedTime(): void {
-    const storedTime = localStorage.getItem('lastVisitedTime');
-    if (storedTime) {
-      this.lastVisitedTime = new Date(storedTime);
-    }
-  }
-
-  private saveLastVisitedTime(): void {
-    const now = new Date();
-    localStorage.setItem('lastVisitedTime', now.toISOString());
-  }
-
-  private loadData(): void {
     const currentUser = this.getCurrentUserDatas();
     if (currentUser) {
-      this.getLoginHistory(currentUser.id);
+      this.loadLastVisitedTime(currentUser.id);
+      this.loadData(currentUser.id);
     }
+  }
+
+  private loadLastVisitedTime(userId: string): void {
+    const storedTime = localStorage.getItem(`lastVisitedTime_${userId}`);
+    this.lastVisitedTime = storedTime ? new Date(storedTime) : this.lastLoginTime || null;
+  }
+
+  private saveLastVisitedTime(userId: number): void {
+    const now = new Date().toISOString();
+    localStorage.setItem(`lastVisitedTime_${userId}`, now);
+  }
+
+  private loadData(userId: number): void {
+    this.getLoginHistory(userId);
     this.getPreviousBbs();
-    this.saveLastVisitedTime();
+    this.saveLastVisitedTime(userId);
   }
 
   private getPreviousBbs(): void {
     this.bboardService.getPreviousBbs().subscribe({
       next: (response) => {
         this.bulletinBoards = response.data;
-        // Ha van új bejegyzés, frissítjük a szolgáltatást
         const hasNewBulletin = this.bulletinBoards.some(bulletin => this.isNewBulletin(bulletin.created_at));
         this.notificationService.setNewBulletinStatus(hasNewBulletin);
       },
@@ -72,16 +69,10 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  private getLoginHistory(id: any): void {
+  private getLoginHistory(id: number): void {
     this.residentsService.getLoginHistory(id).subscribe({
       next: (response) => {
-        console.log('response:', response);
-        if (response.data.length > 0) {
-          this.lastLoginTime = new Date(
-            response.data.length > 1 ? response.data[1].loginTime : response.data[0].loginTime
-          );
-        }
-        console.log('lastLoginTime:', this.lastLoginTime);
+        this.lastLoginTime = response.data.length > 1 ? new Date(response.data[1].loginTime) : new Date('2024-01-01T00:00:00');
       },
       error: (error) => {
         console.log(error);
@@ -90,7 +81,7 @@ export class HomeComponent implements OnInit {
   }
 
   isNewBulletin(createdAt: string): boolean {
-    if (!this.lastVisitedTime) return false;
+    if (!this.lastVisitedTime) return true;  // Első belépés, minden bejegyzés új
     return new Date(createdAt) > this.lastVisitedTime;
   }
 
@@ -101,12 +92,16 @@ export class HomeComponent implements OnInit {
   logout(): void {
     localStorage.removeItem('currentUser');
     sessionStorage.removeItem('currentUser');
-    console.log('Felhasználói adatok törölve.');
     this.router.navigate(['/login']);
   }
 
   private getCurrentUserDatas(): any {
-    let currentUserData = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
-    return currentUserData ? JSON.parse(currentUserData) : null;
+    const currentUserData = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+    if (currentUserData) {
+      const parsedData = JSON.parse(currentUserData);
+      parsedData.id = Number(parsedData.id);
+      return parsedData;
+    }
+    return null;
   }
 }

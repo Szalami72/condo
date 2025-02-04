@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { UserGuard } from '../shared/authguards/userguard';
+import { RecordComponent } from './components/record/record.component';
 
 const routes: Routes = [
   {
@@ -9,6 +10,8 @@ const routes: Routes = [
     canActivate: [UserGuard],
     children: [
         { path: 'home', component: HomeComponent },
+        { path: 'record', component: RecordComponent },
+        { path: '**', component: HomeComponent }
     ]
 },
 ];

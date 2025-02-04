@@ -52,10 +52,5 @@ export class MenuComponent implements OnInit {
     );
   }
 
-  private getCurrentUserDatas() {
-    let currentUserData = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
-    if (currentUserData) {
-      return JSON.parse(currentUserData);
-    }
-  }
+
 }

@@ -1,5 +1,5 @@
 .menu-container {
-  position: sticky; /* Fontos, hogy a menü mindig látható helyen legyen */
+  position: sticky;
   top: 0;
   left: 0;
   padding-top: 0.5rem;
@@ -9,7 +9,7 @@
   color: #2f4156;
   border-bottom: #2f4156 solid 2px;
   transition: transform 0.2s ease, opacity 0.2s ease;
-  z-index: 1000; /* Biztosítsd, hogy a menü a többi tartalom felett maradjon */
+  z-index: 1000;
 }
 
 .menu-container.hidden {
@@ -36,7 +36,7 @@ img {
 
 .menu-items {
   display: flex;
-  justify-content: space-between; /* A szélső menüpontok a széleken, a középsőek egyenlő távolságra */
+  justify-content: space-between;
   align-items: center;
   width: 100%;
 }
@@ -65,12 +65,12 @@ img {
   border-radius: 50%;
 }
 
-.underline {
+.notification-dot-for-text {
   position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 35%;
-  height: 4px;
+  top: 0.5rem;
+  right: -0.75rem;
+  width: 10px;
+  height: 10px;
   background-color: red;
+  border-radius: 50%;
 }

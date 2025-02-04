@@ -8,7 +8,7 @@
           <img src="assets/icons/home.png" alt="főoldal">
           <span *ngIf="hasNewBulletin" class="notification-dot"></span>
         </div>
-        <span *ngIf="hasNewBulletin" class="underline d-none d-md-inline"></span>
+        <span *ngIf="hasNewBulletin" class="notification-dot-for-text d-none d-md-inline"></span>
       </a>
 
       <!-- Középső menüpontok -->
@@ -18,7 +18,7 @@
           <img src="assets/icons/meter.png" alt="diktálás">
           <span *ngIf="hasNewRecord" class="notification-dot"></span>
         </div>
-        <span *ngIf="hasNewRecord" class="underline d-none d-md-inline"></span>
+        <span *ngIf="hasNewRecord" class="notification-dot-for-text d-none d-md-inline"></span>
       </a>
 
       <a href="user/datas" class="menu-item d-flex flex-column align-items-center">
@@ -27,7 +27,7 @@
           <img src="assets/icons/datas.png" alt="adatok">
           <span *ngIf="hasNewDatas" class="notification-dot"></span>
         </div>
-        <span *ngIf="hasNewDatas" class="underline d-none d-md-inline"></span>
+        <span *ngIf="hasNewDatas" class="notification-dot-for-text d-none d-md-inline"></span>
       </a>
 
       <!-- Jobb szélső menüpont -->
