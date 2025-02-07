@@ -3,5 +3,23 @@
 }
 
 .content {
+    color: #2f4156;
     padding: 0 1rem;
+}
+
+.info-box {
+    background-color: #2f4156;
+    color: #f5efeb;
+    border-left: 10px solid #567c8d;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+}
+
+.green {
+    border-left: 10px solid green;
+}
+
+.red {
+    border-left: 10px solid red;
 }

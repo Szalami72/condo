@@ -3,18 +3,56 @@
     <p></p>
 
         <div class="content mt-4">
-            <h2>Mérőórák</h2>
+            <h2>Óraállások rögzítése</h2>
             <hr>
-            <div *ngIf="enableRecord; else noRecord">Az óraállások leadhatók.</div>
+            <div *ngIf="enableRecord; else noRecord">
+              <div class="info-box green">Az óraállások leadhatók.</div>
+
+              </div>
+
             <ng-template #noRecord>
-                <ng-container *ngIf="selectedPeriod === 'evenMonths' && !evenMonths">
-                  Az óraleadások minden páros hónap {{ startDate }}. és {{ endDate }}. között lehetséges.
+              <ng-container *ngIf="hasThisMonthRecord">
+                <div class="info-box red">
+                Az óraállások rögzítve: <br> {{ monthAndYear }}.
+                </div>
+              </ng-container>
+                <ng-container *ngIf="selectedPeriod === 'evenMonths' && !hasThisMonthRecord">
+                  <div class="info-box red">
+                  Az óraállások leadása: <br> minden páros hónap {{ startDate }}. és {{ endDate }}. között.
+                  </div>
                 </ng-container>
-                <ng-container *ngIf="!(selectedPeriod === 'evenMonths' && !evenMonths)">
-                  Az óraállások leadása minden hónap {{ startDate }}. és {{ endDate }}. között lehetséges.
+                <ng-container *ngIf="selectedPeriod === 'everyMonth' && !hasThisMonthRecord">
+                  <div class="info-box red">
+                  Az óraállások leadása: <br> minden hónap {{ startDate }}. és {{ endDate }}. között.
+                  </div>
                 </ng-container>
               </ng-template>
               
+        <!--óraállások rögzítése-->
+        <div class="meters-box">
+          <div class="cold-meters">
+            <div *ngIf="cold1 === '1'">
+              hideg1
+            </div>
+            <div *ngIf="cold2 === '1'">
+              hideg2
+            </div>
+          </div>
+          <div class="hot-meters">
+            <div *ngIf="hot1 === '1'">
+              meleg1
+            </div>
+            <div *ngIf="hot2 === '1'">
+              meleg2
+            </div>
+          </div>
+          <div class="heating-meter">
+            <div *ngIf="heating === '1'">
+              fűtés
+            </div>
+          </div>
+
+        </div>
                                             
         </div>
       
