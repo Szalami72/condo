@@ -20,4 +20,5 @@ export class NotificationService {
   setEnableRecordStatus(status: boolean): void {
     this.enableRecordSubject.next(status);
   }
+
 }

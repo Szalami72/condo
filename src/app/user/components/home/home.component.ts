@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MenuComponent } from '../menu/menu.component';
+import { RecordComponent } from '../record/record.component';
 import { BboardService } from '../../../admin/services/bboard.service';
 import { MessageService } from '../../../shared/services/message.service';
 import { ResidentsService } from '../../../admin/services/residents.service';
@@ -12,11 +13,12 @@ import { NotificationService } from '../../services/notification.service';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MenuComponent, CommonModule],
+  imports: [MenuComponent, CommonModule, ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  @ViewChild(RecordComponent) recordComponent!: RecordComponent;
   bulletinBoards: any[] = [];
   lastLoginTime: Date | null = null;
   lastVisitedTime: Date | null = null;
@@ -31,6 +33,7 @@ export class HomeComponent implements OnInit {
     private notificationService: NotificationService
   ) {}
 
+
   ngOnInit(): void {
     const currentUser = this.getCurrentUserDatas();
     if (currentUser) {
@@ -38,6 +41,8 @@ export class HomeComponent implements OnInit {
       this.loadData(currentUser.id);
     }
   }
+
+  
 
   private loadLastVisitedTime(userId: string): void {
     const storedTime = localStorage.getItem(`lastVisitedTime_${userId}`);

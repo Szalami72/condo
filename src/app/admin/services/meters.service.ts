@@ -17,6 +17,7 @@ export class MetersService {
   private saveMetersValuesByIdApi = API_BASE_URL + 'meters/savemetersValuesByid.php';
 
   private getPreviousMetersValuesApi = API_BASE_URL + 'meters/getpreviousmetersvalues.php';
+  private getMeterSerialsApi = API_BASE_URL + 'meters/getmetersserialsbyid.php';
 
   constructor(private http: HttpClient) { }
 
@@ -72,6 +73,10 @@ export class MetersService {
 
   getPreviousMetersValues(userId: number): Observable<any> {
     return this.http.post<any>(this.getPreviousMetersValuesApi, { userId: userId });
+  }
+
+  getMeterSerials(userId: number): Observable<any> {
+    return this.http.post<any>(this.getMeterSerialsApi, { userId: userId });
   }
 
 }

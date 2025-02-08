@@ -6,7 +6,7 @@
             <h2>Óraállások rögzítése</h2>
             <hr>
             <div *ngIf="enableRecord; else noRecord">
-              <div class="info-box green">Az óraállások leadhatók.</div>
+              <div class="info-box green">Az óraállások rögzíthetők. {{ monthAndYear }}</div>
 
               </div>
 
@@ -29,31 +29,39 @@
               </ng-template>
               
         <!--óraállások rögzítése-->
-        <div class="meters-box">
-          <div class="cold-meters">
-            <div *ngIf="cold1 === '1'">
-              hideg1
+        <div class="meters-box mt-4">
+          <div class="cold-meters row d-flex justify-content-between">
+            <div *ngIf="cold1 === '1'" class="col-5">
+              <label for="cold1" class="text-center">{{ cold1Serial ? '&nbsp;gy.szám: ' + cold1Serial : '&nbsp;' }}</label>
+              <input type="number" [(ngModel)]="cold1Value" class="form-control text-center cold" placeholder="hideg 1">
             </div>
-            <div *ngIf="cold2 === '1'">
-              hideg2
-            </div>
-          </div>
-          <div class="hot-meters">
-            <div *ngIf="hot1 === '1'">
-              meleg1
-            </div>
-            <div *ngIf="hot2 === '1'">
-              meleg2
+            <div *ngIf="cold2 === '1'" class="col-5">
+              <label for="cold2" class="text-center">{{ cold2Serial ? '&nbsp;gy.szám: ' + cold2Serial : '&nbsp;' }}</label>
+              <input type="number" [(ngModel)]="cold2Value" class="form-control text-center cold" placeholder="hideg 2">
             </div>
           </div>
-          <div class="heating-meter">
-            <div *ngIf="heating === '1'">
-              fűtés
+        
+          <div class="hot-meters row d-flex justify-content-between mt-4">
+            <div *ngIf="hot1 === '1'" class="col-5">
+              <label for="hot1" class="text-center">{{ hot1Serial ? '&nbsp;gy.szám: ' + hot1Serial : '&nbsp;' }}</label>
+              <input type="number" [(ngModel)]="hot1Value" class="form-control text-center hot" placeholder="meleg 1">
+            </div>
+            <div *ngIf="hot2 === '1'" class="col-5">
+              <label for="hot2" class="text-center">{{ hot2Serial ? '&nbsp;gy.szám: ' + hot2Serial : '&nbsp;' }}</label>
+              <input type="number" [(ngModel)]="hot2Value" class="form-control text-center hot" placeholder="meleg 2">
+            </div>
+          </div>
+        </div>
+        
+        
+          <br>
+          <div class="heating-meter row mt-4">
+            <div *ngIf="heating === '1'" class="col-5">
+              <input type="number" [(ngModel)]="heatingValue" class="form-control text-center heating" placeholder="fűtés">
             </div>
           </div>
 
         </div>
                                             
         </div>
-      
-  </div>
+

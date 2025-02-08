@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,} from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
@@ -9,12 +9,11 @@ import { NotificationService } from '../../services/notification.service';
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ],
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-
   isHidden = false;
   hasNewBulletin: boolean = false;
   hasNewRecord: boolean = false;
@@ -26,6 +25,7 @@ export class MenuComponent implements OnInit {
     private modalService: NgbModal,
     private scrollService: ScrollService
   ) {}
+
 
   ngOnInit(): void {
     this.scrollService.isScrollingDown$.subscribe(isScrollingDown => {
@@ -42,6 +42,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
+  
   logout(): void {
     const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true, size: 'sm' });
     modalRef.componentInstance.confirmMessage = 'Biztosan ki szeretne jelentkezni?'; 

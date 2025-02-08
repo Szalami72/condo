@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { CostsService } from '../../../admin/services/costs.service';
 import { MenuComponent } from '../menu/menu.component';
@@ -11,7 +12,7 @@ import { map, Observable } from 'rxjs';
 @Component({
   selector: 'app-record',
   standalone: true,
-  imports: [MenuComponent, CommonModule],
+  imports: [MenuComponent, CommonModule, FormsModule],
   templateUrl: './record.component.html',
   styleUrl: './record.component.css'
 })
@@ -32,6 +33,15 @@ export class RecordComponent implements OnInit {
   hot1: string = '';
   hot2: string = '';
   heating: string = '';
+  cold1Value: number | null = null;
+  cold2Value: number | null = null;
+  hot1Value: number | null = null;
+  hot2Value: number | null = null;
+  heatingValue: number | null = null;
+  cold1Serial: string = '';
+  cold2Serial: string = '';
+  hot1Serial: string = '';
+  hot2Serial: string = '';
 
   constructor(
     private costsService: CostsService,
@@ -48,18 +58,24 @@ export class RecordComponent implements OnInit {
     if (currentUser) {
       this.userId = currentUser.id;
       console.log('👤 userId:', this.userId);
-  
-      // A getPreviousRecords már Observable-t ad vissza, így ezt is kezelhetjük Observable-ként
-      this.hasPreviousRecords(this.userId).subscribe((hasRecords) => {
-        this.hasThisMonthRecord = hasRecords;
-        console.log('📅 hasThisMonthRecord:', this.hasThisMonthRecord);
-  
-        // Csak akkor hívjuk a getSettings-et, ha a getPreviousRecords befejeződött
-        this.getSettings();  
-      });
+      this.initializeRecord();
+      
     }
   }
   
+  initializeRecord(): void {
+    console.log('Record initialization');
+    this.hasPreviousRecords(this.userId).subscribe((hasRecords) => {
+      this.hasThisMonthRecord = hasRecords;
+      console.log('📅 hasThisMonthRecord:', this.hasThisMonthRecord);
+
+      // Csak akkor hívjuk a getSettings-et, ha a getPreviousRecords befejeződött
+      this.getSettings();
+      this.getMetersSerials(this.userId); 
+      this.notificationService.setEnableRecordStatus(this.enableRecord);
+
+    });
+  }
 
   private getSettings(): void {
     this.costsService.getCosts().subscribe({
@@ -70,6 +86,8 @@ export class RecordComponent implements OnInit {
           this.setDates(this.settings);
           this.setMeters(this.settings);
           this.checkIsRecordEnabled();
+          this.notificationService.setEnableRecordStatus(this.enableRecord);
+
         } else {
           this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
         }
@@ -157,4 +175,43 @@ export class RecordComponent implements OnInit {
     return data.some(record => record.monthAndYear === this.monthAndYear);
   }
   
+  private getMetersSerials(userId: number): any {
+    this.metersService.getMeterSerials(userId).subscribe({
+      next: (response) => { 
+        if (response.status === 'success') {
+          console.log('📅 metersSerials:', response.data);
+          this.setMetersSerials(response.data);
+        } else {
+          this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!');
+        }
+      },
+      error: () => {
+        this.messageService.setErrorMessage('Hiba történt az adatok betöltése során. Próbáld meg később!'); 
+      }
+    });
+  }
+
+  private setMetersSerials(data: any[]): void {
+    // Objektumot hozunk létre, hogy a típusokhoz hozzárendelhessük a serialNum-okat
+    const metersMap: { [key: string]: string } = {};
+  
+    // Végigmegyünk a kapott tömbön és feltöltjük a megfelelő kulcsokat
+    data.forEach(meter => {
+      metersMap[meter.typeOfMeter] = meter.serialNum;
+    });
+  
+    // Beállítjuk a megfelelő változókat, ha léteznek az adatokban
+    this.cold1Serial = metersMap['cold1'] || '';
+    this.cold2Serial = metersMap['cold2'] || '';
+    this.hot1Serial = metersMap['hot1'] || '';
+    this.hot2Serial = metersMap['hot2'] || '';
+  
+    // Ellenőrzés: Kiírjuk a konzolra az értékeket
+    console.log('📅 cold1Serial:', this.cold1Serial);
+    console.log('📅 cold2Serial:', this.cold2Serial);
+    console.log('📅 hot1Serial:', this.hot1Serial);
+    console.log('📅 hot2Serial:', this.hot2Serial);
+  }
+  
 }
+
