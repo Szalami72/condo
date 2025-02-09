@@ -1,19 +1,19 @@
 <div class="container">
     <app-menu></app-menu>
-    <p></p>
-
-        <div class="content mt-4">
+    <br>
+    <app-message></app-message>
+        <div class="content">
             <h2>Óraállások rögzítése</h2>
             <hr>
-            <div *ngIf="enableRecord; else noRecord">
-              <div class="info-box green">Az óraállások rögzíthetők. {{ monthAndYear }}</div>
+            <div *ngIf="enableRecord && !hasThisMonthRecord; else noRecord">
+              <div class="info-box green">Az óraállások rögzíthetők. {{ monthAndYearHungarian }}</div>
 
               </div>
 
             <ng-template #noRecord>
               <ng-container *ngIf="hasThisMonthRecord">
                 <div class="info-box red">
-                Az óraállások rögzítve: <br> {{ monthAndYear }}.
+                Az óraállások rögzítve: <br> {{ monthAndYearHungarian }} hónapra.
                 </div>
               </ng-container>
                 <ng-container *ngIf="selectedPeriod === 'evenMonths' && !hasThisMonthRecord">
@@ -29,31 +29,28 @@
               </ng-template>
               
         <!--óraállások rögzítése-->
-        <div class="meters-box mt-4">
+        <div *ngIf="enableRecord" class="meters-box mt-4">
           <div class="cold-meters row d-flex justify-content-between">
             <div *ngIf="cold1 === '1'" class="col-5">
-              <label for="cold1" class="text-center">{{ cold1Serial ? '&nbsp;gy.szám: ' + cold1Serial : '&nbsp;' }}</label>
+              <label for="cold1" class="text-center">{{ cold1Serial ? '&nbsp;gy.szám: ' + cold1Serial : 'gy.szám: nincs megadva' }}</label>
               <input type="number" [(ngModel)]="cold1Value" class="form-control text-center cold" placeholder="hideg 1">
             </div>
             <div *ngIf="cold2 === '1'" class="col-5">
-              <label for="cold2" class="text-center">{{ cold2Serial ? '&nbsp;gy.szám: ' + cold2Serial : '&nbsp;' }}</label>
+              <label for="cold2" class="text-center">{{ cold2Serial ? '&nbsp;gy.szám: ' + cold2Serial : 'gy.szám: nincs megadva' }}</label>
               <input type="number" [(ngModel)]="cold2Value" class="form-control text-center cold" placeholder="hideg 2">
             </div>
           </div>
         
           <div class="hot-meters row d-flex justify-content-between mt-4">
             <div *ngIf="hot1 === '1'" class="col-5">
-              <label for="hot1" class="text-center">{{ hot1Serial ? '&nbsp;gy.szám: ' + hot1Serial : '&nbsp;' }}</label>
+              <label for="hot1" class="text-center">{{ hot1Serial ? '&nbsp;gy.szám: ' + hot1Serial : 'gy.szám: nincs megadva' }}</label>
               <input type="number" [(ngModel)]="hot1Value" class="form-control text-center hot" placeholder="meleg 1">
             </div>
             <div *ngIf="hot2 === '1'" class="col-5">
-              <label for="hot2" class="text-center">{{ hot2Serial ? '&nbsp;gy.szám: ' + hot2Serial : '&nbsp;' }}</label>
+              <label for="hot2" class="text-center">{{ hot2Serial ? '&nbsp;gy.szám: ' + hot2Serial : 'gy.szám: nincs megadva' }}</label>
               <input type="number" [(ngModel)]="hot2Value" class="form-control text-center hot" placeholder="meleg 2">
             </div>
           </div>
-        </div>
-        
-        
           <br>
           <div class="heating-meter row mt-4">
             <div *ngIf="heating === '1'" class="col-5">
@@ -61,7 +58,51 @@
             </div>
           </div>
 
+          <div class="row mt-4">
+            <div class="col-12 mt-2">
+              <button (click)="record()" class="btn">Rögzítés</button>
+            </div>
         </div>
-                                            
+
+        </div>
+        <hr>
+        <div *ngIf="isLoading">Betöltés...</div>
+
+        <div *ngIf="!isLoading && prevRecords.length > 0">
+          <h4 class="mt-4 mb-4">Előző értékek</h4>
+        
+          <table>
+            <thead>
+              <tr>
+                <th>Hónap/Év</th>
+                <th *ngIf="cold1 === '1'">Hideg 1</th>
+                <th *ngIf="cold2 === '1'">Hideg 2</th>
+                <th *ngIf="hot1 === '1'">Meleg 1</th>
+                <th *ngIf="hot2 === '1'">Meleg 2</th>
+                <th *ngIf="heating === '1'">Fűtés</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let record of prevRecords">
+                <td><b>{{ record.monthAndYear }}</b></td>
+                <td *ngIf="cold1 === '1'">{{ record.cold1 }}</td>
+                <td *ngIf="cold2 === '1'">{{ record.cold2 }}</td>
+                <td *ngIf="hot1 === '1'">{{ record.hot1 }}</td>
+                <td *ngIf="hot2 === '1'">{{ record.hot2 }}</td>
+                <td *ngIf="heating === '1'">{{ record.heating }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        
+        
+
+        
+        
+        
+        
+        
+                                   
         </div>
 

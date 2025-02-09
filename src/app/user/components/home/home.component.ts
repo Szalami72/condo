@@ -1,24 +1,24 @@
-import { Component, OnInit, ViewChild  } from '@angular/core';
+import { Component, OnInit,  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MenuComponent } from '../menu/menu.component';
-import { RecordComponent } from '../record/record.component';
 import { BboardService } from '../../../admin/services/bboard.service';
 import { MessageService } from '../../../shared/services/message.service';
 import { ResidentsService } from '../../../admin/services/residents.service';
 import { NotificationService } from '../../services/notification.service';
+import { MenuService } from '../../services/menu.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MenuComponent, CommonModule, ],
+  imports: [MenuComponent, CommonModule ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  @ViewChild(RecordComponent) recordComponent!: RecordComponent;
+  
   bulletinBoards: any[] = [];
   lastLoginTime: Date | null = null;
   lastVisitedTime: Date | null = null;
@@ -30,20 +30,21 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private sanitizer: DomSanitizer,
     private residentsService: ResidentsService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private menuService: MenuService
   ) {}
 
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const currentUser = this.getCurrentUserDatas();
     if (currentUser) {
       this.loadLastVisitedTime(currentUser.id);
       this.loadData(currentUser.id);
     }
+    await this.menuService.inicialize();
   }
 
   
-
   private loadLastVisitedTime(userId: string): void {
     const storedTime = localStorage.getItem(`lastVisitedTime_${userId}`);
     this.lastVisitedTime = storedTime ? new Date(storedTime) : this.lastLoginTime || null;
@@ -58,6 +59,7 @@ export class HomeComponent implements OnInit {
     this.getLoginHistory(userId);
     this.getPreviousBbs();
     this.saveLastVisitedTime(userId);
+
   }
 
   private getPreviousBbs(): void {

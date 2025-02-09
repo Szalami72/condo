@@ -14,6 +14,7 @@ import { NotificationService } from '../../services/notification.service';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
+  
   isHidden = false;
   hasNewBulletin: boolean = false;
   hasNewRecord: boolean = false;
