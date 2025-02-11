@@ -10,9 +10,9 @@
           [ngClass]="{'new-bulletin': isNewBulletin(bboard.created_at)}">
           <div *ngIf="isNewBulletin(bboard.created_at)" class="new-bb-sign">Új bejegyzés!</div>
          <div class="create-at">Létrehozva: <span>{{ bboard.created_at }}</span></div>
-         <div [innerHTML]="getSafeHtml(bboard.content)"></div>
+         <div [innerHTML]="getSafeHtml(bboard.content)" class="bb-content"></div>
          
-         <hr>
+        
      </div>
      
                 

@@ -8,7 +8,7 @@
 }
 
 .create-at {
-    margin-bottom: 1rem;
+    margin-bottom: 0rem;
     font-size: 0.8rem;
     font-weight: bold;
 
@@ -20,7 +20,7 @@
 }
 
 .new-bb-sign {
-   
+ 
     font-weight: bold;
 }
 .new-bulletin {
@@ -31,6 +31,14 @@
     border-radius: 5px;
   }
   
+  .bb-content{
+    background-color: #f5efeb;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    box-shadow: 0px 2px 5px rgba(47, 65, 86, 0.2);
+  }
+
   h2 {
     color: #2f4156;
     margin: 2rem 0;
