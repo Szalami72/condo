@@ -22,7 +22,6 @@ export class RecordComponent implements OnInit {
   enableRecord: boolean = false;
   userId: any;
   monthAndYear: any;
-  monthAndYearHungarian: any;
   hasThisMonthRecord: boolean = false;
   cold1: string = '';
   cold2: string = '';
@@ -66,7 +65,6 @@ export class RecordComponent implements OnInit {
   initVariables(data: any): void {
     this.userId = data.find((item: { userId: any; }) => item.userId)?.userId;
     this.monthAndYear = data.find((item: { monthAndYear: any; }) => item.monthAndYear)?.monthAndYear;
-    this.monthAndYearHungarian = data.find((item: { monthAndYearHungarian: any; }) => item.monthAndYearHungarian)?.monthAndYearHungarian;
     this.startDate = data.find((item: { settings: any; }) => item.settings)?.settings.startDate;
     this.endDate = data.find((item: { settings: any; }) => item.settings)?.settings.endDate;
     this.enableRecord = data.find((item: { recordEnabled: any; }) => item.recordEnabled)?.recordEnabled;
@@ -170,7 +168,11 @@ export class RecordComponent implements OnInit {
     }
   }
 
-
+  reverseMonthYear(date: string): string {
+    const [month, year] = date.split('-');
+    return `${year}-${month}`;
+  }
+  
   
 }
 

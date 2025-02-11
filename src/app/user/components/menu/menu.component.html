@@ -1,7 +1,6 @@
 <div class="menu-container" [class.hidden]="isHidden">
   <div class="container mt-2">
     <div class="menu-items">
-      <!-- Bal szélső menüpont -->
       <a href="user/home" class="menu-item">
         <span class="d-none d-md-inline">Főoldal</span>
         <div class="icon-wrapper d-inline d-md-none">
@@ -11,7 +10,6 @@
         <span *ngIf="hasNewBulletin" class="notification-dot-for-text d-none d-md-inline"></span>
       </a>
 
-      <!-- Középső menüpontok -->
       <a href="user/record" class="menu-item d-flex flex-column align-items-center">
         <span class="d-none d-md-inline">Diktálás</span>
         <div class="icon-wrapper d-inline d-md-none">
@@ -30,7 +28,13 @@
         <span *ngIf="hasNewDatas" class="notification-dot-for-text d-none d-md-inline"></span>
       </a>
 
-      <!-- Jobb szélső menüpont -->
+      <a href="user/files" class="menu-item">
+        <span class="d-none d-md-inline">Fájlok</span>
+        <div class="icon-wrapper d-inline d-md-none">
+          <img src="assets/icons/files.png" alt="profilom">
+        </div>
+      </a>
+
       <a href="user/profile" class="menu-item">
         <span class="d-none d-md-inline">Profilom</span>
         <div class="icon-wrapper d-inline d-md-none">

@@ -25,9 +25,6 @@ export class MenuService {
     const monthAndYear = this.getCurrentMonthAndYear();
     this.datas.push({ monthAndYear: monthAndYear });
 
-    const monthAndYearHungarian = this.getCurrentMonthAndYearHungarian();
-    this.datas.push({ monthAndYearHungarian: monthAndYearHungarian });
-
     const currentUserId = this.getCurrentUserDatas();
     this.datas.push({ userId: currentUserId });
 
@@ -65,12 +62,6 @@ export class MenuService {
     return `${month}-${year}`;
   }
 
-  getCurrentMonthAndYearHungarian(): string {
-    const today = new Date();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0'); 
-    const year = today.getFullYear();
-    return `${year}-${month}`;
-  }
 
   private getCurrentUserDatas(): any {
     const currentUserData = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');

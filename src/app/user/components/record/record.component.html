@@ -6,14 +6,14 @@
             <h2>Óraállások rögzítése</h2>
             <hr>
             <div *ngIf="enableRecord && !hasThisMonthRecord; else noRecord">
-              <div class="info-box green">Az óraállások rögzíthetők. {{ monthAndYearHungarian }}</div>
+              <div class="info-box green">Az óraállások rögzíthetők. {{ reverseMonthYear(monthAndYear) }}</div>
 
               </div>
 
             <ng-template #noRecord>
               <ng-container *ngIf="hasThisMonthRecord">
                 <div class="info-box red">
-                Az óraállások rögzítve: <br> {{ monthAndYearHungarian }} hónapra.
+                Az óraállások rögzítve: <br> {{ reverseMonthYear(monthAndYear) }} hónapra.
                 </div>
               </ng-container>
                 <ng-container *ngIf="selectedPeriod === 'evenMonths' && !hasThisMonthRecord">
@@ -68,10 +68,10 @@
         <hr>
         <div *ngIf="isLoading">Betöltés...</div>
 
-        <div *ngIf="!isLoading && prevRecords.length > 0">
+        <div *ngIf="!isLoading && prevRecords.length > 0" class="table-container">
           <h4 class="mt-4 mb-4">Előző értékek</h4>
         
-          <table>
+          <table class="custom-table">
             <thead>
               <tr>
                 <th>Hónap/Év</th>
@@ -84,7 +84,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let record of prevRecords">
-                <td><b>{{ record.monthAndYear }}</b></td>
+                <td><b>{{ reverseMonthYear(record.monthAndYear) }}</b></td>
                 <td *ngIf="cold1 === '1'">{{ record.cold1 }}</td>
                 <td *ngIf="cold2 === '1'">{{ record.cold2 }}</td>
                 <td *ngIf="hot1 === '1'">{{ record.hot1 }}</td>
@@ -94,6 +94,7 @@
             </tbody>
           </table>
         </div>
+        
         
         
         
