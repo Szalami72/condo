@@ -1,16 +1,36 @@
 <div class="container">
     <app-menu></app-menu>
     
-    <p></p>
+    <p id="datas"></p>
 
         <div class="content mt-4">
-            <h2>Adatok</h2>
+            <h2>Információk</h2>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center">
+                <h5>A társasház adatai</h5>
+                <span (click)="scrollToSection('costs')" style="cursor: pointer;">Ugrás a költségadatokhoz</span>
+              </div>
+              
+
             <hr>
             <div *ngFor="let item of datas" class="data-box">
                 <strong>{{ item.title }}</strong> 
                 <span class="text-end">{{ item.data }}</span>
             </div>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center" id="costs">
+                <h5>Költségadatok</h5>
+                <span (click)="scrollToSection('datas')" class="" style="cursor: pointer;">Vissza a lap tetejére</span>
+              </div>
+            <hr>
+
+            <div *ngFor="let item of costsArray" class="data-box">
+            <strong>{{ item[0] }}:</strong>
+                   <span [innerHTML]="item[1]" class="text-end"></span>
+            </div>
+     
               
+        
      
                 
         </div>

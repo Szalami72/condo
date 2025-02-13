@@ -19,6 +19,7 @@ export class MenuComponent implements OnInit {
   hasNewBulletin: boolean = false;
   hasNewRecord: boolean = false;
   hasNewDatas: boolean = false;
+  hasNewFile: boolean = false;
 
   constructor(
     private router: Router, 

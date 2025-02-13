@@ -20,7 +20,7 @@
       </a>
 
       <a href="user/datas" class="menu-item d-flex flex-column align-items-center">
-        <span class="d-none d-md-inline">Adatok</span>
+        <span class="d-none d-md-inline">Információk</span>
         <div class="icon-wrapper d-inline d-md-none">
           <img src="assets/icons/datas.png" alt="adatok">
           <span *ngIf="hasNewDatas" class="notification-dot"></span>
@@ -32,7 +32,9 @@
         <span class="d-none d-md-inline">Fájlok</span>
         <div class="icon-wrapper d-inline d-md-none">
           <img src="assets/icons/files.png" alt="profilom">
+          <span *ngIf="hasNewFile" class="notification-dot"></span>
         </div>
+        <span *ngIf="hasNewFile" class="notification-dot-for-text d-none d-md-inline"></span>
       </a>
 
       <a href="user/profile" class="menu-item">

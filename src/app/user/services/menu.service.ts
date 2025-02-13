@@ -63,7 +63,7 @@ export class MenuService {
   }
 
 
-  private getCurrentUserDatas(): any {
+  getCurrentUserDatas(): any {
     const currentUserData = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
     if (currentUserData) {
       const parsedData = JSON.parse(currentUserData);

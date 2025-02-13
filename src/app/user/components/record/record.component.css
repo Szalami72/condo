@@ -20,29 +20,9 @@ h2 {
     margin: 1rem 0 2rem 0;
   }
   
-.green {
-    border-left: 10px solid green;
-}
 
-.red {
-    border-left: 10px solid red;
-}
-
-.cold {
-    border: 1px solid #2980b9;
-    border-left: 10px solid #2980b9;
-    border-radius: 5px;
-}
-
-.hot {
-    border: 1px solid #c0392b;
-    border-left: 10px solid #c0392b;
-    border-radius: 5px;
-}
-
-.heating {
-    border: 1px solid #873600;
-    border-left: 10px solid #873600;
+.cold, .hot, .heating {
+    border: 1px solid #567c8d;
     border-radius: 5px;
 }
 
@@ -50,16 +30,6 @@ input {
     font-size: 1.25rem;
     font-weight: bold;
 }
-
-input:focus {
-    outline: none !important;
-    box-shadow: none !important;
-    border-color: green !important;
-    border: 1px solid green !important;
-    border-left: 10px solid green !important;
-    box-shadow: inset 0 0 5px 5px rgba(0,0,0,0.1) !important;
-  }
-
   
 label {
     font-size: 0.75rem;
@@ -67,7 +37,8 @@ label {
 }
 
 .btn{
-    width: 100%;
+    width: 25%;
+    margin-left: 75%;
     background-color: #2f4156;
     color: #f5efeb;
     border: 1px solid #2f4156;
@@ -76,29 +47,6 @@ label {
     cursor: pointer;
 }
 
-/* table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 2rem;
-  }
-  
-  th, td {
-    padding: 8px;
-    border: 1px solid #ddd;
-  }
-
-  td:first-child {
-    text-align: center;
-  }
-
-  td {
-    text-align: right;
-  }
-
-  th {
-    background-color: #f5efeb;
-    text-align: center;
-  } */
   .table-container {
     width: 100%;
     overflow-x: auto; /* Görgethető táblázat kis kijelzőn */

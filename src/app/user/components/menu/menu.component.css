@@ -61,7 +61,7 @@ img {
   right: 0.25rem;
   width: 10px;
   height: 10px;
-  background-color: red;
+  background-color: #e74c3c;
   border-radius: 50%;
 }
 
@@ -71,6 +71,6 @@ img {
   right: -0.75rem;
   width: 10px;
   height: 10px;
-  background-color: red;
+  background-color: #e74c3c;
   border-radius: 50%;
 }

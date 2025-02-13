@@ -1,0 +1,29 @@
+<div class="container">
+    <app-menu></app-menu>
+    
+    <p id="datas"></p>
+
+        <div class="content mt-4">
+            <h2>Fájlok</h2>
+            <hr>
+       
+        <div class="data-box" *ngFor="let file of uploadedFiles">
+            <div class="col-lg-9 col-md-12 col-sm-12 mb-2">
+              <b>Fájlnév: </b> {{file.fileName}}
+              <br>
+              <span *ngIf="file.description != 'null'">
+                <b>Fájlleírás: </b> {{file.description}}
+                <br>
+              </span>
+             
+              <span>
+                <b>Feltöltve: </b> {{file.created_at}}
+              </span>
+            </div>
+        
+            <div class="col-lg-3 col-md-12 col-sm-12 mb-2">
+              <button class="btn btn-sm float-end" (click)="downloadFile(file)">Letöltés</button>
+            </div>
+ 
+          </div>
+        </div>

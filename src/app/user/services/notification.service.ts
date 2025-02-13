@@ -11,6 +11,9 @@ export class NotificationService {
   private enableRecordSubject = new BehaviorSubject<boolean>(false);
   enableRecord$ = this.enableRecordSubject.asObservable();
 
+  private newFileSubject = new BehaviorSubject<boolean>(false);
+  newFile$ = this.newFileSubject.asObservable();
+
   constructor() {}
 
   setNewBulletinStatus(status: boolean): void {
@@ -19,6 +22,10 @@ export class NotificationService {
 
   setEnableRecordStatus(status: boolean): void {
     this.enableRecordSubject.next(status);
+  }
+
+  setNewFileStatus(status: boolean): void {
+    this.newFileSubject.next(status);
   }
 
 }
