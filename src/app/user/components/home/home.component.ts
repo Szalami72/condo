@@ -46,14 +46,15 @@ export class HomeComponent implements OnInit {
 
   
   private loadLastVisitedTime(userId: string): void {
-    const storedTime = localStorage.getItem(`lastVisitedTime_${userId}`);
+    const storedTime = localStorage.getItem(`lastVisitedTime_home_${userId}`);
     this.lastVisitedTime = storedTime ? new Date(storedTime) : this.lastLoginTime || null;
   }
 
   private saveLastVisitedTime(userId: number): void {
     const now = new Date().toISOString();
-    localStorage.setItem(`lastVisitedTime_${userId}`, now);
+    localStorage.setItem(`lastVisitedTime_home_${userId}`, now);
   }
+  
 
   private loadData(userId: number): void {
     this.getLoginHistory(userId);

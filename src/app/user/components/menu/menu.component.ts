@@ -42,6 +42,10 @@ export class MenuComponent implements OnInit {
     this.notificationService.enableRecord$.subscribe(status => {
       this.hasNewRecord = status;
     });
+
+    this.notificationService.newFile$.subscribe(status => {
+      this.hasNewFile = status;
+    });
   }
 
   

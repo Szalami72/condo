@@ -26,10 +26,25 @@ h2 {
   .btn{
     width: 25%;
     margin-left: 75%;
-    background-color: #2f4156;
+    margin-bottom: 0.25rem;
+    background-color: #567c8d;
     color: #f5efeb;
-    border: 1px solid #2f4156;
+    border: 1px solid #567c8d;
     border-radius: 5px;
     padding: 0.5rem 0;
     cursor: pointer;
+}
+
+.new-file {
+  background-color: #f5efeb;
+  border-left: 5px solid #2f4156;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+}
+
+.new-file-sign {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+
 }

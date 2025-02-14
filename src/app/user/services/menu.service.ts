@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MetersService } from '../../admin/services/meters.service';
 import { CostsService } from '../../admin/services/costs.service';
 import { MessageService } from '../../shared/services/message.service';
+import { FilesService } from '../../admin/services/files.service';
 import { NotificationService } from './notification.service';
 import { map, Observable } from 'rxjs';
 
@@ -12,48 +13,62 @@ export class MenuService {
   today: number = new Date().getDate();
   month: number = new Date().getMonth() + 1;
   datas: any[] = [];
+  userId: any;
 
   constructor(
     private metersService: MetersService,
     private costsService: CostsService,
     private messageService: MessageService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private filesService: FilesService
   ) { }
 
   async inicialize(): Promise<any> {
-    this.datas=[];
+    this.datas = [];
     const monthAndYear = this.getCurrentMonthAndYear();
     this.datas.push({ monthAndYear: monthAndYear });
-
+  
     const currentUserId = this.getCurrentUserDatas();
+    this.userId = currentUserId;
     this.datas.push({ userId: currentUserId });
-
+  
     const previousRecords = await this.hasPreviousRecords(currentUserId).toPromise() || [];
     this.datas.push({ previousRecords: previousRecords });
-
+  
     const settings = await this.getSettings();
     this.datas.push({ settings: settings });
-
+  
     const isRecordExists = this.checkIsRecordExists(previousRecords);
     this.datas.push({ recordExists: isRecordExists });
-
+  
     const dates = this.setDates(settings, monthAndYear);
     this.datas.push({ dates: dates });
-
+  
     const isRecordEnabled = this.checkIsRecordEnabled(
       dates.selectedPeriod,
       dates.startDate,
       dates.endDate,
       isRecordExists,
-      dates.evenThisMonth,
-     
-      
+      dates.evenThisMonth
     );
     this.datas.push({ recordEnabled: isRecordEnabled });
     this.notificationService.setEnableRecordStatus(isRecordEnabled);
-
+  
+    const files = await this.getFiles();
+    this.datas.push({ files: files });
+  
+    if (files.length > 0) {
+      const lastFileDate = files[0].created_at;
+      const checkFileDate = this.checkFileDate(lastFileDate);
+      if (checkFileDate) {
+        this.notificationService.setNewFileStatus(true);
+      }
+    } 
+  
     return this.datas;
   }
+  
+
 
   getCurrentMonthAndYear(): string {
     const today = new Date();
@@ -136,6 +151,40 @@ export class MenuService {
     }
     return false;
   }
+
+  async getFiles(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.filesService.getFiles().subscribe( 
+        (response: any) => {
+          if (response && response.status === 'success') {  
+            resolve(response.data);
+          } else {
+            this.messageService.setErrorMessage('Hiba az adatok betöltése során. Próbáld meg később!');
+            reject('Hiba az adatok betöltése során');
+          }
+        },
+        (error: any) => {
+          console.log('Hiba:', error);
+          this.messageService.setErrorMessage('Hiba az adatok betöltése során. Próbáld meg később!');
+          reject(error);
+        }
+      );
+    });
+  }
+
+  checkFileDate(lastFileDate: string): boolean {
+    const storedTime = localStorage.getItem(`lastVisitedTime_files_${this.userId}`);
+    if (!storedTime) return true; // Ha nincs mentett idő, minden fájl új
+  
+    const storedDate = new Date(lastFileDate.replace(' ', 'T'));
+    const storedLastVisitedTime = new Date(storedTime);
+  
+    return storedLastVisitedTime < storedDate;
+  }
+  
+  
+  
+  
 }
 
   

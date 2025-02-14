@@ -4,6 +4,8 @@ import { MenuComponent } from '../menu/menu.component';
 import { MenuService } from '../../services/menu.service';
 import { FilesService } from '../../../admin/services/files.service';
 import { MessageService } from '../../../shared/services/message.service';
+import { ResidentsService } from '../../../admin/services/residents.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-files',
@@ -14,35 +16,54 @@ import { MessageService } from '../../../shared/services/message.service';
 })
 export class FilesComponent implements OnInit {
   uploadedFiles: any[] = [];
+  datas: any[] = [];
+  lastVisitedTime: Date | null = null;
+  lastLoginTime: Date | null = null;
+
   constructor(private menuService: MenuService,
     private filesService: FilesService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private residentsService: ResidentsService,
+    private notificationService: NotificationService
   ) { }
-  async ngOnInit()  {
-    await this.menuService.inicialize();
-    this.getFiles();
-    
-
-  }
-//TODO ha van új file az utolsó logintól akkor jelezni!
-  getFiles() {
-
-    this.filesService.getFiles().subscribe( 
-      (response: any) => {
-        if (response && response.status === 'success') {  
-          this.uploadedFiles = response.data;
+  async ngOnInit() {
+    const currentUser = this.getCurrentUserDatas();
+    if (currentUser) {
+      this.loadLastVisitedTime(currentUser.id);   
+      this.loadData(currentUser.id);
+    }
   
-        } else if (response && response.status === 'error') {
-          this.messageService.setErrorMessage('Hiba az adatok betöltése során. Próbáld meg később!');
-        }
-      },
-      (error: any) => {
-        console.log('Hiba:', error);
-        this.messageService.setErrorMessage('Hiba az adatok betöltése során. Próbáld meg később!');
-      }
-    );
   }
-
+  
+  async loadData(userId: number): Promise<void> {
+    this.getLoginHistory(userId);
+    
+    try {
+      const getDatas = await this.menuService.inicialize();
+      this.uploadedFiles = getDatas.find((item: { files: any }) => item.files)?.files || [];
+      
+      // Ellenőrizzük, hogy vannak új fájlok, és ha igen, akkor beállítjuk a státuszt
+      if (this.uploadedFiles.length > 0) {
+        const hasNewFiles = this.uploadedFiles.some(file => this.isNewFile(file.created_at));
+        this.notificationService.setNewFileStatus(hasNewFiles);
+        this.saveLastVisitedTime(userId);  // Frissítjük az utolsó látogatott időt
+      }
+    } catch (error) {
+      console.error("Hiba az adatok betöltése közben:", error);
+    }
+  }
+  
+  private saveLastVisitedTime(userId: number): void {
+    const now = new Date().toISOString();
+    localStorage.setItem(`lastVisitedTime_files_${userId}`, now);
+  }
+  
+  
+  private loadLastVisitedTime(userId: string): void {
+    const storedTime = localStorage.getItem(`lastVisitedTime_files_${userId}`);
+    console.log('storedTime:', storedTime);
+    this.lastVisitedTime = storedTime ? new Date(storedTime) : this.lastLoginTime || null;
+  }
   downloadFile(file: any) {
     this.filesService.getFileById(file.id).subscribe(
       (response: any) => {
@@ -67,5 +88,31 @@ export class FilesComponent implements OnInit {
         this.messageService.setErrorMessage('Hiba történt a fájl letöltése során.');
       }
     );
+  }
+
+  private getCurrentUserDatas(): any {
+    const currentUserData = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+    if (currentUserData) {
+      const parsedData = JSON.parse(currentUserData);
+      parsedData.id = Number(parsedData.id);
+      return parsedData;
+    }
+    return null;
+  }
+ 
+  isNewFile(createdAt: string): boolean {
+    if (!this.lastVisitedTime) return true; // Első belépéskor minden fájl új
+    return new Date(createdAt) > this.lastVisitedTime; // Ha a fájl időpontja későbbi, mint az utolsó látogatott idő
+  }
+
+  private getLoginHistory(id: number): void {
+    this.residentsService.getLoginHistory(id).subscribe({
+      next: (response) => {
+        this.lastLoginTime = response.data.length > 1 ? new Date(response.data[1].loginTime) : new Date('2024-01-01T00:00:00');
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 }
