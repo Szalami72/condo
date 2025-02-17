@@ -71,9 +71,13 @@ export class MetersService {
     return this.http.post(this.saveMetersValuesByIdApi, metersValues);
   }
 
-  getPreviousMetersValues(userId: number): Observable<any> {
-    return this.http.post<any>(this.getPreviousMetersValuesApi, { userId: userId });
+  getPreviousMetersValues(userId: number, justLastValue: boolean = false): Observable<any> {
+    return this.http.post<any>(this.getPreviousMetersValuesApi, { 
+      userId: userId, 
+      justLastValue: justLastValue 
+    });
   }
+  
 
   getMeterSerials(userId: number): Observable<any> {
     return this.http.post<any>(this.getMeterSerialsApi, { userId: userId });

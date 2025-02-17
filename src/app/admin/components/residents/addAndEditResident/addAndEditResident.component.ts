@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-
+import { MetersService } from '../../../services/meters.service';
 import { MessageService } from '../../../../shared/services/message.service';
 import { ResidentsService } from '../../../services/residents.service';
 import { ConfirmmodalComponent } from '../../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 
 @Component({
@@ -91,10 +91,18 @@ export class AddAndEditResidentComponent implements OnInit {
   hot2LastValue: number = 0;
   heatingLastValue: number = 0;
 
+  cold1PrevValue: number = 0;
+  cold2PrevValue: number = 0;
+  hot1PrevValue: number = 0;
+  hot2PrevValue: number = 0;
+  heatingPrevValue: number = 0;
+
   isLoading = false;
   pendingRequests: number = 0;
 
   metersTypes: any[] = [];
+
+  monthAndYear: string = '';
 
 
 
@@ -102,6 +110,7 @@ export class AddAndEditResidentComponent implements OnInit {
     private modalService: NgbModal,
     private residentsService: ResidentsService,
     public messageService: MessageService,
+    private metersService: MetersService
 
   ) { }
 
@@ -162,11 +171,11 @@ loadUserData(userId: number): void {
         this.hot2SerialNumber = data.hot2SerialNumber;
         this.heatingSerialNumber = data.heatingSerialNumber;
 
-        this.cold1LastValue = data.cold1LastValue;
-        this.cold2LastValue = data.cold2LastValue;
-        this.hot1LastValue = data.hot1LastValue;
-        this.hot2LastValue = data.hot2LastValue;
-        this.heatingLastValue = data.heatingLastValue;
+        this.cold1LastValue = this.cold1PrevValue = data.cold1LastValue;
+        this.cold2LastValue = this.cold2PrevValue = data.cold2LastValue;
+        this.hot1LastValue = this.hot1PrevValue = data.hot1LastValue;
+        this.hot2LastValue = this.hot2PrevValue = data.hot2LastValue;
+        this.heatingLastValue = this.heatingPrevValue = data.heatingLastValue;
 
         // Check if serial numbers are non-empty and set true/false accordingly
         if(this.severally) {
@@ -322,24 +331,94 @@ loadUserData(userId: number): void {
   updateResident(userId: number) {
     console.log('editResident', userId);
     this.errorMessage = '';
-    if (this.validateForm()) {
-      const data = this.setResidentData();
-      console.log("update-datas:", data);
-
-      this.residentsService.updateData(data)
-      .subscribe(
-        () => {
-          this.messageService.setMessage('Lakó adatai sikeresen frissítve.');
-          this.activeModal.close();
-        },
-        () => {
-          this.messageService.setErrorMessage(this.updateErrorMessage);
-          this.errorMessage = this.updateErrorMessage;
-        }
-      );
-      }
-    }
   
+    if (this.validateForm()) {
+      const isChanged = this.compareValues();
+  
+      this.isRecordedMonthlyValues(userId).subscribe(data => {
+        const prevMeterValues = data;
+        const isRecorded = this.checkIfMonthExists(data, this.getCurrentMonthAndYear());
+  
+        this.setNewMetersValues(isChanged, isRecorded, prevMeterValues);
+  
+        const datas = this.setResidentData();
+        console.log('datas', datas);
+  
+        this.residentsService.updateData(datas)
+          .subscribe(
+            () => {
+              this.messageService.setMessage('Lakó adatai sikeresen frissítve.');
+              this.activeModal.close();
+            },
+            () => {
+              this.messageService.setErrorMessage(this.updateErrorMessage);
+              this.errorMessage = this.updateErrorMessage;
+            }
+          );
+      });
+    }
+  }
+  
+    
+    setNewMetersValues(isChanged: boolean, isRecorded: number | boolean, prevMeterValues: any[]): void {
+      // Alapértelmezett hónap és év beállítása
+      let newMonthAndYear = this.getCurrentMonthAndYear();
+      console.log('Eredeti mayId:', newMonthAndYear);
+    
+      if (!isChanged) {
+        // Ha nincs változás, nézzük meg az utolsó rögzített értéket
+        const lastRecord = prevMeterValues[0] || {};
+    
+        if (!lastRecord || Object.keys(lastRecord).length === 0) {
+          // Ha nincs előző érték, egy hónappal visszaállítjuk
+          newMonthAndYear = this.decreaseMonth(newMonthAndYear);
+        }
+      } else {
+        // Ha változott valami, attól függően állítunk be értéket, hogy már rögzítették-e
+        newMonthAndYear = isRecorded ? this.getCurrentMonthAndYear() : this.decreaseMonth(newMonthAndYear);
+      }
+    
+      // Végső érték beállítása és kiírása
+      this.monthAndYear = newMonthAndYear;
+      console.log('Végső mayId:', this.monthAndYear);
+    }
+    
+    decreaseMonth(monthAndYear: string): string {
+      const [month, year] = monthAndYear.split('-').map(num => parseInt(num, 10));
+      console.log("month:", month, "year:", year);
+      let newMonth = month - 1;
+      let newYear = year;
+    
+      if (newMonth < 1) {
+        newMonth = 12;
+        newYear -= 1;
+      }
+    
+      const formattedMonth = newMonth.toString().padStart(2, "0");
+      return `${formattedMonth}-${newYear}`;
+    }
+    
+    checkIfMonthExists(data: any[], currentMonthAndYear: string): number | boolean {
+      return data.some(item => item.monthAndYear === currentMonthAndYear); 
+    }
+    
+    compareValues(): boolean {
+      return this.cold1PrevValue !== this.cold1LastValue ||
+             this.cold2PrevValue !== this.cold2LastValue ||
+             this.hot1PrevValue !== this.hot1LastValue ||
+             this.hot2PrevValue !== this.hot2LastValue ||
+             this.heatingPrevValue !== this.heatingLastValue;
+    }
+    
+   
+    isRecordedMonthlyValues(userId: number): Observable<any[]> {
+      return this.metersService.getPreviousMetersValues(userId).pipe(
+        map(response => response.status === 'success' ? response.data : []) // Ha sikeres, visszaadjuk az adatokat, egyébként üres tömböt
+      );
+    }
+    
+    
+
     setResidentData() {
       const data = {
         id: this.userId,
@@ -371,7 +450,7 @@ loadUserData(userId: number): void {
         hot1LastValue: this.hot1LastValue || 0,
         hot2LastValue: this.hot2LastValue || 0,
         heatingLastValue: this.heatingLastValue || 0,
-        monthAndYear: this.getCurrentMonthAndYear(),
+        monthAndYear: this.monthAndYear,
       };
       console.log('setResidentData', data);
       return data;

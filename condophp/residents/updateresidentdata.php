@@ -106,9 +106,6 @@ class SaveResidentDataUpdate
     }
 
    
-
-
-
     private function saveOrUpdateSquareMeters($table, $columnName, $value, $subDepositId, $commonCostId)
     {
         // Ellenőrizzük, hogy van-e már ilyen érték a táblában
@@ -220,32 +217,26 @@ class SaveResidentDataUpdate
          $mayId = $stmt->fetchColumn();
 
          if (!$mayId) {
-             // Ha nincs, új bejegyzés a monthandyear táblába
              $sql = "INSERT INTO monthandyear (monthAndYear) VALUES (:monthAndYear)";
              $stmt = $this->conn->prepare($sql);
              $stmt->execute([':monthAndYear' => $monthAndYear]);
              $mayId = $this->conn->lastInsertId();
          }
 
-        // Megkeressük az adott `userId` legutolsó rekordját a `metersvalues` táblában
-        $sql = "SELECT id FROM metersvalues WHERE userId = :userId ORDER BY id DESC LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([':userId' => $userId]);
-        $lastRecordId = $stmt->fetchColumn();
-
-        $sql = "UPDATE metersvalues 
-        SET mayId = :mayId, cold1 = :cold1, cold2 = :cold2, hot1 = :hot1, hot2 = :hot2, heating = :heating 
-        WHERE id = :id";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
+        // Az új rekord beszúrása a metersvalues táblába
+            $sql = "INSERT INTO metersvalues (userId, mayId, cold1, cold2, hot1, hot2, heating) 
+            VALUES (:userId, :mayId, :cold1, :cold2, :hot1, :hot2, :heating)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([
+            ':userId' => $userId,
             ':mayId' => $mayId,
             ':cold1' => $cold1LastValue,
             ':cold2' => $cold2LastValue,
             ':hot1' => $hot1LastValue,
             ':hot2' => $hot2LastValue,
-            ':heating' => $heatingLastValue,
-            ':id' => $lastRecordId
-        ]);
+            ':heating' => $heatingLastValue
+            ]);
+
 
     }
 }

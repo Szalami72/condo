@@ -33,7 +33,7 @@ export class MetersComponent implements OnInit {
   filteredUsers: any[] = [];
 
   page: number = 1;
-  pageSize: number = 10;
+  pageSize: number = 25;
 
   searchTerm: string = '';
   filterEmptyFields: boolean = false;
