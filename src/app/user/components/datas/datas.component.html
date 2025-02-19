@@ -6,28 +6,40 @@
         <div class="content mt-4">
             <h2>Információk</h2>
             <hr>
-            <div class="d-flex justify-content-between align-items-center">
+              <div class="d-flex justify-content-between align-items-center">
                 <h5>A társasház adatai</h5>
-                <span (click)="scrollToSection('costs')" style="cursor: pointer;">Ugrás a költségadatokhoz</span>
+                <h5 class="d-none d-md-inline text-end">Költségadatok</h5>
+                <span (click)="scrollToSection('costs')" class="d-md-none">
+                  Költségadatokhoz
+                </span>
+                </div>
+         
+              <div class="row">
+                <div class="col-12 col-md-6">
+                  <div *ngFor="let item of datas" class="data-box">
+                    <strong>{{ item.title }}</strong> 
+                    <span class="text-end">{{ item.data }}</span>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center d-md-none mt-2" id="costs">
+                  <h5>Költségadatok</h5>
+                  <span (click)="scrollToSection('datas')" class="d-md-none">Társasház adataihoz</span>
+                </div>
+
+
+                <div class="col-12 col-md-6">
+                  <div *ngFor="let item of costsArray" class="data-box">
+                    <strong>{{ item[0] }}:</strong>
+                    <span [innerHTML]="item[1]" class="text-end"></span>
+                  </div>
+                </div>
               </div>
+              <hr>
+            
               
-
-            <hr>
-            <div *ngFor="let item of datas" class="data-box">
-                <strong>{{ item.title }}</strong> 
-                <span class="text-end">{{ item.data }}</span>
             </div>
-            <hr>
-            <div class="d-flex justify-content-between align-items-center" id="costs">
-                <h5>Költségadatok</h5>
-                <span (click)="scrollToSection('datas')" class="" style="cursor: pointer;">Vissza a lap tetejére</span>
-              </div>
-            <hr>
-
-            <div *ngFor="let item of costsArray" class="data-box">
-            <strong>{{ item[0] }}:</strong>
-                   <span [innerHTML]="item[1]" class="text-end"></span>
-            </div>
+            
      
               
         
@@ -35,5 +47,4 @@
                 
         </div>
 
-        </div>  
  

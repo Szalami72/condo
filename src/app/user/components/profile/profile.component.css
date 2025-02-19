@@ -9,8 +9,17 @@
 
 h2 {
     color: #2f4156;
-    margin: 2rem 0;
+    margin: 1rem 0;
   }
+
+.btn{
+    background-color: #567c8d;
+    color: #f5efeb;
+    border: 1px solid #567c8d;
+    border-radius: 5px;
+    padding: 0.25rem 0.75rem;
+    cursor: pointer;
+}
 
 .data-box {
     display: flex;
@@ -22,11 +31,11 @@ h2 {
     margin-bottom: 10px;
     transition: transform 0.2s ease-in-out;
   }
-  
+
   .data-box:hover {
     transform: scale(1.02);
   }
-  
+
   .data-title {
     color: #2f4156;
     font-weight: bold;
@@ -41,9 +50,4 @@ h2 {
     word-wrap: break-word;
   }
 
- h5 {
-  padding-top: 0.5rem;
- }
-
- 
- 
+  

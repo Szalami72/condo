@@ -24,16 +24,18 @@
                     <b>Feltöltve: </b> {{file.created_at}}
                   </span>
                 </div>
-            
+                <div class="text-end">
                 <button class="btn btn-sm float-end" (click)="downloadFile(file)">Letöltés</button>
-            
+              </div>
               </div>
             </div>
-            
+            <hr>
             <!-- Ha nincs feltöltött fájl -->
             <ng-template #noFiles>
               <p class="text-muted">Még nincs feltöltött fájl.</p>
             </ng-template>
             
         </div>
+
+        </div>  
  

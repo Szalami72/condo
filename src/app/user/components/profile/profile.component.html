@@ -1,0 +1,104 @@
+<div class="container">
+    <app-menu></app-menu>
+
+
+        <div class="content mt-4">
+            <div class="d-flex justify-content-between align-items-center">
+            <h2>Profilom</h2>
+            <button class="btn btn-sm logout" (click)="logout()">Kijelenkezés</button>
+            </div>
+            <hr>
+         <h5>Személyes adatok:</h5>
+     
+        <div class="row">
+
+         <div class="col-12 col-md-6">
+            <div class="data-box">
+            <strong>Név: </strong> 
+            <span class="text-end">{{ residentData.username }}</span>
+         </div>
+        </div>
+         <div class="col-12 col-md-6">
+            <div class="data-box">
+            <strong>Lakás: </strong> 
+            <span class="text-end">
+                {{ residentData.building }} épület
+                {{ residentData.floor }}. emelet
+                {{ residentData.door }}. ajtó</span>
+         </div>
+        </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 col-md-6">
+
+         <div class="data-box">
+            <strong>Telefonszám: </strong> 
+            <span class="text-end">
+                +36
+                {{residentData.phoneAreaNum }} {{ residentData.phoneNum }}</span>
+         </div>
+        </div>
+        <div class="col-12 col-md-6">    
+        <div class="data-box">
+            <strong>Email: </strong>
+            <span class="text-end">
+                {{ residentData.email }}</span>
+        </div>
+        </div>
+    </div>
+
+    <hr>
+    <div  *ngIf="residentData.isMeter">
+        <h5>Mérőórák:</h5>
+    
+    <div class="row">
+        <div class="col-12 col-md-6" *ngIf="residentData.cold1">
+            <div class="data-box">
+                <strong>Hideg-1: </strong>
+                <span class="text-end">gy.szám:
+                    {{ isSerialNumberEmpty(residentData.serialNumbers.cold1) }}</span>
+            </div>
+        </div>
+        <div class="col-12 col-md-6" *ngIf="residentData.cold2">
+            <div class="data-box">
+                <strong>Hideg-2: </strong>
+                <span class="text-end">gy.szám:
+                    {{ isSerialNumberEmpty(residentData.serialNumbers.cold2) }}</span>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6" *ngIf="residentData.hot1">
+            <div class="data-box">
+                <strong>Meleg-1: </strong>
+                <span class="text-end">gy.szám:
+                    {{ isSerialNumberEmpty(residentData.serialNumbers.hot1) }}</span>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6" *ngIf="residentData.hot2">
+            <div class="data-box">
+                <strong>Meleg-2: </strong>
+                <span class="text-end">gy.szám:
+                    {{ isSerialNumberEmpty(residentData.serialNumbers.hot2) }}</span>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6" *ngIf="residentData.heating">
+            <div class="data-box">
+                <strong>Hőmennyiségmérő: </strong>
+                <span class="text-end">gy.szám:
+                    {{ isSerialNumberEmpty(residentData.serialNumbers.heating) }}</span>
+            </div>
+        </div>
+    </div>
+<hr>
+</div>
+
+  </div>
+  </div>    
+  
+  
+
+
+

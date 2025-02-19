@@ -12,13 +12,11 @@
          <div class="create-at">Létrehozva: <span>{{ bboard.created_at }}</span></div>
          <div [innerHTML]="getSafeHtml(bboard.content)" class="bb-content" [ngClass]="{'new-bulletin': isNewBulletin(bboard.created_at)}"></div>
          
-        
+        <hr>
      </div>
      
                 
-        </div>
-        <button class="btn btn-primary" (click)="logout()">logout</button>
-  </div>
+     
   
   
 
