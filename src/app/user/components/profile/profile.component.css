@@ -32,9 +32,9 @@ h2 {
     transition: transform 0.2s ease-in-out;
   }
 
-  .data-box:hover {
+  /* .data-box:hover {
     transform: scale(1.02);
-  }
+  } */
 
   .data-title {
     color: #2f4156;
@@ -50,4 +50,29 @@ h2 {
     word-wrap: break-word;
   }
 
+  .phone-input-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Kisebb távolság az inputok között */
+    justify-content: flex-end; /* Az egész tartalom jobbra igazítása */
+  }
+  
+  .phone-input-container .phone-area,
+  .phone-input-container .phone-num {
+    text-align: right; /* Jobbra igazítja a számokat az input mezőben */
+  }
+  
+  .phone-input-container .phone-area {
+    width: 10ch;
+    min-width: 7ch;
+    max-width: 12ch;
+  }
+  
+  .phone-input-container .phone-num {
+    flex-grow: 1; /* Maradék hely kitöltése */
+    min-width: 15ch;
+    max-width: 20ch;
+  }
+  
+  
   

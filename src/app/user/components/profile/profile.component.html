@@ -13,10 +13,19 @@
         <div class="row">
 
          <div class="col-12 col-md-6">
-            <div class="data-box">
-            <strong>Név: </strong> 
-            <span class="text-end">{{ residentData.username }}</span>
-         </div>
+      
+         <div class="data-box">
+            <strong>Név*: </strong> 
+            <span *ngIf="editingField !== 'username'" (click)="startEditing('username')" class="editable text-end">
+              {{ residentData.username }}
+            </span>
+            <input *ngIf="editingField === 'username'" 
+                   [(ngModel)]="residentData.username" 
+                   (keyup.enter)="stopEditing()"
+                   class="form-control edit-input text-end">
+          </div>
+          
+          
         </div>
          <div class="col-12 col-md-6">
             <div class="data-box">
@@ -32,20 +41,57 @@
         <div class="row">
             <div class="col-12 col-md-6">
 
-         <div class="data-box">
-            <strong>Telefonszám: </strong> 
-            <span class="text-end">
-                +36
-                {{residentData.phoneAreaNum }} {{ residentData.phoneNum }}</span>
-         </div>
+                <div class="data-box">
+                    <strong>Telefonszám*: </strong>
+                    <span *ngIf="editingField !== 'phone'" (click)="startEditing('phone')" class="editable text-end">
+                      +36 {{ residentData.phoneAreaNum }} {{ residentData.phoneNum }}
+                    </span>
+                  
+                    <div *ngIf="editingField === 'phone'" class="phone-input-container">
+                      <span>+36</span>
+                  
+                      <input [(ngModel)]="residentData.phoneAreaNum" 
+                             class="form-control edit-input text-end phone-area">
+                  
+                      <input [value]="rawPhoneNum"
+                             (input)="onPhoneInput($event)" 
+                             (blur)="stopEditing()" 
+                             class="form-control edit-input text-end phone-num"
+                             maxlength="7">
+                    </div>
+                  </div>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
         </div>
         <div class="col-12 col-md-6">    
-        <div class="data-box">
-            <strong>Email: </strong>
-            <span class="text-end">
-                {{ residentData.email }}</span>
+            <div class="data-box">
+                <strong>Email cím*: </strong>
+                <span *ngIf="editingField !== 'email'" (click)="startEditing('email')" class="editable text-end">
+                  {{ residentData.email }}
+                </span>
+              
+                <input *ngIf="editingField === 'email'" 
+                       [(ngModel)]="residentData.email" 
+                       (keyup.enter)="stopEditing()" 
+                       (ngModelChange)="validateEmail()" 
+                       (blur)="validateEmailOnBlur()" 
+                       class="form-control edit-input text-end"
+                       [class.is-invalid]="!isValidEmail">
+              
+                <div *ngIf="!isValidEmail && editingField === 'email'" class="invalid-feedback text-end">
+                  Érvénytelen email cím!
+                </div>
+              </div>
+              
+              
+              
         </div>
-        </div>
+        <span>* Az adatok módosításához kattints az adott mezőre.</span>
     </div>
 
     <hr>

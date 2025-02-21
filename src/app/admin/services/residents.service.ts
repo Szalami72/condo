@@ -15,6 +15,8 @@ export class ResidentsService {
 
   private updateDataApi = API_BASE_URL + 'residents/updateresidentdata.php';
 
+  private updateDatasByUserApi = API_BASE_URL + 'residents/updatedatasbyuser.php';
+
   private getResidentsApi = API_BASE_URL + 'residents/getresidents.php';
 
   private getResidentByIdApi = API_BASE_URL + 'residents/getresidentbyid.php';
@@ -81,5 +83,9 @@ export class ResidentsService {
 
   getLoginHistory(userId: number): Observable<any> {
     return this.http.post<any>(this.getLoginHistoryApi, { id: userId });
+  }
+
+  updateDatasByUser(userId: number, type: string, data: any): Observable<any> {
+    return this.http.post(this.updateDatasByUserApi, { id: userId, type: type, value: data });
   }
 }
