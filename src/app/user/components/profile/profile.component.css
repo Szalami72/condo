@@ -74,5 +74,21 @@ h2 {
     max-width: 20ch;
   }
   
+  .text-muted {
+    font-size: 0.75rem;
+  }
+  
+  .phone-input-container {
+    display: flex;
+    flex-direction: row; /* Az input mezők egymás mellett legyenek */
+    gap: 10px; /* Távolság az input mezők között */
+  }
+  
+  .invalid-feedback {
+    display: block; /* A hibaüzenet külön blokkban jelenjen meg */
+    color: red;
+    margin-top: 5px; /* Kis távolság a hibaüzenet és az input mező között */
+  }
+  
   
   

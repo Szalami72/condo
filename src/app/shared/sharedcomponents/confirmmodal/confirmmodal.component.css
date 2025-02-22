@@ -1,3 +1,7 @@
+.modal-header, .modal-footer {
+    background-color: #f5efeb;
+    color: #2f4156;
+}
 .btn {
     background-color: #2f4156;
     color: #f5efeb;

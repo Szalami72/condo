@@ -7,11 +7,14 @@ import { MenuComponent } from '../menu/menu.component';
 import { ResidentsService } from '../../../admin/services/residents.service';
 import { MessageService } from '../../../shared/services/message.service';
 import { MenuService } from '../../services/menu.service';
+import { ConfirmmodalComponent } from '../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MessageComponent } from "../../../shared/sharedcomponents/message/message.component";
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, MenuComponent, FormsModule],
+  imports: [CommonModule, MenuComponent, FormsModule, MessageComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -21,15 +24,20 @@ export class ProfileComponent implements OnInit {
   userId: any = null;
   settings: any = {};
 
-  editingField: string | null = null; // Melyik mezőt szerkeszti
+  editingField: string | null = null; 
   rawPhoneNum: string = '';
-
+  isPhoneAreaValid: boolean = true;
+  isRawPhoneNumValid: boolean = true;
+  phoneError = false;
+  phoneAreaError: boolean = false;
+  phoneNumError: boolean = false;
   isValidEmail: boolean = true;
 
   constructor(private router: Router,
     private residentsService: ResidentsService,
     private messageService: MessageService,
-    private menuService: MenuService
+    private menuService: MenuService,
+    private modalService: NgbModal
   ) { }
   async ngOnInit() {
     this.userId = this.menuService.getCurrentUserDatas();
@@ -55,6 +63,7 @@ export class ProfileComponent implements OnInit {
             this.residentData = {
               username: data.username,
               email: data.email,
+              previousEmail: data.email,
               building: data.typeOfBuildings,
               floor: data.typeOfFloors,
               door: data.typeOfDoors,
@@ -63,7 +72,9 @@ export class ProfileComponent implements OnInit {
               adminLevel: data.adminLevel,
               isMeter: data.isMeters,
               phoneAreaNum: areaNum,
+              previousPhoneAreaNum: areaNum,
               phoneNum: phoneNum,
+              previousPhoneNum: phoneNum,
               cold1: settingsObj.cold1,
               cold2: settingsObj.cold2,
               hot1: settingsObj.hot1,
@@ -78,7 +89,7 @@ export class ProfileComponent implements OnInit {
               }
             };
   
-            resolve(this.residentData); // Adatok visszaadása, amikor betöltődtek
+            resolve(this.residentData); 
           } else {
             this.messageService.setErrorMessage("Hiba történt az adatok betöltése során. Próbáld meg később!");
             reject("Hiba történt az adatok betöltése során.");
@@ -110,55 +121,96 @@ export class ProfileComponent implements OnInit {
   isSerialNumberEmpty(value: string): string {
     return value && value !== '0' ? value : 'N/A';
   }
-  logout(): void {
-    localStorage.removeItem('currentUser');
-    sessionStorage.removeItem('currentUser');
-    this.router.navigate(['/login']);
-  }
+   logout() {
+      const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true, size: 'sm' });
+      modalRef.componentInstance.confirmMessage = 'Biztosan ki szeretne jelentkezni?'; 
+  
+        modalRef.result.then(
+          (result) => {
+            if (result === 'confirmed') {
+              localStorage.removeItem('currentUser');
+              sessionStorage.removeItem('currentUser');
+              this.router.navigate(['/login']);
+            }
+          },
+          (reason) => {
+            console.log('Hiba a modal bezárásakor:', reason);
+          }
+        );
+    }
 
   startEditing(field: string) {
     this.editingField = field;
     if (field === 'phone') {
-      this.rawPhoneNum = this.residentData.phoneNum.replace(/\D/g, ''); // Csak számokat hagyunk meg
+      this.residentData.phoneNum = this.residentData.phoneNum.replace(/\D/g, '');
     }
+    this.residentData.previousEmail = this.residentData.email;
   }
 
   stopEditing() {
-    if (this.editingField === 'phone') {
-      this.formatPhone();
+    if (this.editingField === 'email') {
+      if (!this.isValidEmail) {
+        this.residentData.email = this.residentData.previousEmail;
+        this.editingField = null;
+        return;
+      }
     }
+  
+    if (this.editingField === 'phone') {
+      console.log('phonenumerr', this.phoneNumError);
+      if (this.phoneNumError) {
+        this.phoneError = true; 
+        this.residentData.phoneNum = this.residentData.previousPhoneNum; 
+        this.editingField = null;
+        this.phoneNumError = false;
+        return;
+      }
 
+      if(this.phoneAreaError) {
+        this.phoneError = true; 
+        this.residentData.phoneAreaNum = this.residentData.previousPhoneAreaNum; 
+        this.editingField = null;
+        this.phoneAreaError = false;
+        return;
+      }
+      this.phoneError = false; 
+      this.residentData.phoneNum = this.formatPhoneNumber(this.residentData.phoneNum);
+      console.log('this.residentData.phoneNum', this.formatPhoneNumber(this.residentData.phoneNum));
+    }
+  
     if (this.editingField === 'username') {
       this.residentData.username = this.residentData.username
-        .split(' ') // Szétválasztjuk a szavakat
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Minden szót nagybetűssé alakítunk
-        .join(' '); // Újra összefűzzük a szavakat
+        .split(' ')
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
     }
-    
-    const editedField = this.editingField;
-    const fieldValue = editedField ? this.getFieldValue(editedField) : ''; // Az aktuális érték lekérése
-
-  // Kiírjuk a szerkesztett mezőt és annak aktuális értékét
-  console.log(`Edited Field: ${editedField}, Value: ${fieldValue}`);
-  if (editedField !== null) {
-    this.residentsService.updateDatasByUser(this.userId, editedField, fieldValue).subscribe({
-      next: (response) => {
-        if (response && response.hasOwnProperty('status')) {
-          if (response.status === 'success') {
-            console.log('Update successful');
+  
+    if (this.editingField !== null) {
+      const fieldValue = this.getFieldValue(this.editingField);
+  
+      console.log(`Edited Field: ${this.editingField}, Value: ${fieldValue}`);
+  
+      this.residentsService.updateDatasByUser(this.userId, this.editingField, fieldValue).subscribe({
+        next: (response) => {
+          if (response && response.status === 'success') {
+            this.messageService.setMessage('A módosítások mentve.');
           } else {
-            console.error('API error, status not success:', response);
+            this.messageService.setErrorMessage('Hiba történt az adatok mentése során. Próbáld meg később!');
           }
-        } else {
-          console.error('Invalid response format:', response);
+        },
+        error: () => {
+          this.messageService.setErrorMessage('Hiba történt az adatok mentése során. Próbáld meg később!');
         }
-      },
-      
-    })
-  }
+      });
+    }
+  
     this.editingField = null;
-
   }
+  
+
+
+  
+  
 
   getFieldValue(field: string): string {
     switch(field) {
@@ -181,36 +233,65 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  onPhoneInput(event: any) {
-    let cleaned = event.target.value.replace(/\D/g, ''); // Csak számokat engedünk be
-
-    if (cleaned.length > 7) {
-      cleaned = cleaned.slice(0, 7); // Maximum 7 számjegy
-    }
-
-    this.rawPhoneNum = cleaned;
-  }
-
-  formatPhone() {
-    let cleaned = this.rawPhoneNum;
-
-    if (cleaned.length === 7) {
-      this.residentData.phoneNum = `${cleaned.slice(0, 3)} ${cleaned.slice(3, 5)} ${cleaned.slice(5, 7)}`;
+  validatePhoneAreaNum() {
+    const phoneAreaNum = this.residentData.phoneAreaNum;
+  
+    if (!phoneAreaNum || !/^(1|[2-9][0-9])$/.test(phoneAreaNum)) {
+      this.phoneAreaError = true;
     } else {
-      this.residentData.phoneNum = cleaned; // Ha nem 7 számjegy, nem formázunk
+      this.phoneAreaError = false;
     }
   }
+  
+
+validatePhoneNum() {
+  const phoneNum = this.residentData.phoneNum;
+  if (!phoneNum || phoneNum.length !== 7 || !/^[0-9]+$/.test(phoneNum)) {
+    this.phoneNumError = true;
+  } else {
+    this.phoneNumError = false;
+  }
+}
+
+
+onPhoneInput(event: any) {
+  let phoneNum = event.target.value.replace(/\D/g, ''); 
+  if (phoneNum.length <= 7) {
+    this.residentData.phoneNum = phoneNum;
+  }
+}
+
+onPhoneAreaInput(event: any) {
+  let phoneAreaNum = event.target.value.replace(/\D/g, ''); 
+  if (phoneAreaNum.length <= 2) {
+    this.residentData.phoneAreaNum = phoneAreaNum;
+  }
+}
+
+formatPhoneNumber(phoneNumber: string): string {
+  let cleaned = phoneNumber;
+  console.log('cleaned', cleaned);
+
+  if (cleaned.length === 7) {
+    return this.residentData.phoneNum = cleaned.slice(0, 3) + ' ' + cleaned.slice(3, 5) + ' ' + cleaned.slice(5, 7);  }
+     else 
+     {
+    return this.residentData.phoneNum = cleaned; 
+  }
+}
 
   validateEmail() {
-    // Egyszerű reguláris kifejezés az email cím validálására
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     this.isValidEmail = emailRegex.test(this.residentData.email);
   }
-
-  validateEmailOnBlur() {
+  
+  validateEmailOnBlur(inputElement: HTMLInputElement): void {
     if (!this.isValidEmail) {
-      // Ha invalid, töröljük a hibás értéket, hogy az üres legyen
-      this.residentData.email = 'N/A';
+ 
+      this.residentData.email = this.residentData.previousEmail;  
+
     }
   }
+  
+  
 }

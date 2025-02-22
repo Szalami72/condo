@@ -1,5 +1,7 @@
 <div class="container">
     <app-menu></app-menu>
+    <br>
+    <app-message></app-message>
 
 
         <div class="content mt-4">
@@ -43,21 +45,39 @@
 
                 <div class="data-box">
                     <strong>Telefonszám*: </strong>
+                    
+                    <!-- Kattintásra a szerkesztés megjelenítése -->
                     <span *ngIf="editingField !== 'phone'" (click)="startEditing('phone')" class="editable text-end">
                       +36 {{ residentData.phoneAreaNum }} {{ residentData.phoneNum }}
                     </span>
-                  
+                    
                     <div *ngIf="editingField === 'phone'" class="phone-input-container">
                       <span>+36</span>
-                  
-                      <input [(ngModel)]="residentData.phoneAreaNum" 
-                             class="form-control edit-input text-end phone-area">
-                  
-                      <input [value]="rawPhoneNum"
-                             (input)="onPhoneInput($event)" 
-                             (blur)="stopEditing()" 
+                      
+                      <!-- Körzetszám input mező -->
+                      <input [(ngModel)]="residentData.phoneAreaNum"
+                             class="form-control edit-input text-end phone-area"
+                             (blur)="validatePhoneAreaNum()"
+                             (ngModelChange)="validatePhoneAreaNum()"
+                             [class.is-invalid]="phoneAreaError">
+                      
+                      <!-- Telefonszám input mező -->
+                      <input [(ngModel)]="residentData.phoneNum"
+                             (input)="onPhoneInput($event)"
+                             (ngModelChange)="validatePhoneNum()"
+                             (blur)="validatePhoneNum()"
                              class="form-control edit-input text-end phone-num"
-                             maxlength="7">
+                             maxlength="7"
+                             [class.is-invalid]="phoneNumError">
+                    </div>
+                  
+                    <!-- Hibaüzenetek -->
+                    <div *ngIf="phoneAreaError" class="invalid-feedback text-end">
+                      Kérlek, add meg a megfelelő körzetszámot!
+                    </div>
+                    
+                    <div *ngIf="phoneNumError" class="invalid-feedback text-end">
+                      Kérlek, add meg a megfelelő telefonszámot!
                     </div>
                   </div>
                   
@@ -66,23 +86,28 @@
                   
                   
                   
-                  
+                         
         </div>
         <div class="col-12 col-md-6">    
             <div class="data-box">
                 <strong>Email cím*: </strong>
+                
+                <!-- Megjelenő szöveg kattintható szerkesztéshez -->
                 <span *ngIf="editingField !== 'email'" (click)="startEditing('email')" class="editable text-end">
                   {{ residentData.email }}
                 </span>
               
+                <!-- Input mező szerkesztés közben -->
                 <input *ngIf="editingField === 'email'" 
+                       #emailInput
                        [(ngModel)]="residentData.email" 
                        (keyup.enter)="stopEditing()" 
                        (ngModelChange)="validateEmail()" 
-                       (blur)="validateEmailOnBlur()" 
+                       (blur)="validateEmailOnBlur(emailInput)" 
                        class="form-control edit-input text-end"
                        [class.is-invalid]="!isValidEmail">
               
+                <!-- Hibaüzenet -->
                 <div *ngIf="!isValidEmail && editingField === 'email'" class="invalid-feedback text-end">
                   Érvénytelen email cím!
                 </div>
@@ -90,8 +115,9 @@
               
               
               
+              
         </div>
-        <span>* Az adatok módosításához kattints az adott mezőre.</span>
+        <span class="text-muted">* Az adatok módosításához kattints az adott mezőre.</span>
     </div>
 
     <hr>
