@@ -7,6 +7,7 @@ import { MenuComponent } from '../menu/menu.component';
 import { ResidentsService } from '../../../admin/services/residents.service';
 import { MessageService } from '../../../shared/services/message.service';
 import { MenuService } from '../../services/menu.service';
+import { ChangePasswordService } from '../../../shared/services/changepassword.service';
 import { ConfirmmodalComponent } from '../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageComponent } from "../../../shared/sharedcomponents/message/message.component";
@@ -33,11 +34,20 @@ export class ProfileComponent implements OnInit {
   phoneNumError: boolean = false;
   isValidEmail: boolean = true;
 
+  editingPassword = false;
+  oldPassword: string = '';
+  newPassword: string = '';
+  newPasswordAgain: string = '';
+  passwordError = false;
+  twoPasswordError = false;
+
+
   constructor(private router: Router,
     private residentsService: ResidentsService,
     private messageService: MessageService,
     private menuService: MenuService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private changePasswordService: ChangePasswordService
   ) { }
   async ngOnInit() {
     this.userId = this.menuService.getCurrentUserDatas();
@@ -293,5 +303,44 @@ formatPhoneNumber(phoneNumber: string): string {
     }
   }
   
+  startEditingPassword() {
+   
+      this.editingPassword = true;
+      this.newPassword = ''; // Ürítjük az inputot
   
+  }
+
+  validatePassword() {
+    this.passwordError = this.newPassword.length < 6;
+    this.twoPasswordError = this.newPassword !== this.newPasswordAgain;
+    console.log('this.twoPasswordError', this.twoPasswordError);
+}
+
+  savePassword() {
+    this.validatePassword();
+    if (!this.passwordError && !this.twoPasswordError) {
+        console.log("Új jelszó mentése:", this.newPassword);
+        this.editingPassword = false;
+    }
+    this.changePasswordService.changePassword(this.userId, this.oldPassword, this.newPassword).subscribe({
+      next: (response) => {
+        if (response && response.status === 'success') {
+          this.messageService.setMessage('A jelszó sikeresen mentve!');
+        } else {
+          this.messageService.setErrorMessage('Hiba történt a jelszó mentése során. Próbáld meg később!');
+        }
+      },
+      error: () => {
+        this.messageService.setErrorMessage('Hiba történt a jelszó mentése során. Próbáld meg később!');
+      }
+      
+    })
+  }
+
+
+  cancelModifyingPassword() {
+    this.editingPassword = false;
+    this.passwordError = false;
+    this.twoPasswordError = false;  
+}
 }

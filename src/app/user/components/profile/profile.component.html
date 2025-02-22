@@ -165,8 +165,53 @@
         </div>
     </div>
 <hr>
+
 </div>
 
+<div class="row justify-content-center">
+<div class="modify-password col-12 col-md-6 mb-0 pb-0">
+    <div class="data-box">
+    <!-- Ha nem szerkesztünk, akkor csak a gomb látszik -->
+    <button *ngIf="!editingPassword" 
+        class="btn btn-sm logout change-password d-block mx-auto" 
+        (click)="startEditingPassword()">
+    Jelszó módosítás
+</button>
+
+<div *ngIf="editingPassword" class="password-input-container">
+    <input type="password"
+           [(ngModel)]="oldPassword"
+           class="form-control edit-input text-center mb-4"
+           placeholder="Régi jelszó">
+
+        <input type="password"
+               [(ngModel)]="newPassword"
+               class="form-control edit-input text-center mb-2"
+               [class.is-invalid]="passwordError || twoPasswordError"
+               placeholder="Új jelszó">
+
+        <input type="password"
+               [(ngModel)]="newPasswordAgain"
+               class="form-control edit-input text-center mb-2"
+               [class.is-invalid]="passwordError"
+               placeholder="Új jelszó mégegyszer">
+
+        <button class="btn btn-sm btn-cancel mt-2" (click)="cancelModifyingPassword()">Mégse</button>
+        <button class="btn btn-sm btn-success mt-2 save-btn float-end" (click)="savePassword()">Mentés</button>
+
+        <!-- Hibaüzenet -->
+        <div *ngIf="passwordError" class="invalid-feedback">
+            A jelszónak legalább 6 karakter hosszúnak kell lennie!
+        </div>
+        <div *ngIf="twoPasswordError" class="invalid-feedback">
+            A két jelszó nem egyezik!
+        </div>
+
+    </div>
+</div>
+</div>
+</div>
+<hr>
   </div>
   </div>    
   

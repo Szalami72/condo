@@ -21,6 +21,15 @@ h2 {
     cursor: pointer;
 }
 
+.save-btn {
+    background-color: #2f4156;
+    color: #f5efeb;
+    border: 1px solid #2f4156;
+    border-radius: 5px;
+    padding: 0.25rem 0.75rem;
+    cursor: pointer;
+}
+
 .data-box {
     display: flex;
     flex-direction: column; /* A tartalmat oszlopba rendezi */
@@ -90,5 +99,8 @@ h2 {
     margin-top: 5px; /* Kis távolság a hibaüzenet és az input mező között */
   }
   
-  
+  .change-password {
+    width: 10rem;
+    margin-top: 0.125rem;
+  }
   
