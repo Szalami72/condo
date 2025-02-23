@@ -1,4 +1,5 @@
 <?php
+
 require '../config/header.php';
 
 class UserAuthentication {
@@ -17,6 +18,7 @@ class UserAuthentication {
 
         if ($user) {
             if (password_verify($password, $user['password'])) {
+                $this->logLoginHistory($user['id']); // Bejelentkezés naplózása
                 return ['status' => 'success', 'message' => 'Sikeres bejelentkezés!', 'user' => $user];
             } else {
                 return ['status' => 'error', 'message' => 'Érvénytelen jelszó!'];
@@ -24,6 +26,13 @@ class UserAuthentication {
         } else {
             return ['status' => 'error', 'message' => 'Nincs ilyen felhasználó!'];
         }
+    }
+
+    private function logLoginHistory($userId) {
+        $sql = "INSERT INTO loginhistory (userId, loginTime) VALUES (:userId, NOW())";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
     }
 }
 

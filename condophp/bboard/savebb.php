@@ -11,19 +11,23 @@ class SaveBb
         $this->conn = $conn;
     }
 
-    public function saveOrUpdateBb($bbContent, $bbId)
+    public function saveOrUpdateBb($bbContent, $bbId, $isFixed)
     {
         try {
             if ($bbId === null || $bbId === 0) {
-                $sql = "INSERT INTO bboards (content, created_at) VALUES (:content, :created_at)";
+                $sql = "INSERT INTO bboards (content, created_at, isFixed) VALUES (:content, :created_at, :isFixed)";
                 $currentDate = date('Y-m-d H:i:s');
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(':content', $bbContent);
                 $stmt->bindParam(':created_at', $currentDate);
+                $stmt->bindParam(':isFixed', $isFixed);
             } else {
-                $sql = "UPDATE bboards SET content = :content WHERE id = :id";
+                $sql = "UPDATE bboards SET content = :content, isFixed = :isFixed, created_at = :created_at WHERE id = :id";
+                $currentDate = date('Y-m-d H:i:s');
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(':content', $bbContent);
+                $stmt->bindParam(':created_at', $currentDate);
+                $stmt->bindParam(':isFixed', $isFixed);
                 $stmt->bindParam(':id', $bbId);
             }
             
@@ -44,10 +48,11 @@ try {
     $input = json_decode(file_get_contents("php://input"), true);
     $bbContent = isset($input['bb']) ? $input['bb'] : null;
     $bbId = isset($input['bbId']) ? (int)$input['bbId'] : null;
+    $isFixed = isset($input['isFixed']) ? (int)$input['isFixed'] : null;
 
     if ($bbContent !== null) {
         $saveBb = new SaveBb($conn);
-        $result = $saveBb->saveOrUpdateBb($bbContent, $bbId);
+        $result = $saveBb->saveOrUpdateBb($bbContent, $bbId, $isFixed);
         if ($result) {
             echo json_encode(['status' => 'success']);
         } else {

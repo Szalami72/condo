@@ -116,12 +116,11 @@ export class AddAndEditResidentComponent implements OnInit {
 
   ngOnInit(): void {
     
-    this.isLoading = true; // Kezdjük a betöltést
+    this.isLoading = true;
 
     if(this.userId !== undefined){ {
       this.loadUserData(this.userId);
     }}
-      //console.log('userId', this.userId);
       
 
 
@@ -130,13 +129,7 @@ export class AddAndEditResidentComponent implements OnInit {
     this.loadOptions(() => this.residentsService.getDoors(), 'typeOfDoors', 'doorOptions');
     this.loadOptions(() => this.residentsService.getCommoncosts(), 'typeOfCommoncosts', 'commoncostOptions');
     this.loadOptions(() => this.residentsService.getSquareMeters(), 'typeOfSquareMeters', 'squareMeterOptions');
-    this.loadOptions(() => this.residentsService.getSubdeposits(), 'typeOfSubdeposits', 'subDepositOptions');
-
-    
-    
-    
-    
-    
+    this.loadOptions(() => this.residentsService.getSubdeposits(), 'typeOfSubdeposits', 'subDepositOptions'); 
     this.setForm();
   
 }
@@ -146,8 +139,6 @@ loadUserData(userId: number): void {
   this.residentsService.getResidentDatasById(userId).subscribe({
     next: (response) => {
       if (response.status === 'success') {
-        console.log(response);
-
         const data = response.data;
 
         const { areaNum, phoneNum } = this.splitPhoneNumber(data.phone);
@@ -177,7 +168,6 @@ loadUserData(userId: number): void {
         this.hot2LastValue = this.hot2PrevValue = data.hot2LastValue;
         this.heatingLastValue = this.heatingPrevValue = data.heatingLastValue;
 
-        // Check if serial numbers are non-empty and set true/false accordingly
         if(this.severally) {
           this.cold1 = data.cold1SerialNumber ? true : false;
           this.cold2 = data.cold2SerialNumber ? true : false;
@@ -363,7 +353,6 @@ loadUserData(userId: number): void {
     setNewMetersValues(isChanged: boolean, isRecorded: number | boolean, prevMeterValues: any[]): void {
       // Alapértelmezett hónap és év beállítása
       let newMonthAndYear = this.getCurrentMonthAndYear();
-      console.log('Eredeti mayId:', newMonthAndYear);
     
       if (!isChanged) {
         // Ha nincs változás, nézzük meg az utolsó rögzített értéket
@@ -380,12 +369,10 @@ loadUserData(userId: number): void {
     
       // Végső érték beállítása és kiírása
       this.monthAndYear = newMonthAndYear;
-      console.log('Végső mayId:', this.monthAndYear);
     }
     
     decreaseMonth(monthAndYear: string): string {
       const [month, year] = monthAndYear.split('-').map(num => parseInt(num, 10));
-      console.log("month:", month, "year:", year);
       let newMonth = month - 1;
       let newYear = year;
     
@@ -452,7 +439,6 @@ loadUserData(userId: number): void {
         heatingLastValue: this.heatingLastValue || 0,
         monthAndYear: this.monthAndYear,
       };
-      console.log('setResidentData', data);
       return data;
     }
     

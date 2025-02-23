@@ -16,11 +16,10 @@
 
 .create-at span {
     font-weight: normal;
- 
 }
 
 .new-bb-sign {
- 
+    font-size: 0.8rem;
     font-weight: bold;
 }
 .new-bulletin {
@@ -40,4 +39,20 @@
     margin: 2rem 0;
   }
 
- 
+  .fixed-bulletin {
+    position: relative;
+    border-radius: 6px;
+}
+
+.fixed-bulletin::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background-color: #2f4156;
+    border-top-right-radius: 6px;
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+    box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.2);
+}

@@ -1,7 +1,7 @@
 <?php
 
 require '../config/header.php';
-require 'calculateCost.php';  // Az új osztály behívása
+require 'calculateCost.php';
 require 'sendcalcdata.php';
 
 class SaveMetersValuesById
@@ -18,90 +18,87 @@ class SaveMetersValuesById
         try {
             $userId = $data['userId'];
             $monthAndYear = $data['mayId'];
-            $cold1 = $data['cold1'];
-            $cold2 = $data['cold2'];
-            $hot1 = $data['hot1'];
-            $hot2 = $data['hot2'];
-            $heating = $data['heating'];
+            
+            // Hónap ID lekérése vagy létrehozása
+            $mayId = $this->getOrCreateMonthAndYearId($monthAndYear);
 
-            // Ellenőrizzük, hogy van-e már bejegyzés a monthandyear táblában
-            $sql = "SELECT id FROM monthandyear WHERE monthAndYear = :monthAndYear";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':monthAndYear' => $monthAndYear]);
-            $mayId = $stmt->fetchColumn();
+            // Értékek mentése vagy frissítése
+            $this->saveOrUpdateMetersValues($userId, $mayId, $data);
 
-            if (!$mayId) {
-                // Ha nincs, új bejegyzés a monthandyear táblába
-                $sql = "INSERT INTO monthandyear (monthAndYear) VALUES (:monthAndYear)";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->execute([':monthAndYear' => $monthAndYear]);
-                $mayId = $this->conn->lastInsertId();
+            // Ellenőrzés, hogy szükséges-e számítás
+            if ($this->shouldCalculateCost()) {
+                $calculatedData = (new CalculateCost($this->conn))->calculate($data);
+                $generatedData = (new SendCalcData($this->conn))->generate($calculatedData);
+                return ['status' => 'success', 'calculatedData' => $generatedData];
             }
 
-            // Ellenőrizzük, hogy van-e bejegyzés a metersvalues táblában az adott hónapra
-            $sql = "SELECT id FROM metersvalues WHERE userId = :userId AND mayId = :mayId";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':userId' => $userId, ':mayId' => $mayId]);
-            $metersValueId = $stmt->fetchColumn();
-
-            if ($metersValueId) {
-                // Frissítés
-                $sql = "UPDATE metersvalues SET cold1 = :cold1, cold2 = :cold2, hot1 = :hot1, hot2 = :hot2, heating = :heating WHERE id = :id";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->execute([
-                    ':cold1' => $cold1,
-                    ':cold2' => $cold2,
-                    ':hot1' => $hot1,
-                    ':hot2' => $hot2,
-                    ':heating' => $heating,
-                    ':id' => $metersValueId
-                ]);
-            } else {
-                // Új bejegyzés
-                $sql = "INSERT INTO metersvalues (userId, mayId, cold1, cold2, hot1, hot2, heating) VALUES (:userId, :mayId, :cold1, :cold2, :hot1, :hot2, :heating)";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->execute([
-                    ':userId' => $userId,
-                    ':mayId' => $mayId,
-                    ':cold1' => $cold1,
-                    ':cold2' => $cold2,
-                    ':hot1' => $hot1,
-                    ':hot2' => $hot2,
-                    ':heating' => $heating
-                ]);
-            }
-
-            // Ellenőrizzük a calculateCost értékét a settings táblában
-            $sql = "SELECT value FROM settings WHERE title = 'calculateCost' LIMIT 1";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
-            $calculateCost = $stmt->fetchColumn();
-
-            // Csak akkor futtatjuk a CalculateCost számításokat, ha calculateCost értéke 1
-            if ($calculateCost == 1) {
-                // Ha a mentés sikeres volt, most hívjuk meg a CalculateCost osztályt
-                $calculator = new CalculateCost($this->conn);
-                $calculatedData = $calculator->calculate($data);
-
-                // Ha a számítás sikeres, hívjuk meg a SendCalcData osztályt, generálja az emailt /html/
-                $generate = new SendCalcData($this->conn);
-                $generatedData = $generate->generate($calculatedData);
-
-                // Ha  sikeres, visszatérünk a "success" státusszal
-                return ['status' => 'success', 'calculatedData' => $generatedData]; //ez kell majd vissza
-              // A CALCULATEDDATA-BAN IDEIGLENESEN A KÉT LEKÉRT SOR AMIBEN AZ UTOLSÓ KÉT HAVI ADAT VAN
-                //return ['status' => 'success', 'calculatedData' => $calculatedData];
-            }
-
-            // Ha a calculateCost nem 1, akkor is visszatérünk "success" státusszal, de számítás nélkül
             return ['status' => 'success', 'message' => 'Calculation skipped due to settings'];
-
         } catch (PDOException $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
+
+    private function getOrCreateMonthAndYearId($monthAndYear)
+    {
+        $sql = "SELECT id FROM monthandyear WHERE monthAndYear = :monthAndYear";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':monthAndYear' => $monthAndYear]);
+        $mayId = $stmt->fetchColumn();
+
+        if (!$mayId) {
+            $sql = "INSERT INTO monthandyear (monthAndYear) VALUES (:monthAndYear)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':monthAndYear' => $monthAndYear]);
+            $mayId = $this->conn->lastInsertId();
+        }
+
+        return $mayId;
+    }
+
+    private function saveOrUpdateMetersValues($userId, $mayId, $data)
+    {
+
+        $sql = "SELECT id FROM metersvalues WHERE userId = :userId AND mayId = :mayId";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':userId' => $userId, ':mayId' => $mayId]);
+        $metersValueId = $stmt->fetchColumn();
+
+        $params = [
+            ':cold1' => $data['cold1'],
+            ':cold2' => $data['cold2'],
+            ':hot1' => $data['hot1'],
+            ':hot2' => $data['hot2'],
+            ':heating' => $data['heating'],
+        ];
+
+        if ($metersValueId) {
+            // Frissítés
+            $params[':id'] = $metersValueId;
+            $sql = "UPDATE metersvalues 
+                    SET cold1 = :cold1, cold2 = :cold2, hot1 = :hot1, hot2 = :hot2, heating = :heating 
+                    WHERE id = :id";
+        } else {
+            // Új bejegyzés
+            $params[':userId'] = $userId;
+            $params[':mayId'] = $mayId;
+            $sql = "INSERT INTO metersvalues (userId, mayId, cold1, cold2, hot1, hot2, heating) 
+                    VALUES (:userId, :mayId, :cold1, :cold2, :hot1, :hot2, :heating)";
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+    }
+
+    private function shouldCalculateCost()
+    {
+        $sql = "SELECT value FROM settings WHERE title = 'calculateCost' LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchColumn() == 1;
+    }
 }
 
+// Adatbázis kapcsolat és input kezelés
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

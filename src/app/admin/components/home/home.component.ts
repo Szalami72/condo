@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
+import { DatasService } from '../../services/datas.service';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +9,19 @@ import { MenuComponent } from '../menu/menu.component';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
-  constructor(private cookieService: CookieService, private router: Router) { }
-  
+export class HomeComponent implements OnInit {
+
+  condoName = '';
+  downLoadLink = '';
+  constructor(private datasService: DatasService) { }
+
+  ngOnInit(): void {
+    this.getDatas();
+  }
+
+  getDatas(): void {
+    this.datasService.getDatas().subscribe(datas => {
+      this.condoName = datas[0].data;
+    });
+  }
 }

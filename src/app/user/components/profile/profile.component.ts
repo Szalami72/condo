@@ -52,9 +52,7 @@ export class ProfileComponent implements OnInit {
   async ngOnInit() {
     this.userId = this.menuService.getCurrentUserDatas();
     this.settings = await this.menuService.inicialize();
-  console.log('Settings:', this.settings);
     this.loadUserData(this.userId).then((data) => {
-      console.log('User Data:', data);
     });
 
   }
@@ -63,9 +61,7 @@ export class ProfileComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.residentsService.getResidentDatasById(userId).subscribe({
         next: (response) => {
-          if (response.status === 'success') {
-            console.log('API Response:', response);
-  
+          if (response.status === 'success') {  
             const data = response.data;
             const { areaNum, phoneNum } = this.splitPhoneNumber(data.phone);
   
@@ -167,7 +163,6 @@ export class ProfileComponent implements OnInit {
     }
   
     if (this.editingField === 'phone') {
-      console.log('phonenumerr', this.phoneNumError);
       if (this.phoneNumError) {
         this.phoneError = true; 
         this.residentData.phoneNum = this.residentData.previousPhoneNum; 
@@ -185,7 +180,6 @@ export class ProfileComponent implements OnInit {
       }
       this.phoneError = false; 
       this.residentData.phoneNum = this.formatPhoneNumber(this.residentData.phoneNum);
-      console.log('this.residentData.phoneNum', this.formatPhoneNumber(this.residentData.phoneNum));
     }
   
     if (this.editingField === 'username') {
@@ -197,9 +191,7 @@ export class ProfileComponent implements OnInit {
   
     if (this.editingField !== null) {
       const fieldValue = this.getFieldValue(this.editingField);
-  
-      console.log(`Edited Field: ${this.editingField}, Value: ${fieldValue}`);
-  
+    
       this.residentsService.updateDatasByUser(this.userId, this.editingField, fieldValue).subscribe({
         next: (response) => {
           if (response && response.status === 'success') {
@@ -280,7 +272,6 @@ onPhoneAreaInput(event: any) {
 
 formatPhoneNumber(phoneNumber: string): string {
   let cleaned = phoneNumber;
-  console.log('cleaned', cleaned);
 
   if (cleaned.length === 7) {
     return this.residentData.phoneNum = cleaned.slice(0, 3) + ' ' + cleaned.slice(3, 5) + ' ' + cleaned.slice(5, 7);  }
@@ -297,45 +288,55 @@ formatPhoneNumber(phoneNumber: string): string {
   
   validateEmailOnBlur(inputElement: HTMLInputElement): void {
     if (!this.isValidEmail) {
- 
       this.residentData.email = this.residentData.previousEmail;  
-
     }
   }
   
-  startEditingPassword() {
-   
+  startEditingPassword() { 
       this.editingPassword = true;
-      this.newPassword = ''; // Ürítjük az inputot
+      this.newPassword = '';
+      this.newPasswordAgain = '';
+      this.oldPassword = '';
   
   }
 
   validatePassword() {
     this.passwordError = this.newPassword.length < 6;
     this.twoPasswordError = this.newPassword !== this.newPasswordAgain;
-    console.log('this.twoPasswordError', this.twoPasswordError);
 }
 
-  savePassword() {
-    this.validatePassword();
-    if (!this.passwordError && !this.twoPasswordError) {
-        console.log("Új jelszó mentése:", this.newPassword);
-        this.editingPassword = false;
-    }
-    this.changePasswordService.changePassword(this.userId, this.oldPassword, this.newPassword).subscribe({
-      next: (response) => {
-        if (response && response.status === 'success') {
-          this.messageService.setMessage('A jelszó sikeresen mentve!');
-        } else {
-          this.messageService.setErrorMessage('Hiba történt a jelszó mentése során. Próbáld meg később!');
-        }
-      },
-      error: () => {
-        this.messageService.setErrorMessage('Hiba történt a jelszó mentése során. Próbáld meg később!');
-      }
-      
-    })
+savePassword() {
+  this.validatePassword();
+  if (this.passwordError || this.twoPasswordError) {
+      return;
   }
+  if (!this.passwordError && !this.twoPasswordError) {
+      this.editingPassword = false;
+  }
+  this.changePasswordService.changePassword(this.userId, this.oldPassword, this.newPassword).subscribe({
+    next: (response) => {
+      if (response && response.status === 'success') {
+        this.messageService.setMessage('A jelszó sikeresen megváltoztatva!');
+        scrollTo(0, 0);
+      } else {
+        this.messageService.setErrorMessage('Hiba történt a jelszó mentése során: ' + (response.message || 'Ismeretlen hiba.'));
+        scrollTo(0, 0);
+        this.oldPassword = '';
+        this.newPassword = '';
+        this.newPasswordAgain = '';
+      }
+    },
+    error: (err) => {
+      const errorMessage = err.error?.message || 'Próbáld meg később!';
+      this.messageService.setErrorMessage('Hiba történt a jelszó mentése során: ' + errorMessage);
+      scrollTo(0, 0);
+      this.oldPassword = '';
+        this.newPassword = '';
+        this.newPasswordAgain = '';
+    }
+  });
+}
+
 
 
   cancelModifyingPassword() {

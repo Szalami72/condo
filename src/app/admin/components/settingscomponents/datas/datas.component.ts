@@ -27,7 +27,6 @@ export class DatasComponent {
     this.datasService.getDatas().subscribe(
       data => {
         this.condoDatas = data;
-        //console.log(this.condoDatas);
       },
       error => {
         this.messageService.setErrorMessage('Hiba történt az adatok letöltése során. Próbáld meg később!');

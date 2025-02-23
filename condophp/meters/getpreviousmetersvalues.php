@@ -11,9 +11,10 @@ class GetPreviousMetersValues
         $this->conn = $conn;
     }
 
-
-    public function fetchMeters($userId)
+    public function fetchMeters($userId, $justLastValue = false)
     {
+        $limit = $justLastValue ? 1 : 12; // Ha $justLastValue igaz, akkor csak 1 rekordot kérünk le
+
         $sql = "
             SELECT 
                 mv.id, mv.userId, mv.mayId, mv.cold1, mv.cold2, mv.hot1, mv.hot2, mv.heating, my.monthAndYear
@@ -24,8 +25,8 @@ class GetPreviousMetersValues
             WHERE 
                 mv.userId = :userId
             ORDER BY 
-                my.monthAndYear DESC
-            LIMIT 12
+                mv.id DESC
+            LIMIT $limit
         ";
 
         $stmt = $this->conn->prepare($sql);
@@ -37,8 +38,6 @@ class GetPreviousMetersValues
 }
 
 try {
-  
-
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -46,8 +45,10 @@ try {
 
     if (isset($input['userId'])) {
         $userId = $input['userId'];
+        $justLastValue = isset($input['justLastValue']) ? (bool)$input['justLastValue'] : false; // Ha nincs megadva, false lesz
+
         $fetcher = new GetPreviousMetersValues($conn);
-        $data = $fetcher->fetchMeters($userId);
+        $data = $fetcher->fetchMeters($userId, $justLastValue);
         echo json_encode(['status' => 'success', 'data' => $data]);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Missing user ID']);

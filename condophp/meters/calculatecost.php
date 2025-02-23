@@ -72,23 +72,18 @@ class CalculateCost
     }
 
     private function calculateCommonCosts($settings, $residentData, $subDepCost)
-    {
-        if ($residentData['isMeters'] == 0) return $subDepCost;
+{
+    if ($residentData['isMeters'] == 0) return $subDepCost;
 
-     
-        switch ($settings['commonCost']) {
-            case 'fix':
-                return $settings['amountFix'];
-                break;
-            case 'smeter':
-                return $settings['amountSmeter'] * $residentData['squareMeter'];
-                break;
-            case 'perflat':
-                return $residentData['commonCost'];
-                break;
-            }
-        
-    }
+    $options = [
+        'fix' => $settings['amountFix'] ?? 0,
+        'smeter' => ($settings['amountSmeter'] ?? 0) * $residentData['squareMeter'],
+        'perflat' => $residentData['commonCost']
+    ];
+
+    return $options[$settings['commonCost']] ?? 0;
+}
+
     
 
     private function calcMetersCosts($settings, $data, $prevValues)
@@ -136,7 +131,6 @@ class CalculateCost
 
         //ellenőrzés hogy van-e két érték, azaz van-e már diktált adat
         try {
-            // SQL lekérdezés: userId szűrése, rendezés mayId szerint csökkenő sorrendben, 2 sor limit
             $sql = "
                 SELECT id, userId, mayId, cold1, cold2, hot1, hot2, heating
                 FROM metersvalues
@@ -193,40 +187,29 @@ class CalculateCost
         
     
 
-    private function calcSubDepCosts($settings, $residentData)
-    {
-        if ($settings['commonCost'] == 'perflat') {
-            return $residentData['subDeposit'];
+        private function calcSubDepCosts($settings, $residentData)
+        {
+            $options = [
+                'perflat' => $residentData['subDeposit'],
+                'fix' => $settings['subDepFix'] ?? 0,
+                'smeter' => ($settings['subDepSmeter'] ?? 0) * $residentData['squareMeter']
+            ];
+        
+            return $options[$settings['commonCost']] ?? 0;
         }
-
-        if ($settings['commonCost'] == 'fix') {
-            return $settings['subDepFix'];
+        
+        private function calcExtraPayment($settings, $residentData)
+        {
+            if (empty($settings['extraPayment'])) return 0;
+        
+            $options = [
+                'fix' => $settings['extraPayment'] ?? 0,
+                'smeter' => ($settings['extraPayment'] ?? 0) * $residentData['squareMeter']
+            ];
+        
+            return $options[$settings['extraPaymentMode']] ?? 0;
         }
-
-        if ($settings['commonCost'] == 'smeter') {
-            return $settings['subDepSmeter'] * $residentData['squareMeter'];
-        }
-
-        return 0;
-    }
-
- 
-    private function calcExtraPayment($settings, $residentData)
-    {
-        if (empty($settings['extraPayment'])) {
-            return 0;
-        }
-
-        if ($settings['extraPaymentMode'] == 'fix') {
-            return $settings['extraPayment'];
-        }
-
-        if ($settings['extraPaymentMode'] == 'smeter') {
-            return $settings['extraPayment'] * $residentData['squareMeter'];
-        }
-
-        return 0;
-    }
+        
 
     public function getSettings()
     {

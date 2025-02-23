@@ -187,12 +187,14 @@
         <input type="password"
                [(ngModel)]="newPassword"
                class="form-control edit-input text-center mb-2"
+               (keyup)="validatePassword()"
                [class.is-invalid]="passwordError || twoPasswordError"
                placeholder="Új jelszó">
 
         <input type="password"
                [(ngModel)]="newPasswordAgain"
                class="form-control edit-input text-center mb-2"
+               (keyup)="validatePassword()"
                [class.is-invalid]="passwordError"
                placeholder="Új jelszó mégegyszer">
 

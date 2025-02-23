@@ -66,7 +66,13 @@ export class HomeComponent implements OnInit {
   private getPreviousBbs(): void {
     this.bboardService.getPreviousBbs().subscribe({
       next: (response) => {
-        this.bulletinBoards = response.data;
+        this.bulletinBoards = response.data.sort((a: any, b: any) => {
+          if (a.isFixed !== b.isFixed) {
+            return b.isFixed - a.isFixed;
+          }
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        });
+  
         const hasNewBulletin = this.bulletinBoards.some(bulletin => this.isNewBulletin(bulletin.created_at));
         this.notificationService.setNewBulletinStatus(hasNewBulletin);
       },
@@ -76,6 +82,7 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+  
 
   private getLoginHistory(id: number): void {
     this.residentsService.getLoginHistory(id).subscribe({

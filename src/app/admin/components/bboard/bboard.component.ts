@@ -30,6 +30,7 @@ export class BboardComponent implements OnInit {
   selectedBb: any = null;
   isEditing = false;
   isDelete = false;
+  isFixed = false;
 
   editorConfig: AngularEditorConfig = {
     toolbarHiddenButtons: [
@@ -69,6 +70,7 @@ export class BboardComponent implements OnInit {
     this.bboardService.getPreviousBbs().subscribe({
       next: (response) => {
         this.bulletinBoards = response.data;
+        console.log(this.bulletinBoards);
         this.messageService.setErrorMessage('');
       },
       error: (error) => {
@@ -90,7 +92,7 @@ export class BboardComponent implements OnInit {
       return; 
     }
     
-    this.bboardService.saveOrUpdateBb(this.editorContent, this.selectedBb ? this.selectedBb.id : null).subscribe({
+    this.bboardService.saveOrUpdateBb(this.editorContent, this.selectedBb ? this.selectedBb.id : null, this.isFixed).subscribe({
       next: (response) => {
         this.messageService.setMessage('A faliújság mentése sikeres!');
         this.getPreviousBbs();
@@ -98,6 +100,7 @@ export class BboardComponent implements OnInit {
         this.isEditing = false;
         this.isDelete = false;
         this.selectedBb = null;
+        this.isFixed = false;
         scrollTo(0, 0);
       },
       error: (error) => {
@@ -111,6 +114,7 @@ export class BboardComponent implements OnInit {
   editBb(bb: any) {
     this.selectedBb = bb;
     this.editorContent = this.selectedBb.content;
+    this.isFixed = this.selectedBb.isFixed;
     this.isEditing = true;
     this.isDelete = true;
     scrollTo(0, 0);
@@ -131,6 +135,7 @@ export class BboardComponent implements OnInit {
               this.isEditing = false;
               this.isDelete = false;
               this.selectedBb = null;
+              this.isFixed = false;
             },
             error: (error) => {
               this.messageService.setErrorMessage('Hiba az adatok törlése során. Próbáld meg később!');
@@ -151,6 +156,7 @@ export class BboardComponent implements OnInit {
     this.isDelete = false;
     this.selectedBb = null;
     this.editorContent = '';
+    this.isFixed = false;
   }
   getBulletinBoardDescription(openModal: boolean = false): any | string {
   

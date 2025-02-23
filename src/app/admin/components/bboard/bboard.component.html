@@ -14,6 +14,8 @@
   <angular-editor class="editor mb-4" [(ngModel)]="editorContent" [config]="editorConfig"></angular-editor>
 
   <div class="editor-buttons mb-4">
+    <label *ngIf="editorContent" for="isFixed" class="mt-2 pe-2">Rögzített</label>
+    <input *ngIf="editorContent" type="checkbox" name="isFixed" id="isFixed" [(ngModel)]="isFixed">
     <a  *ngIf="editorContent" class="btn btn-primary float-end mt-2" (click)="saveOrUpdateBb()">
         Mentés
       </a>
@@ -32,7 +34,8 @@
     <p class="p-2 ps-3 bg-secondary text-white">Előző tartalmak</p>
 
     <div class="previous-content row" *ngFor="let bb of bulletinBoards">
-        <p class="blue">Létrehozva: {{bb.created_at}}</p>
+        <p class="blue">Létrehozva: {{bb.created_at}} <span *ngIf="bb.isFixed" class="fixed float-end">Rögzített</span></p>
+        
 
         <div [innerHTML]="sanitizeHTML(bb.content)" class="col-lg-10 col-md-12 col-sm-12"></div>
 

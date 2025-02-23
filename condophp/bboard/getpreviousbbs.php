@@ -13,7 +13,7 @@ class GetBboards
 
     public function fetchBoards() {
         try {
-            $sql = "SELECT id, content, created_at FROM bboards ORDER BY created_at DESC";
+            $sql = "SELECT id, content, created_at, isFixed FROM bboards ORDER BY created_at DESC";
 
             $stmt = $this->conn->prepare($sql);
             

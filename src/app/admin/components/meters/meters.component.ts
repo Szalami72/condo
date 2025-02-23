@@ -238,7 +238,6 @@ export class MetersComponent implements OnInit {
     this.metersService.saveMetersValuesById(data).subscribe(
       response => {
         if (response.status === 'success') {
-          //console.log('saveMetersById', response.calculatedData);
           this.messageService.setMessage('Adatok mentése sikeres!');
         } else {
           this.messageService.setErrorMessage('Hiba történt a mentés során. Próbáld meg később!');
@@ -281,13 +280,12 @@ closeMeters() {
       }
     },
     (reason) => {
-      //console.log('Closed', reason);
     }
   );
 }
 
 processFilteredUsers() {
-  let numberOfUsers = this.filteredUsers.length; // Kezdeti felhasználók száma
+  let numberOfUsers = this.filteredUsers.length; 
  
 
   this.filteredUsers.forEach((user, index) => {
@@ -298,11 +296,9 @@ processFilteredUsers() {
           this.calculateNewValues(data, user.userId, () => {
             numberOfUsers--;
 
-            // Kiírjuk, hogy hány mentés van még hátra
             if (numberOfUsers > 0) {
               this.messageService.setMessage(`Még ${numberOfUsers} mentés van hátra. Ne zárd be a böngészőt!`, false);
             } else {
-              // Ha minden mentés kész, végső üzenet
               this.messageService.setMessage('Mentés sikeres!', true);
             }
           });
@@ -339,9 +335,6 @@ calculateNewValues(data: any[], userId: number, onSaveComplete: () => void) {
     newHeating = lastValues.heating || 0;
   }
 
-  // console.log('Processed user:', userId);
-  // console.log('New Values:', { newCold1, newCold2, newHot1, newHot2, newHeating });
-
   this.metersService.saveMetersValuesById({
     userId,
     mayId: this.getCurrentMonthAndYear(),
@@ -353,7 +346,7 @@ calculateNewValues(data: any[], userId: number, onSaveComplete: () => void) {
   }).subscribe(
     response => {
       if (response.status === 'success') {
-        onSaveComplete(); // Callback hívása
+        onSaveComplete();
       } else {
         this.messageService.setErrorMessage('Hiba történt a mentés során. Próbáld meg később!');
       }

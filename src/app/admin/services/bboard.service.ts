@@ -21,8 +21,8 @@ export class BboardService {
     return this.http.get<any>(this.getPreviousBbsApi);
   }
 
-  saveOrUpdateBb(bb: any, bbId: number): Observable<any> {
-    const body = { bb, bbId };
+  saveOrUpdateBb(bb: any, bbId: number, isFixed: boolean): Observable<any> {
+    const body = { bb, bbId, isFixed };
     return this.http.post(this.saveBbApi, body);
   }
 

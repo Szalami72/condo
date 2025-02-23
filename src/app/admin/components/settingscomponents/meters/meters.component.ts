@@ -42,7 +42,6 @@ export class MetersComponent implements OnInit {
       heatingAmount: this.heatingAmount || 0
   
     };
-    //console.log('mdata', metersData);
 
     this.metersService.saveMeters(metersData).subscribe({
       next: (response) => {
@@ -66,7 +65,6 @@ export class MetersComponent implements OnInit {
         this.coldAmount = data.coldAmount;
         this.hotAmount = data.hotAmount;
         this.heatingAmount = data.heatingAmount;
-        //console.log('Received data:', data);
       },
       error => {
         this.messageService.setErrorMessage('Hiba történt az adatok letöltése során. Próbáld meg később!');

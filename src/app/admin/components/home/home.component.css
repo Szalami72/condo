@@ -1,0 +1,13 @@
+.container {
+    margin-top: 5rem;
+}
+.title {
+    margin-top: 2rem;
+}
+
+.info-icon {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffc107;
+    cursor: pointer;
+}

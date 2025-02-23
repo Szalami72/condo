@@ -40,8 +40,6 @@ export class CostsComponent implements OnInit {
 
         if (response.status === 'success') {
           const data = response.data;
-          console.log('data', data);
-
           this.commonCost = data.commonCost || undefined;
           this.amountSmeter = data.amountSmeter ? Number(data.amountSmeter) : undefined;
           this.amountFix = data.amountFix ? Number(data.amountFix) : undefined;
@@ -77,7 +75,6 @@ export class CostsComponent implements OnInit {
       countAverage: this.countAverage
     };
 
-    console.log(costsData);
     this.costsService.saveCosts(costsData).subscribe({
       next: (response) => {
         this.messageService.setMessage('Az adatok mentése sikeres!');

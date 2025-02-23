@@ -2,31 +2,16 @@
 
 require '../vendor/autoload.php';
 require '../config/header.php';
+require 'sendemails.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 
 class SendCalcData
 {
     private $conn;
-    private $mailer;
 
     public function __construct($conn) {
         $this->conn = $conn;
-        $this->mailer = new PHPMailer(true);
-        $this->configureSMTP();
-    }
-
-    private function configureSMTP() {
-        $smtpConfig = require '../config/smtp_config.php';
-
-        $this->mailer->isSMTP();
-        $this->mailer->Host = $smtpConfig['host'];
-        $this->mailer->Port = $smtpConfig['port'];
-        $this->mailer->SMTPAuth = $smtpConfig['smtp_auth'];
-        $this->mailer->Username = $smtpConfig['username'];
-        $this->mailer->Password = $smtpConfig['password'];
-        $this->mailer->SMTPSecure = $smtpConfig['smtp_secure'];
-        $this->mailer->CharSet = $smtpConfig['charset'];
     }
 
 
@@ -37,7 +22,9 @@ public function generate($data) {
     $commoncost = $data['commonCostValue'];
     $extraCosts = $data['extraCost'];
 
-    $allCosts = (int)$metersValueCosts + (int)$commoncost + (int)$extraCosts;
+    //$allCosts = (int)$metersValueCosts + (int)$commoncost + (int)$extraCosts;
+    $allCosts = ($data['isMeters'] == 1 ? (int)$metersValueCosts : 0) + (int)$commoncost + (int)$extraCosts;
+
 
     $header = $this->generateHeader($data);
     $tableMeters = $this->generateMeterTable($data, $metersValueCosts);
@@ -48,7 +35,10 @@ public function generate($data) {
 
     $htmlEmailContent = $header . $tableMeters . $tableCosts . $tableSubDep . $tableExtraPay . $footer;
 
-    //$this->sendEmail($data['email'], $data['mayId'], $htmlEmailContent);
+    $emailSender = new EmailSender();
+    //$emailSender->sendEmail($data['email'], $data['mayId'], $htmlEmailContent);
+
+   
 
     return json_encode([
         'status' => 'success',
@@ -68,7 +58,7 @@ private function generateHeader($data) {
 }
 
 private function generateMeterTable($data, $metersValueCosts) {
-    
+    if (!$data['isMeters']) return '';
     $table = "
     <p>A leadott óraállások alapján a havi fizetendő összeg:</p>
     <table border='1' cellpadding='5'>
@@ -188,14 +178,14 @@ private function generateSubDepTable($data) {
 
     $table = "<br><p>Albetéti díj /nincs vízóra/:</p><table border='1' cellpadding='5'>";
 
-    if ($data['subDepFix'] > 0) {
+    if ($data['commonCost'] === 'fix') {
         $table .= "<tr>
             <th>Albetéti díj</th>
             <th style='text-align: right; color: #007bff;'>{$data['subDepFix']} Ft</th>
         </tr>";
     }
 
-    if ($data['subDepSmeter'] > 0) {
+    if ($data['commonCost'] === 'smeter') {
         $subDep = $data['subDepSmeter'] * $data['squareMeter'];
         $table .= "<tr>
             <th>Négyzetméter</th>
@@ -206,6 +196,14 @@ private function generateSubDepTable($data) {
             <td style='text-align: right;'>{$data['squareMeter']}</td>
             <td style='text-align: right;'>{$data['subDepSmeter']}</td>
             <td style='text-align: right; color: #007bff;'><b>{$subDep} Ft</b></td>
+        </tr>";
+    }
+
+    if ($data['commonCost'] === 'perflat') {
+        $subdep = $data['subDeposit'];
+        $table .= "<tr>
+            <th>Albetéti díj</th>
+            <th style='text-align: right; color: #007bff;'>{$subdep} Ft</th>
         </tr>";
     }
 
@@ -231,10 +229,11 @@ private function generateExtraPayTable($data, $extraCosts) {
                 </tr>";
 
 
-    } elseif ($data['extraPaymentMode'] === 'squaremeter') {
+    } elseif ($data['extraPaymentMode'] === 'smeter') {
+        $squaremeter = $data['squareMeter'];
         $table .= "<tr>
                     <td  style='max-width:150px; width:150px; word-wrap:break-word;'> {$data['extraPaymentTitle']}</td>
-                    <td style='text-align: right;'>{$data['extraPayment']} Ft/m<sup>2</sup></td>
+                    <td style='text-align: right;'>{$data['extraPayment']} Ft X $squaremeter m<sup>2</sup></td>
                     <td style='text-align: right; color: #007bff;'><b>{$extraCosts} Ft</b></td>
                 </tr>";
     }
@@ -256,23 +255,23 @@ private function generateFooter($allCosts, $bankAccount) {
         </html>";
 }
 
-private function sendEmail($email, $mayId, $htmlEmailContent) {
-    try {
+// private function sendEmail($email, $mayId, $htmlEmailContent) {
+//     try {
     
-        // Email beállítások
-        $this->mailer->setFrom('admin@mycondo.hu', 'MyCondo.hu');
-        $this->mailer->addAddress($email);
-        $this->mailer->isHTML(true);
-        $this->mailer->Subject = 'Fizetendő rezsi, ' . $mayId;
-        $this->mailer->Body    =  $htmlEmailContent;
-        $this->mailer->AltBody = "";
-        //$this->mailer->SMTPDebug = 2;  // 1 - csak üzenetek, 2 - teljes debug
+//         // Email beállítások
+//         $this->mailer->setFrom('admin@mycondo.hu', 'MyCondo.hu');
+//         $this->mailer->addAddress($email);
+//         $this->mailer->isHTML(true);
+//         $this->mailer->Subject = 'Fizetendő rezsi, ' . $mayId;
+//         $this->mailer->Body    =  $htmlEmailContent;
+//         $this->mailer->AltBody = "";
+//         //$this->mailer->SMTPDebug = 2;  // 1 - csak üzenetek, 2 - teljes debug
 
 
-        $this->mailer->send();
-    } catch (Exception $e) {
-        error_log("Email could not be sent. Mailer Error: {$this->mailer->ErrorInfo}");
-    }
-}
+//         $this->mailer->send();
+//     } catch (Exception $e) {
+//         error_log("Email could not be sent. Mailer Error: {$this->mailer->ErrorInfo}");
+//     }
+// }
 
 }
