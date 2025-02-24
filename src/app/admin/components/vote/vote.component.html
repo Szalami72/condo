@@ -2,5 +2,78 @@
 
 <div class="container mb-4">
     <h2>Szavazás</h2>
-    <p class="mt-4">Hamarosan...</p>
-</div>
+    <app-message></app-message>
+
+    <div class="content pt-4">
+        <h5>Új szavazás létrehozása</h5>
+    
+        <form (ngSubmit)="createPoll()">
+            <div class="form-group mb-2">
+                <label for="question">Kérdés</label>
+                <textarea id="question" class="form-control" [(ngModel)]="poll.question" name="question" rows="3" required></textarea>
+            </div>
+        
+            <div class="form-group mb-2">
+                <label for="endDate">Lejárati dátum</label>
+                <input type="datetime-local" id="endDate" class="form-control" [(ngModel)]="poll.end_date" name="endDate" required>
+            </div>
+        
+            <div class="form-group">
+                <label>Válaszlehetőségek</label>
+                <br>
+                <div *ngFor="let answer of poll.answers; let i = index; trackBy: trackByAnswerId" class="d-flex align-items-center mb-2">
+                    <input type="text" class="form-control" [(ngModel)]="poll.answers[i].answerText" name="answer{{i}}" required>
+                    <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeAnswer(i)">✖</button>
+                </div>
+                <button type="button" class="btn btn-secondary mt-2" (click)="addAnswer()">+ Válasz hozzáadása</button>
+                <button type="submit" class="btn btn-primary mt-2 float-end">Szavazás létrehozása</button>
+            </div>
+        
+            
+        </form>
+    </div>        
+        
+    
+    <br>
+    <hr>
+    <div class="previous-votes">
+        <h5>Szavazások listája</h5>
+        <div *ngIf="previousVotes && previousVotes.length > 0; else noData">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Kérdés</th>
+                        <th scope="col">Válaszlehetőségek</th>
+                        <th scope="col">Létrehozva</th>
+                        <th scope="col">Lejárat</th>
+                        <th scope="col">Állapot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let vote of previousVotes">
+                        <td>{{ vote.question_text }}</td>
+                        <td>
+                            <ul>
+                                <li *ngFor="let answer of vote.answers">
+                                    {{ answer.answer_text }}
+                                </li>
+                            </ul>
+                        </td>
+                        <td>{{ vote.created_at }}</td>
+                        <td>{{ vote.end_date }}</td>
+                        <td>{{ vote.status }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ng-template #noData>
+            <p>Nincsenek elérhető szavazások.</p>
+        </ng-template>
+    </div>
+</div>    
+    <hr>
+    
+
+<ng-template #noData>
+    <p>Nincs megjeleníthető adat.</p>
+  </ng-template>
