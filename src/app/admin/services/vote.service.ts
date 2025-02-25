@@ -15,6 +15,8 @@ export class VoteService {
 
   private deleteVoteApi = API_BASE_URL + 'votes/deletevote.php';
 
+  private updateVoteApi = API_BASE_URL + 'votes/updatevoteexpiration.php';
+
   constructor(private http: HttpClient) { }
 
   getVotes(): Observable<any> {
@@ -26,5 +28,10 @@ export class VoteService {
   }
 
   deleteVote(voteId: number): Observable<any> {
-    return this.http.post(this.deleteVoteApi, { id: voteId });}
+    return this.http.post(this.deleteVoteApi, { question_id: voteId });}
+
+  updateVoteExpiration(questionId: number, newEndDate: string): Observable<any> {
+      return this.http.post(this.updateVoteApi, { question_id: questionId, new_end_date: newEndDate });
+    }
+    
 }

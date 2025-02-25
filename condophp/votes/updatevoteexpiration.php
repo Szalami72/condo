@@ -1,7 +1,7 @@
 <?php
 require '../config/header.php';
 
-class DeleteVote
+class UpdateVoteExpiration
 {
     private $conn;
 
@@ -10,23 +10,20 @@ class DeleteVote
         $this->conn = $conn;
     }
 
-    public function deleteVote($questionId)
+    public function fetchVoteExpiration($questionId, $newEndDate)
     {
         try {
-            // Először töröljük a válaszokat
-            $stmt = $this->conn->prepare("DELETE FROM answers WHERE question_id = :questionId");
+            $sql = "UPDATE questions SET end_date = :end_date WHERE id = :questionId";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':end_date', $newEndDate);
             $stmt->bindParam(':questionId', $questionId, PDO::PARAM_INT);
             $stmt->execute();
-
-            // Majd töröljük a kérdést
-            $stmt = $this->conn->prepare("DELETE FROM questions WHERE id = :questionId");
-            $stmt->bindParam(':questionId', $questionId, PDO::PARAM_INT);
-            $stmt->execute();
-
-            return json_encode(['status' => 'success', 'message' => 'Szavazás törölve']);
+    
+            return json_encode(['status' => 'success', 'message' => 'Lejárati idő frissítve']);
         } catch (PDOException $e) {
-            return json_encode(['status' => 'error', 'message' => 'Hiba történt a törlés során']);
+            return json_encode(['status' => 'error', 'message' => 'Adatbázis hiba']);
         }
+            
     }
 }
 
@@ -36,10 +33,11 @@ try {
 
     $input = json_decode(file_get_contents("php://input"), true);
     $questionId = isset($input['question_id']) ? (int)$input['question_id'] : null;
+    $newEndDate = isset($input['new_end_date']) ? $input['new_end_date'] : null;
 
     if ($questionId) {
-        $deleter = new DeleteVote($conn);
-        echo $deleter->deleteVote($questionId);
+        $deleter = new UpdateVoteExpiration($conn);
+        echo $deleter->fetchVoteExpiration($questionId, $newEndDate);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Nincs megadva kérdés azonosító']);
     }

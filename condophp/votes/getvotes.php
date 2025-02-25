@@ -18,7 +18,15 @@ class GetVotes
             $currentDate = date("Y-m-d H:i:s");
 
             // Lejárt szavazások státuszának frissítése
-            $stmt = $this->conn->prepare("UPDATE questions SET status = 'closed' WHERE end_date <= :current_date AND status = 'open'");
+            $stmt = $this->conn->prepare("
+                UPDATE questions 
+                SET status = 
+                    CASE 
+                        WHEN end_date > :current_date AND status = 'closed' THEN 'open'
+                        WHEN end_date <= :current_date AND status = 'open' THEN 'closed'
+                        ELSE status 
+                    END
+            ");
             $stmt->bindParam(':current_date', $currentDate);
             $stmt->execute();
 
@@ -29,7 +37,7 @@ class GetVotes
                         FROM questions q
                         LEFT JOIN answers a ON q.id = a.question_id
                         WHERE q.id = :questionId
-                        ORDER BY q.created_at DESC"; // Legújabb szavazás előre
+                        ORDER BY q.created_at DESC";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(':questionId', $questionId, PDO::PARAM_INT);
             } else {
@@ -37,7 +45,7 @@ class GetVotes
                                a.id AS answer_id, a.answer_text
                         FROM questions q
                         LEFT JOIN answers a ON q.id = a.question_id
-                        ORDER BY q.created_at DESC"; // Legújabb szavazás előre
+                        ORDER BY q.created_at DESC";
                 $stmt = $this->conn->prepare($sql);
             }
 

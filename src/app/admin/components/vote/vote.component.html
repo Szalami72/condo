@@ -51,7 +51,13 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let vote of previousVotes">
-                        <td>{{ vote.question_text }}</td>
+                        <td>
+                            {{ vote.question_text }}
+                            <br>
+                            <br>
+                            <button (click)="deleteVote(vote.question_id)" class="btn btn-danger btn-sm float-end">Törlés</button>
+                        </td>
+                        
                         <td>
                             <ul>
                                 <li *ngFor="let answer of vote.answers">
@@ -60,7 +66,13 @@
                             </ul>
                         </td>
                         <td>{{ vote.created_at }}</td>
-                        <td>{{ vote.end_date }}</td>
+                        <td>
+                         
+                         <input type="datetime-local" [(ngModel)]="vote.end_date" />
+                         <br>
+                         <br>
+                         <button (click)="saveExpiration(vote)" class="btn btn-primary btn-sm float-end">Módosít</button>
+                        </td>
                         <td>{{ vote.status }}</td>
                     </tr>
                 </tbody>

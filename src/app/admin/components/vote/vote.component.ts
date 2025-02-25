@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MenuComponent } from "../menu/menu.component";
 import { VoteService } from '../../services/vote.service';
 import { FormsModule } from '@angular/forms';
 import { MessageComponent } from '../../../shared/sharedcomponents/message/message.component';
 import { MessageService } from '../../../shared/services/message.service';
+import { ConfirmmodalComponent } from '../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
 
 @Component({
   selector: 'app-vote',
@@ -26,7 +27,8 @@ export class VoteComponent implements OnInit {
 
   constructor(private voteService: VoteService,
     private messageService: MessageService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private modalService: NgbModal,
   ) { }
 
   ngOnInit(): void {
@@ -88,6 +90,41 @@ export class VoteComponent implements OnInit {
     });
   }
   
+  deleteVote(questionId: number): void {
+    const modalRef = this.modalService.open(ConfirmmodalComponent, { centered: true, size: 'sm' });
+    modalRef.componentInstance.confirmMessage = 'Biztosan törlöd a szavazást?';
+  
+    modalRef.result.then(
+      (result: string) => {
+        if (result === 'confirmed') {
+          this.voteService.deleteVote(questionId).subscribe(() => {
+            this.messageService.setMessage('Szavazás sikeresen törölve.');
+            this.getPreviousVotes(); // Lista frissítése törlés után
+          });
+        }
+      },
+      () => {
+        this.messageService.setErrorMessage('Ismeretlen hiba történt.');
+      }
+    );
+  }
+  
+  saveExpiration(vote: any): void {
+    if (!vote.end_date) {
+      this.messageService.setErrorMessage('Hiba: A lejárati idő nem lehet üres!');
+      return;
+    }
+  
+    this.voteService.updateVoteExpiration(vote.question_id, vote.end_date).subscribe({
+      next: () => {
+        this.messageService.setMessage('Lejárati idő sikeresen frissítve!');
+        this.getPreviousVotes();
+      },
+      error: () => {
+        this.messageService.setErrorMessage('Hiba történt a módosítás során.');
+      }
+    });
+  }
   
 
   trackByAnswerId(index: number, answer: any): number {
