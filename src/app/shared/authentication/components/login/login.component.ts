@@ -17,14 +17,23 @@ export class LoginComponent implements OnInit {
   password: string = '';
   stayedLoggedIn: boolean = false;
   errorMessage: string = '';
+  showCookieBanner: boolean = false;
+
 
   constructor(private loginService: LoginService, 
               private router: Router) { }
 
   ngOnInit(): void {
+    this.showCookieBanner = !localStorage.getItem('cookieAccepted');
+
     if (this.getUserData()) {
       this.redirectToUrl();
     }
+  }
+
+  acceptCookies(): void {
+    localStorage.setItem('cookieAccepted', 'true');
+    this.showCookieBanner = false;
   }
 
   async login() {

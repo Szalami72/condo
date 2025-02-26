@@ -39,50 +39,40 @@
     <div class="previous-votes">
         <h5>Szavazások listája</h5>
         <div *ngIf="previousVotes && previousVotes.length > 0; else noData">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th scope="col">Kérdés</th>
-                        <th scope="col">Válaszlehetőségek</th>
-                        <th scope="col">Létrehozva</th>
-                        <th scope="col">Lejárat</th>
-                        <th scope="col">Állapot</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let vote of previousVotes">
-                        <td>
-                            {{ vote.question_text }}
-                            <br>
-                            <br>
-                            <button (click)="deleteVote(vote.question_id)" class="btn btn-danger btn-sm float-end">Törlés</button>
-                        </td>
-                        
-                        <td>
-                            <ul>
-                                <li *ngFor="let answer of vote.answers">
-                                    {{ answer.answer_text }}
-                                </li>
-                            </ul>
-                        </td>
-                        <td>{{ vote.created_at }}</td>
-                        <td>
-                         
-                         <input type="datetime-local" [(ngModel)]="vote.end_date" />
-                         <br>
-                         <br>
-                         <button (click)="saveExpiration(vote)" class="btn btn-primary btn-sm float-end">Módosít</button>
-                        </td>
-                        <td>{{ vote.status }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div *ngFor="let vote of previousVotes" class="vote-item">
+                <div class="vote-header d-flex justify-content-between align-items-center">
+                    <span class="created-at">Létrehozva: {{ vote.created_at }}</span>
+                    <span class="end-date">Állapot: {{ vote.status === 'closed' ? 'Zárt' : 'Nyitott' }}</span>
+
+
+                    <button (click)="deleteVote(vote.question_id)" class="btn btn-danger btn-sm">Törlés</button>
+                </div>
+                
+                <div class="vote-content">
+                    <div class="d-flex align-items-center">
+                    <div class="vote-question">
+                        <p>{{ vote.question_text }}</p>
+                    </div>
+                    <div class="vote-answers">
+                        <ul>
+                            <li *ngFor="let answer of vote.answers">
+                                {{ answer.answer_text }}  <span class="float-end">{{ answer.vote_count}} szavazat</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                    <div class="vote-expiration d-flex align-items-center">
+                        Lezárás:
+                        <input type="datetime-local" class="expiration-input" [(ngModel)]="vote.end_date" />
+                        <button (click)="saveExpiration(vote)" class="btn btn-secondary btn-sm modify">Módosít</button>                        
+                    </div>
+                </div>
+            </div>
         </div>
         <ng-template #noData>
             <p>Nincsenek elérhető szavazások.</p>
         </ng-template>
     </div>
-</div>    
     <hr>
     
 

@@ -3,6 +3,47 @@
 }
 
 .btn-danger {
-    margin-top: auto;
+  margin: 0.25rem;
 }
 
+.previous-votes {
+}
+
+.vote-item {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #f9f9f9;
+    margin-bottom: 1rem;
+}
+.vote-header {
+    padding-left: 0.5rem;
+    background-color: #ddd;
+    font-weight: bold;
+}
+.vote-content {
+    
+}
+.vote-question, .vote-answers {
+    padding: 0.5rem;
+    width: 49%;
+}
+.vote-expiration{
+    width: 100%;
+    font-weight: bold;
+    background-color: #ddd;
+    padding-left: 0.5rem;
+}
+.expiration-input{
+    margin: 0.25rem 0 0.25rem 1rem;
+    padding-left: 0.25rem;
+    border-radius: 5px;
+}
+.modify{
+    margin: 0.25rem 0 0.25rem 1rem;
+}
+
+li {
+
+    list-style-type: none;
+    border-bottom: 1px solid #ddd;
+}

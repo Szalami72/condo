@@ -30,29 +30,29 @@ class GetVotes
             $stmt->bindParam(':current_date', $currentDate);
             $stmt->execute();
 
-            // SQL lekérdezés: időrend szerint csökkenő sorrendben (legújabb elöl)
+            // SQL lekérdezés szavazatok számolásával
+            $sql = "SELECT q.id AS question_id, q.question_text, q.created_at, q.end_date, q.status, 
+                           a.id AS answer_id, a.answer_text, 
+                           (SELECT COUNT(*) FROM votes v WHERE v.answer_id = a.id) AS vote_count
+                    FROM questions q
+                    LEFT JOIN answers a ON q.id = a.question_id";
+            
             if ($questionId) {
-                $sql = "SELECT q.id AS question_id, q.question_text, q.created_at, q.end_date, q.status, 
-                               a.id AS answer_id, a.answer_text
-                        FROM questions q
-                        LEFT JOIN answers a ON q.id = a.question_id
-                        WHERE q.id = :questionId
-                        ORDER BY q.created_at DESC";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(':questionId', $questionId, PDO::PARAM_INT);
-            } else {
-                $sql = "SELECT q.id AS question_id, q.question_text, q.created_at, q.end_date, q.status, 
-                               a.id AS answer_id, a.answer_text
-                        FROM questions q
-                        LEFT JOIN answers a ON q.id = a.question_id
-                        ORDER BY q.created_at DESC";
-                $stmt = $this->conn->prepare($sql);
+                $sql .= " WHERE q.id = :questionId";
             }
-
+            
+            $sql .= " ORDER BY q.created_at DESC";
+            
+            $stmt = $this->conn->prepare($sql);
+            
+            if ($questionId) {
+                $stmt->bindParam(':questionId', $questionId, PDO::PARAM_INT);
+            }
+            
             $stmt->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Az adatokat kérdésenként csoportosítjuk
+            // Adatok csoportosítása kérdésenként
             $groupedData = [];
             foreach ($results as $row) {
                 $qId = $row['question_id'];
@@ -70,7 +70,8 @@ class GetVotes
                 if ($row['answer_id']) {
                     $groupedData[$qId]['answers'][] = [
                         'answer_id' => $row['answer_id'],
-                        'answer_text' => $row['answer_text']
+                        'answer_text' => $row['answer_text'],
+                        'vote_count' => $row['vote_count']
                     ];
                 }
             }

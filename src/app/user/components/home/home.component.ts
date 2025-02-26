@@ -24,7 +24,6 @@ export class HomeComponent implements OnInit {
   lastVisitedTime: Date | null = null;
 
   constructor(
-    private cookieService: CookieService,
     private messageService: MessageService,
     private bboardService: BboardService,
     private router: Router,
