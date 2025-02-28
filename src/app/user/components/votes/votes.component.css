@@ -1,0 +1,73 @@
+.create-at {
+    margin-bottom: 0rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.create-at span {
+    font-weight: normal;
+}
+
+.vote-content {
+    padding: 10px;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    border: 1px solid #f5efeb;
+    border-bottom: 1rem solid #f5efeb;
+    box-shadow: 0px 2px 5px rgba(47, 65, 86, 0.2);
+}
+.vote-question {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0.5rem;
+}   
+
+.vote-question-title {
+    font-weight: bold;
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    background-color: #f5efeb;
+}
+hr {
+    margin: 0.5rem 0;
+}
+
+li {
+    list-style-type: none;
+}
+.vote-answers li {
+    cursor: pointer;
+    padding: 1rem;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .vote-answers li:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .vote-answers li.selected {
+    background-color: #567c8d;
+    color: #f5efeb;
+    font-weight: bold;
+  }
+
+  .btn{
+    background-color: #567c8d;
+    color: #f5efeb;
+    border: 1px solid #567c8d;
+    border-radius: 5px;
+    padding: 0.25rem 0.75rem;
+    cursor: pointer;
+}
+
+.voted {
+    font-size: 0.75rem;
+    background-color: #567c8d;
+    color: #f5efeb;
+    border: 1px solid #567c8d;
+    border-radius: 5px;
+    padding: 0.2rem 0.5rem 0.25rem 0.5rem;
+
+}

@@ -37,15 +37,19 @@ export class VoteComponent implements OnInit {
 
 
   getPreviousVotes() {
-    this.voteService.getVotes().subscribe(
+    
+  
+    this.voteService.getVotes(0,0).subscribe(
       data => {
         this.previousVotes = data.data;
         console.log('prevvotes', this.previousVotes);
       },
       error => {
-        this.messageService.setErrorMessage('Hiba történt az adatok letöltése során. Próbáld meg később!');      }
+        this.messageService.setErrorMessage('Hiba történt az adatok letöltése során. Próbáld meg később!');
+      }
     );
   }
+  
 
   addAnswer(): void {
     this.poll.answers.push({ answerText: '' });

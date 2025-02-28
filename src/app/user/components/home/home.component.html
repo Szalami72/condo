@@ -4,10 +4,26 @@
     <p></p>
 
         <div class="content mt-4">
+
+          <div *ngIf="hasOpenVote" class="d-flex align-items-center vote-alert">
+            Van aktív szavazás!
+            <button type="button" class="btn ms-auto" (click)="openVote()">
+              {{ isVotesVisible ? 'Bezár' : 'Megnyit' }}
+            </button>
+          </div>
+          
+          <div class="votes-content" [class.show]="isVotesVisible">
+            <app-votes [votes]="votes"></app-votes>
+
+          </div>
+          
+
+
             <h2>Bejegyzések</h2>
+            
+            
             <hr>
-          <div *ngFor="let bboard of bulletinBoards" 
-          >
+          <div *ngFor="let bboard of bulletinBoards">
           <div *ngIf="isNewBulletin(bboard.created_at)" class="new-bb-sign">Új bejegyzés!</div>
           <span *ngIf="bboard.isFixed" class="fixed new-bb-sign float-end">Rögzített</span>
          <div class="create-at">Létrehozva: <span>{{ bboard.created_at }}</span></div>

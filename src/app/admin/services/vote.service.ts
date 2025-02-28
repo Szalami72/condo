@@ -17,10 +17,12 @@ export class VoteService {
 
   private updateVoteApi = API_BASE_URL + 'votes/updatevoteexpiration.php';
 
+  private submitVoteApi = API_BASE_URL + 'votes/submitvote.php';
+
   constructor(private http: HttpClient) { }
 
-  getVotes(): Observable<any> {
-    return this.http.get(this.getVotesApi);
+  getVotes(user_id: number, questionId: number,): Observable<any> {
+    return this.http.post(this.getVotesApi, { user_id, id: questionId });
   }
 
   saveVote(vote: any): Observable<any> {
@@ -33,5 +35,10 @@ export class VoteService {
   updateVoteExpiration(questionId: number, newEndDate: string): Observable<any> {
       return this.http.post(this.updateVoteApi, { question_id: questionId, new_end_date: newEndDate });
     }
+
+  submitVote(vote: any): Observable<any> {
+      return this.http.post(this.submitVoteApi, vote);
+    }
+    
     
 }

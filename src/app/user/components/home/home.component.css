@@ -56,3 +56,34 @@
     clip-path: polygon(100% 0, 0 0, 100% 100%);
     box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.2);
 }
+ .vote-alert {
+    background-color: #f5efeb;
+    border-left: 5px solid #2f4156;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    box-shadow: 0px 2px 5px rgba(47, 65, 86, 0.2);
+ }
+
+.btn{
+    width: 8rem;
+    background-color: #567c8d;
+    color: #f5efeb;
+    border: 1px solid #567c8d;
+    border-radius: 5px;
+    padding: 0.25rem 0.25rem;
+    cursor: pointer;
+}
+
+.votes-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  }
+  
+  .votes-content.show {
+    max-height: 800px; /* Ezt állítsd a tartalomhoz megfelelő méretre */
+    opacity: 1;
+  }
+  
