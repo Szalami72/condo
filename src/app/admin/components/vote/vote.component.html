@@ -6,6 +6,9 @@
 
     <div class="content pt-4">
         <h5>Új szavazás létrehozása</h5>
+        <div class="col text-end">
+            <span class="info-icon" (click)="getVotesDescription()">info</span>
+          </div>
     
         <form (ngSubmit)="createPoll()">
             <div class="form-group mb-2">

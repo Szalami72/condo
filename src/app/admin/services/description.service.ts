@@ -54,6 +54,13 @@ export class DescriptionService {
   "A 'fájl leírása' mezőben ínformációt csatolhatsz a fájlhoz.<br>" +
   "A fájlok maximális mérete nem lehet több mint 5Mb.<br>" +
   "A <b>Mentés</b> gombra kattintva töltheted fel a fájlt.<br>";
+
+  votesDescription: string = "A szavazás létrehozásához adj meg egy kérdést, egy vagy több választ és a szavazás lezárásának a dátumát.<br>" +
+  "A 'Szavazás létrehozása' gombra kattintva a szavazás létrejön.<br>" +
+  "A szavazások listáján a lezárás felirat után található naptár segítségével módosíthatod a szavazás lejáratát.<br>" +
+  "A 'Módosít' gombbal mentheted a változásokat.<br>" +
+  "A 'Törlés' gombbal törölheted a szavazásokat.<br>";
+
   constructor() { }
   getRecDatesDescription(): string {
     return this.recDatesDescription;
@@ -87,4 +94,7 @@ export class DescriptionService {
     return this.filesDescription;
   }
 
+  getVotesDescription(): string {
+    return this.votesDescription;
+  }
 }

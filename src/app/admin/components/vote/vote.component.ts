@@ -8,7 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { MessageComponent } from '../../../shared/sharedcomponents/message/message.component';
 import { MessageService } from '../../../shared/services/message.service';
 import { ConfirmmodalComponent } from '../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
-
+import { InfomodalComponent } from '../../../shared/sharedcomponents/infomodal/infomodal.component';
+import { DescriptionService } from '../../services/description.service';
 @Component({
   selector: 'app-vote',
   standalone: true,
@@ -29,6 +30,7 @@ export class VoteComponent implements OnInit {
     private messageService: MessageService,
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
+    private descriptionService: DescriptionService
   ) { }
 
   ngOnInit(): void {
@@ -138,5 +140,10 @@ export class VoteComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
+  getVotesDescription() {
+    const message = this.descriptionService.getVotesDescription();
+    const modalRef = this.modalService.open(InfomodalComponent, { centered: true });
+        modalRef.componentInstance.infoMessage = message;
+  }
 }
 
