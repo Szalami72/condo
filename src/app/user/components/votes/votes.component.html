@@ -1,24 +1,38 @@
-<div *ngIf="votes.length > 0">
+<div *ngFor="let vote of votes">
   <div class="vote-content">
-    <div class="create-at">Létrehozva: <span>{{ votes[0].created_at }}</span></div>
+    <div class="create-at">Létrehozva: <span>{{ vote.created_at }}</span></div>
 
     <p class="vote-question-title">Kérdés:</p>
     <div class="vote-question">
-      <p>{{ votes[0].question_text }}</p>
+      <p>{{ vote.question_text }}</p>
     </div>
+
+    <p class="vote-question-title">Lehetőségek:</p>
     <div class="vote-answers">
       <ul>
-        <li *ngFor="let answer of votes[0].answers" 
-            [class.selected]="selectedAnswer?.answer_id === answer.answer_id"
-            (click)="selectAnswer(answer)">
+        <li *ngFor="let answer of vote.answers" 
+            [class.selected]="selectedAnswers[vote.question_id]?.answer_id === answer.answer_id"
+            (click)="hasOpenVote[vote.question_id] && selectAnswer(vote.question_id, answer)">
           {{ answer.answer_text }}
           <span class="float-end">{{ answer.vote_count }} szavazat</span>
-          <span *ngIf="answer.user_vote === 1" class="voted">Szavazva</span>
+          <span *ngIf="answer.user_vote === 1" class="badge bg-success">Szavazatod</span>
         </li>
       </ul>
+      
     </div>
+    
+
     <div class="submit d-flex">
-      <button class="btn btn-sm ms-auto" [disabled]="!selectedAnswer" (click)="submitVote()">Szavazok</button>
+      <button *ngIf="hasOpenVote[vote.question_id]" 
+              class="btn btn-sm ms-auto" 
+              (click)="submitVote(vote.question_id)">
+        Szavazok
+      </button>
+    </div>
+
+    <!-- Ha a szavazás lejárt, de még megtekinthető -->
+    <div *ngIf="!hasOpenVote[vote.question_id] && canViewResults[vote.question_id]" class="closed-info mt-2">
+      Ez a szavazás lezárult: {{ vote.end_date | date:'yyyy-MM-dd' }}. Az eredményeket még {{ getExpirationDate(vote.end_date) | date:'yyyy-MM-dd' }}-ig láthatod.
     </div>
   </div>
 </div>

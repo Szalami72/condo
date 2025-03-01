@@ -40,6 +40,7 @@ li {
     cursor: pointer;
     padding: 1rem;
     border-radius: 6px;
+    border-bottom: 1px solid #f5efeb;
     transition: background-color 0.3s ease;
   }
   
@@ -70,4 +71,11 @@ li {
     border-radius: 5px;
     padding: 0.2rem 0.5rem 0.25rem 0.5rem;
 
+}
+
+.closed-info {
+    background-color: #cbd9e6;
+    color: #565656;
+    padding: 0 0.5rem;
+    border-radius: 6px;
 }

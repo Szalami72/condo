@@ -1,4 +1,4 @@
-import { Component, OnInit,  } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -23,12 +23,14 @@ export class HomeComponent implements OnInit {
   bulletinBoards: any[] = [];
   votes: any[] = [];
   hasOpenVote: boolean = false;
-  isVotesVisible: boolean = true;
+  hasExpiredVote: boolean = false;
+  isVotesVisible: boolean = false;
 
   lastLoginTime: Date | null = null;
   lastVisitedTime: Date | null = null;
 
   userId: number | null = null;
+  canViewResults: { [key: number]: boolean } = {}; 
 
   constructor(
     private messageService: MessageService,
@@ -41,7 +43,6 @@ export class HomeComponent implements OnInit {
     private voteService: VoteService
   ) {}
 
-
   async ngOnInit(): Promise<void> {
     const currentUser = this.getCurrentUserDatas();
     if (currentUser) {
@@ -53,7 +54,46 @@ export class HomeComponent implements OnInit {
     await this.menuService.inicialize();
   }
 
+  private getVotes(): void {
+    if (!this.userId) {
+      console.error("User ID is missing");
+      return;
+    }
   
+    this.voteService.getVotes(this.userId, 0).subscribe({
+      next: (response) => {
+        const now = new Date();
+        let hasActiveVote = false;
+        let hasExpiredVote = false;
+  
+        this.votes = response.data.map((vote: any) => {
+          const endDate = new Date(vote.end_date);
+          const threeDaysAfterEnd = new Date(endDate);
+          threeDaysAfterEnd.setDate(threeDaysAfterEnd.getDate() + 3);
+  
+          // Ellenőrizzük, hogy van-e aktív szavazás és lejárt szavazás
+          if (vote.status === 'open' && now < endDate) {
+            hasActiveVote = true; // Van aktív szavazás
+          } else if (now > endDate && now <= threeDaysAfterEnd) {
+            hasExpiredVote = true; // Van lejárt szavazás, de 3 napon belül
+          }
+  
+          // Visszaadjuk a szavazást
+          return vote;
+        });
+  
+        // Beállítjuk, hogy mi jelenjen meg a UI-ban
+        this.hasOpenVote = hasActiveVote;
+        this.hasExpiredVote = hasExpiredVote;
+  
+      },
+      error: (error) => {
+        console.error("Hiba a szavazások lekérése során:", error);
+      }
+    });
+  }
+  
+
   private loadLastVisitedTime(userId: string): void {
     const storedTime = localStorage.getItem(`lastVisitedTime_home_${userId}`);
     this.lastVisitedTime = storedTime ? new Date(storedTime) : this.lastLoginTime || null;
@@ -63,13 +103,11 @@ export class HomeComponent implements OnInit {
     const now = new Date().toISOString();
     localStorage.setItem(`lastVisitedTime_home_${userId}`, now);
   }
-  
 
   private loadData(userId: number): void {
     this.getLoginHistory(userId);
     this.getPreviousBbs();
     this.saveLastVisitedTime(userId);
-
   }
 
   private getPreviousBbs(): void {
@@ -81,7 +119,7 @@ export class HomeComponent implements OnInit {
           }
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         });
-  
+
         const hasNewBulletin = this.bulletinBoards.some(bulletin => this.isNewBulletin(bulletin.created_at));
         this.notificationService.setNewBulletinStatus(hasNewBulletin);
       },
@@ -91,7 +129,6 @@ export class HomeComponent implements OnInit {
       }
     });
   }
-  
 
   private getLoginHistory(id: number): void {
     this.residentsService.getLoginHistory(id).subscribe({
@@ -105,7 +142,7 @@ export class HomeComponent implements OnInit {
   }
 
   isNewBulletin(createdAt: string): boolean {
-    if (!this.lastVisitedTime) return true;  // Első belépés, minden bejegyzés új
+    if (!this.lastVisitedTime) return true;
     return new Date(createdAt) > this.lastVisitedTime;
   }
 
@@ -126,40 +163,22 @@ export class HomeComponent implements OnInit {
       parsedData.id = Number(parsedData.id);
       return parsedData;
     }
-    return null;0
+    return null;
   }
 
-  private getVotes(): void {
-    if (!this.userId) {
-      console.error("User ID is missing");
-      return;
-    }
-  
-    const questionId = this.votes.length > 0 ? this.votes[0].question_id : 0; // Ellenőrizzük, hogy van-e adat, ha nincs, alapértelmezett nullát adunk
-  
-    this.voteService.getVotes(this.userId, questionId).subscribe({
-      next: (response) => {
-        // Csak az "open" státuszú szavazásokat tároljuk el
-        this.votes = response.data.filter((vote: { status: string; }) => vote.status === 'open');
-        
-        // Ellenőrizzük, hogy van-e legalább egy "open" státuszú szavazás
-        this.hasOpenVote = this.votes.length > 0;
-  
-        if (this.hasOpenVote) {
-          console.log('Van nyitott szavazás!', this.votes);
+  openVote(): void {
+    this.isVotesVisible = !this.isVotesVisible;
+
+    const votesContent = document.querySelector('.votes-content') as HTMLElement;
+    if (votesContent) {
+        if (this.isVotesVisible) {
+            // Ha megnyitjuk a szavazást, a max-height-et állítsuk be a tartalom magasságához.
+            votesContent.style.maxHeight = `${votesContent.scrollHeight}px`;
+        } else {
+            // Ha bezárjuk, állítsuk vissza a max-height-et 0-ra.
+            votesContent.style.maxHeight = '0';
         }
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-  
-  
-
-
-openVote(): void {
-  this.isVotesVisible = !this.isVotesVisible;
+    }
 }
 
 }

@@ -76,14 +76,16 @@
 }
 
 .votes-content {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  }
-  
-  .votes-content.show {
-    max-height: 800px; /* Ezt állítsd a tartalomhoz megfelelő méretre */
-    opacity: 1;
-  }
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.votes-content.show {
+  max-height: 1000px; /* Itt a nagyobb érték a biztonság kedvéért */
+  opacity: 1;
+  overflow: visible; /* Engedélyezi, hogy a tartalom kilépjen a szülőből */
+}
+
   

@@ -11,9 +11,11 @@ import { VoteService } from '../../../admin/services/vote.service';
 })
 export class VotesComponent implements OnInit {
 
-  @Input() votes: any[] = [];
-  selectedAnswer: any = null;
+  votes: any[] = [];
+  selectedAnswers: { [key: number]: any } = {};
   userId: number | null = null;
+  hasOpenVote: { [key: number]: boolean } = {}; // Kérdésenként tároljuk a nyitottságot
+  canViewResults: { [key: number]: boolean } = {}; // Kérdésenként tároljuk a megtekinthetőséget
 
   constructor(private voteService: VoteService) { }
 
@@ -21,59 +23,118 @@ export class VotesComponent implements OnInit {
     const currentUser = this.getCurrentUserDatas();
     if (currentUser) {
       this.userId = currentUser.id;
-      this.setSelectedAnswer();
+      this.getVotes();
     }
   }
 
-  // Set the selected answer based on previous user votes
-  setSelectedAnswer(): void {
-    if (this.votes.length > 0 && this.userId) {
-      // Look for a vote by the current user in the votes table
-      const userVote = this.votes[0].answers.find((answer: any) =>
-        answer.user_vote === 1 // If the user has voted for this answer
-      );
-  
-      if (userVote) {
-        this.selectedAnswer = userVote;
-      }
-    }
-  }
-  
-  // Handle the answer selection
-  selectAnswer(answer: any) {
-    this.selectedAnswer = answer;
-  }
-  
-
-  // Submit the vote
-  submitVote(): void {
-    if (!this.selectedAnswer) {
-      console.error('Nincs kiválasztott válasz.');
+  // 🔹 Betöltjük az összes szavazást és ellenőrizzük az állapotukat
+  private getVotes(): void {
+    if (!this.userId) {
+      console.error("User ID is missing");
       return;
     }
   
+    this.voteService.getVotes(this.userId, 0).subscribe({
+      next: (response) => {
+        const now = new Date();
+  
+        // Szűrjük a szavazásokat, hogy csak az aktív vagy a három napon belüli lejárt szavazások maradjanak
+        this.votes = response.data.filter((vote: any) => {
+          const endDate = new Date(vote.end_date);
+          const threeDaysAfterEnd = new Date(endDate);
+          threeDaysAfterEnd.setDate(threeDaysAfterEnd.getDate() + 3);
+  
+          const isExpired = now > endDate;
+          return vote.status === 'open' || (isExpired && now <= threeDaysAfterEnd);
+        }).map((vote: any) => {
+          const endDate = new Date(vote.end_date);
+          const threeDaysAfterEnd = new Date(endDate);
+          threeDaysAfterEnd.setDate(threeDaysAfterEnd.getDate() + 3);
+  
+          // Szavazás státuszok
+          this.hasOpenVote[vote.question_id] = vote.status === 'open';
+          const isExpired = now > endDate;
+          this.canViewResults[vote.question_id] = isExpired && now <= threeDaysAfterEnd;
+  
+          return vote;
+        });
+  
+        // Aktív szavazások előrébb rendezése
+        this.votes.sort((a: any, b: any) => {
+          if (a.status === 'open' && b.status !== 'open') {
+            return -1;  // Aktív szavazás előrébb kerüljön
+          }
+          if (a.status !== 'open' && b.status === 'open') {
+            return 1;  // Lezárt szavazás hátrébb kerüljön
+          }
+          return 0;  // Egyébként nem változik a sorrend
+        });
+  
+      },
+      error: (error) => {
+        console.error("Hiba a szavazások lekérése során:", error);
+      }
+    });
+  }
+  
+  
+
+  // 🔹 A felhasználó korábbi szavazatának visszaállítása
+  setSelectedAnswer(): void {
+    if (this.votes.length > 0 && this.userId) {
+      this.votes.forEach(vote => {
+        const userVote = vote.answers.find((answer: any) => answer.user_vote === 1);
+        if (userVote) {
+          this.selectedAnswers[vote.question_id] = userVote;
+        }
+      });
+    }
+  }
+
+  // 🔹 Szavazat kiválasztása kérdésenként
+  selectAnswer(questionId: number, answer: any): void {
+    if (this.selectedAnswers[questionId]?.answer_id === answer.answer_id) {
+      // Ha ugyanarra a válaszra kattintunk, akkor eltávolítjuk a kijelölést
+      delete this.selectedAnswers[questionId];
+    } else {
+      // Különben beállítjuk a választott választ
+      this.selectedAnswers[questionId] = answer;
+    }
+  }
+  
+
+  // 🔹 Szavazat leadása kérdésenként
+  submitVote(questionId: number): void {
+    const selectedAnswer = this.selectedAnswers[questionId];
+
+    if (!selectedAnswer || !this.hasOpenVote[questionId]) {
+      console.error('Nincs kiválasztott válasz vagy a szavazás már lezárult.');
+      return;
+    }
+
     const voteData = {
       user_id: this.userId,
-      question_id: this.votes[0].question_id,
-      answer_id: this.selectedAnswer.answer_id,
+      question_id: questionId,
+      answer_id: selectedAnswer.answer_id,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
-  
-    // If the user has already voted, update the vote
+
     this.voteService.submitVote(voteData).subscribe(
       response => {
         console.log('Sikeres szavazás:', response);
-        this.getVotes(); // Refresh the votes
+        this.getVotes(); // Frissítjük az összes szavazást
       },
       error => {
         console.error('Hiba történt a szavazás során:', error);
       }
     );
-    this.selectAnswer(null);
+
+    // Töröljük a kiválasztott választ
+    this.selectedAnswers[questionId] = null;
   }
-  
-  // Get the current user data from localStorage or sessionStorage
+
+  // 🔹 Felhasználói adatok lekérése
   private getCurrentUserDatas(): any {
     const currentUserData = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
     if (currentUserData) {
@@ -84,16 +145,10 @@ export class VotesComponent implements OnInit {
     return null;
   }
 
-  // Refresh the list of votes for the current user
-  private getVotes(): void {
-    this.voteService.getVotes(this.userId ?? 0, this.votes[0].question_id ?? 0).subscribe({
-      next: (response) => {
-        // Only keep votes with the status 'open'
-        this.votes = response.data.filter((vote: { status: string; }) => vote.status === 'open');
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
+  getExpirationDate(endDate: string): string {
+  const end = new Date(endDate);
+  end.setDate(end.getDate() + 3); // Hozzáadunk 3 napot
+  return end.toISOString(); // Az ISO formátumú dátumot használjuk a biztonságos kezelés érdekében
+}
+
 }
