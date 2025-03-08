@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { VoteService } from '../../../admin/services/vote.service';
+import { VoteService } from '../../../shared/services/vote.service';
 
 @Component({
   selector: 'app-votes',

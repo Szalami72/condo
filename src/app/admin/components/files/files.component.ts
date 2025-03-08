@@ -9,7 +9,7 @@ import { MenuComponent } from '../menu/menu.component';
 import { MessageComponent } from '../../../shared/sharedcomponents/message/message.component';
 import { MessageService } from '../../../shared/services/message.service';
 import { DescriptionService } from '../../services/description.service';
-import { FilesService } from '../../services/files.service';
+import { FilesService } from '../../../shared/services/files.service';
 
 import { InfomodalComponent } from '../../../shared/sharedcomponents/infomodal/infomodal.component';
 import { ConfirmmodalComponent } from '../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';

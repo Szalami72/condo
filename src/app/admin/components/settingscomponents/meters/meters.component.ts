@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from '../../../../shared/services/message.service';
-import { MetersService } from '../../../services/meters.service';
+import { MetersService } from '../../../../shared/services/meters.service';
 
 @Component({
   selector: 'app-meters',

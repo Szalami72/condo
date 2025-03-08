@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { MetersService } from '../../admin/services/meters.service';
-import { CostsService } from '../../admin/services/costs.service';
+import { MetersService } from '../../shared/services/meters.service';
+import { CostsService } from '../../shared/services/costs.service';
 import { MessageService } from '../../shared/services/message.service';
-import { FilesService } from '../../admin/services/files.service';
+import { FilesService } from '../../shared/services/files.service';
 import { NotificationService } from './notification.service';
 import { map, Observable } from 'rxjs';
 

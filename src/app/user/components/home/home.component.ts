@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { VotesComponent } from '../votes/votes.component';
 import { MenuComponent } from '../menu/menu.component';
-import { BboardService } from '../../../admin/services/bboard.service';
+import { BboardService } from '../../../shared/services/bboard.service';
 import { MessageService } from '../../../shared/services/message.service';
-import { ResidentsService } from '../../../admin/services/residents.service';
+import { ResidentsService } from '../../../shared/services/residents.service';
 import { NotificationService } from '../../services/notification.service';
 import { MenuService } from '../../services/menu.service';
-import { VoteService } from '../../../admin/services/vote.service';
+import { VoteService } from '../../../shared/services/vote.service';
 
 @Component({
   selector: 'app-home',

@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MetersService } from '../../../services/meters.service';
+import { MetersService } from '../../../../shared/services/meters.service';
 import { MessageService } from '../../../../shared/services/message.service';
-import { ResidentsService } from '../../../services/residents.service';
+import { ResidentsService } from '../../../../shared/services/residents.service';
 import { ConfirmmodalComponent } from '../../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
 import { map, Observable } from 'rxjs';
 

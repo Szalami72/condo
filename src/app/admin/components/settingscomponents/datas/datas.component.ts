@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from '../../../../shared/services/message.service';
-import { DatasService } from '../../../services/datas.service';
+import { DatasService } from '../../../../shared/services/datas.service';
 
 @Component({
   selector: 'app-datas',

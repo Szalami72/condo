@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { NgbModal, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { MetersService } from '../../services/meters.service';
+import { MetersService } from '../../../shared/services/meters.service';
 import { MessageService } from '../../../shared/services/message.service';
 import { MenuComponent } from "../menu/menu.component";
 import { DescriptionService } from '../../services/description.service';

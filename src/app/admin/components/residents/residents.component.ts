@@ -11,9 +11,9 @@ import { MessageComponent } from '../../../shared/sharedcomponents/message/messa
 import { AddAndEditResidentComponent } from './addAndEditResident/addAndEditResident.component';
 import { InfomodalComponent } from '../../../shared/sharedcomponents/infomodal/infomodal.component';
 import { DescriptionService } from '../../services/description.service';
-import { CostsService } from '../../services/costs.service';
-import { MetersService } from '../../services/meters.service';
-import { ResidentsService } from '../../services/residents.service';
+import { CostsService } from '../../../shared/services/costs.service';
+import { MetersService } from '../../../shared/services/meters.service';
+import { ResidentsService } from '../../../shared/services/residents.service';
 import { MeterData } from '../../models/costandmeterdatas.model';
 
 @Component({

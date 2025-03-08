@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MenuComponent } from "../menu/menu.component";
-import { VoteService } from '../../services/vote.service';
+import { VoteService } from '../../../shared/services/vote.service';
 import { FormsModule } from '@angular/forms';
 import { MessageComponent } from '../../../shared/sharedcomponents/message/message.component';
 import { MessageService } from '../../../shared/services/message.service';

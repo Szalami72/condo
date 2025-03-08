@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { Router } from '@angular/router';
 import { MenuComponent } from '../menu/menu.component';
-import { ResidentsService } from '../../../admin/services/residents.service';
+import { ResidentsService } from '../../../shared/services/residents.service';
 import { MessageService } from '../../../shared/services/message.service';
 import { MenuService } from '../../services/menu.service';
 import { ChangePasswordService } from '../../../shared/services/changepassword.service';

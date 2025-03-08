@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from '../../../../shared/services/message.service';
-import { CostsService } from '../../../services/costs.service';
+import { CostsService } from '../../../../shared/services/costs.service';
 
 @Component({
   selector: 'app-costs',

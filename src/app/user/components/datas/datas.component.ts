@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { forkJoin } from 'rxjs';
 import { MenuComponent } from '../menu/menu.component';
-import { DatasService } from '../../../admin/services/datas.service'; 
-import { CostsService } from '../../../admin/services/costs.service';
+import { DatasService } from '../../../shared/services/datas.service';
+import { CostsService } from '../../../shared/services/costs.service';
 import { MenuService } from '../../services/menu.service';
-import { ResidentsService } from '../../../admin/services/residents.service';
+import { ResidentsService } from '../../../shared/services/residents.service';
 import { catchError, map, Observable, of } from 'rxjs';
 
 @Component({

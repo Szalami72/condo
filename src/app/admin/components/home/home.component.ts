@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
-import { DatasService } from '../../services/datas.service';
+import { DatasService } from '../../../shared/services/datas.service';
 
 @Component({
   selector: 'app-home',

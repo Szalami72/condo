@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MenuService } from '../../services/menu.service';
 import { MenuComponent } from '../menu/menu.component';
 import { MessageService } from '../../../shared/services/message.service';
-import { MetersService } from '../../../admin/services/meters.service';
+import { MetersService } from '../../../shared/services/meters.service';
 import { MessageComponent } from "../../../shared/sharedcomponents/message/message.component";
 
 @Component({

@@ -36,7 +36,7 @@ public function generate($data) {
     $htmlEmailContent = $header . $tableMeters . $tableCosts . $tableSubDep . $tableExtraPay . $footer;
 
     $emailSender = new EmailSender();
-    //$emailSender->sendEmail($data['email'], $data['mayId'], $htmlEmailContent);
+    $emailSender->sendEmail($data['email'], $data['mayId'], $htmlEmailContent);
 
    
 

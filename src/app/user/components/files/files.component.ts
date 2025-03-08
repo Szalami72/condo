@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../menu/menu.component';
 import { MenuService } from '../../services/menu.service';
-import { FilesService } from '../../../admin/services/files.service';
+import { FilesService } from '../../../shared/services/files.service';
 import { MessageService } from '../../../shared/services/message.service';
-import { ResidentsService } from '../../../admin/services/residents.service';
+import { ResidentsService } from '../../../shared/services/residents.service';
 import { NotificationService } from '../../services/notification.service';
 import { FILE_UPLOAD_URL } from '../../../constans/constans';
 
