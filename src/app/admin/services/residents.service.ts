@@ -35,26 +35,26 @@ export class ResidentsService {
   }
 
   getBuildings(): Observable<any> {
-    return this.getData('Buildings');
+    return this.getData('buildings');
   }
 
   getFloors(): Observable<any> {
-    return this.getData('Floors');
+    return this.getData('floors');
   }
 
   getDoors(): Observable<any> {
-    return this.getData('Doors');
+    return this.getData('doors');
   }
 
   getCommoncosts(): Observable<any> {
-    return this.getData('Commoncosts');
+    return this.getData('commoncosts');
   }
 
   getSubdeposits(): Observable<any> {
-    return this.getData('Subdeposits');
+    return this.getData('subdeposits');
   }
   getSquareMeters(): Observable<any> {
-    return this.getData('Squaremeters');
+    return this.getData('squaremeters');
   }
   
   saveData(data: any): Observable<any> {

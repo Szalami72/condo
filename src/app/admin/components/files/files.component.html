@@ -24,7 +24,9 @@
 
   <hr>
 
-  <h5 class="mb-4 mt-4" *ngIf="uploadedFiles.length > 0">Feltöltött fájlok:</h5>
+  <div *ngIf="uploadedFiles && uploadedFiles.length > 0; else noData">
+
+  <h5 class="mb-4 mt-4" >Feltöltött fájlok:</h5>
  
   <div class="filelist">
 
@@ -52,3 +54,8 @@
 </div>
 
 </div>
+</div>
+
+<ng-template #noData>
+  <p>Nincs megjeleníthető adat.</p>
+</ng-template>

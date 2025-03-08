@@ -44,7 +44,7 @@ export class VoteComponent implements OnInit {
     this.voteService.getVotes(0,0).subscribe(
       data => {
         this.previousVotes = data.data;
-        console.log('prevvotes', this.previousVotes);
+        // console.log('prevvotes', this.previousVotes);
       },
       error => {
         this.messageService.setErrorMessage('Hiba történt az adatok letöltése során. Próbáld meg később!');
@@ -110,7 +110,7 @@ export class VoteComponent implements OnInit {
         }
       },
       () => {
-        this.messageService.setErrorMessage('Ismeretlen hiba történt.');
+        
       }
     );
   }

@@ -9,10 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "condodb";
+$servername = "mysql.nethely.hu"; //$servername = "localhost";
+$username = "mycondo";  //$username = "root";
+$password = "Almafa12_1972"; //$password = "";
+$dbname = "condodb";    //$dbname = "condodb";
 
 try {
     $dsn = "mysql:host=$servername;dbname=$dbname;charset=utf8";

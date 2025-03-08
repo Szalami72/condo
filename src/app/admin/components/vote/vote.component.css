@@ -18,10 +18,10 @@
     font-weight: bold;
 }
 
-.vote-question, .vote-answers {
+/* .vote-question, .vote-answers {
     padding: 0.5rem;
     width: 49%;
-}
+} */
 .vote-expiration{
     width: 100%;
     font-weight: bold;
@@ -29,13 +29,11 @@
     padding-left: 0.5rem;
 }
 .expiration-input{
-    margin: 0.25rem 0 0.25rem 1rem;
+    margin: 0.25rem 0 0.25rem 0rem;
     padding-left: 0.25rem;
     border-radius: 5px;
 }
-.modify{
-    margin: 0.25rem 0 0.25rem 1rem;
-}
+
 
 li {
 

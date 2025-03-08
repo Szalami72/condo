@@ -28,8 +28,8 @@
                     <input type="text" class="form-control" [(ngModel)]="poll.answers[i].answerText" name="answer{{i}}" required>
                     <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeAnswer(i)">✖</button>
                 </div>
-                <button type="button" class="btn btn-secondary mt-2" (click)="addAnswer()">+ Válasz hozzáadása</button>
-                <button type="submit" class="btn btn-primary mt-2 float-end">Szavazás létrehozása</button>
+                <button type="button" class="btn btn-secondary mt-2" (click)="addAnswer()">+ Válasz</button>
+                <button type="submit" class="btn btn-primary mt-2 float-end">Létrehozás</button>
             </div>
         
             
@@ -52,29 +52,27 @@
                 </div>
                 
                 <div class="vote-content">
-                    <div class="d-flex align-items-center">
-                    <div class="vote-question">
-                        <p>{{ vote.question_text }}</p>
+                    <div class="d-flex-align-items-center"> 
+                        <div class="vote-question ms-2">
+                            <p>{{ vote.question_text }}</p>
+                        </div>
+                        <div class="vote-answers">
+                            <ul>
+                                <li *ngFor="let answer of vote.answers">
+                                    {{ answer.answer_text }}  <span class="float-end me-2">{{ answer.vote_count}} szavazat</span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="vote-answers">
-                        <ul>
-                            <li *ngFor="let answer of vote.answers">
-                                {{ answer.answer_text }}  <span class="float-end">{{ answer.vote_count}} szavazat</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                    <div class="vote-expiration d-flex align-items-center">
-                        Lezárás:
+                    <div class="vote-expiration">
+                        <div class="">Lezárás:</div>
                         <input type="datetime-local" class="expiration-input" [(ngModel)]="vote.end_date" />
-                        <button (click)="saveExpiration(vote)" class="btn btn-secondary btn-sm modify">Módosít</button>                        
+                        <button (click)="saveExpiration(vote)" class="btn btn-secondary btn-sm modify float-end me-1">Módosít</button>                        
                     </div>
                 </div>
             </div>
         </div>
-        <ng-template #noData>
-            <p>Nincsenek elérhető szavazások.</p>
-        </ng-template>
+   
     </div>
     <hr>
     

@@ -147,7 +147,7 @@ export class VotesComponent implements OnInit {
 
   getExpirationDate(endDate: string): string {
   const end = new Date(endDate);
-  end.setDate(end.getDate() + 3); // Hozzáadunk 3 napot
+  end.setDate(end.getDate() + 7); // Hozzáadunk 3 napot
   return end.toISOString(); // Az ISO formátumú dátumot használjuk a biztonságos kezelés érdekében
 }
 

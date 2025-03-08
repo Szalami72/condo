@@ -45,7 +45,7 @@ class SaveResidentDataUpdate
             $doorId = $this->saveOrUpdate('doors', 'typeOfDoors', $data['door'] ?? null);
             $commonCostId = $this->saveOrUpdate('commoncosts', 'typeOfCommoncosts', $data['commoncost'] ?? null);
             $subDepositId = $this->saveOrUpdate('subdeposits', 'typeOfSubdeposits', $data['subDeposit'] ?? null);
-            $squareMeterId = $this->saveOrUpdateSquareMeters('squaremeters', 'typeOfSquareMeters', $data['squareMeter'] ?? null, $subDepositId, $commonCostId);
+            $squareMeterId = $this->saveOrUpdateSquareMeters('squaremeters', 'typeOfSquareMeters', $data['squareMeter'] ?? 0, $subDepositId, $commonCostId);
 
             // Balance tábla frissítése
             $sql = "UPDATE balance SET value = :balance WHERE userId = :userId";

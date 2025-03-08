@@ -15,7 +15,7 @@ class DataFetcher
     {
         try {
             // Ha a table értéke Squaremeters, akkor a ccForThis oszlopot is lekérdezzük
-            if ($table === 'Squaremeters') {
+            if ($table === 'squaremeters') {
                 $sql = "SELECT id, typeOf{$table}, ccostForThis, subDepForThis FROM {$table} ORDER BY typeOf{$table} ASC";
             } else {
                 $sql = "SELECT id, typeOf{$table} FROM {$table} ORDER BY typeOf{$table} ASC";
@@ -44,7 +44,7 @@ try {
         exit;
     }
 
-    $validActions = ['Buildings', 'Floors', 'Doors', 'Commoncosts', 'Subdeposits', 'Squaremeters'];
+    $validActions = ['buildings', 'floors', 'doors', 'commoncosts', 'subdeposits', 'squaremeters'];
     if (!in_array($action, $validActions)) {
         echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
         exit;

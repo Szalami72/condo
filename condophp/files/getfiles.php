@@ -14,7 +14,7 @@ class GetFiles
     public function getFiles()
     {
         try {
-            $sql = "SELECT id, description, fileName, filePath FROM files ORDER BY fileName";
+            $sql = "SELECT id, description, fileName, filePath, created_at FROM files ORDER BY created_at DESC";
 
             $stmt = $this->conn->prepare($sql);
             

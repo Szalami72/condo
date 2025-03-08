@@ -79,6 +79,8 @@ label {
     transform: scale(1.05);
   }
   
-  
+  .custom-table th {
+    vertical-align: top;
+  }
 
 

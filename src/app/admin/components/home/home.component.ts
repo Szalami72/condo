@@ -12,7 +12,7 @@ import { DatasService } from '../../services/datas.service';
 export class HomeComponent implements OnInit {
 
   condoName = '';
-  downLoadLink = '';
+  downLoadLink = '../../../../assets/manual/admin_manual.pdf';
   constructor(private datasService: DatasService) { }
 
   ngOnInit(): void {

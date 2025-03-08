@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
 
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { MenuComponent } from '../menu/menu.component';
 import { MessageComponent } from '../../../shared/sharedcomponents/message/message.component';
@@ -14,10 +14,12 @@ import { FilesService } from '../../services/files.service';
 import { InfomodalComponent } from '../../../shared/sharedcomponents/infomodal/infomodal.component';
 import { ConfirmmodalComponent } from '../../../shared/sharedcomponents/confirmmodal/confirmmodal.component';
 
+import { FILE_UPLOAD_URL } from '../../../constans/constans';
+
 @Component({
   selector: 'app-files',
   standalone: true,
-  imports: [ CommonModule, FormsModule, MenuComponent, MessageComponent, InfomodalComponent, ConfirmmodalComponent ],
+  imports: [ CommonModule, FormsModule, MenuComponent, MessageComponent ],
   templateUrl: './files.component.html',
   styleUrl: './files.component.css'
 })
@@ -131,8 +133,8 @@ downloadFile(file: any) {
       if (response.status === 'success') {
         const fileData = response.data;
         // const fileUrl = fileData.filePath;
-        const fileUrl = 'http://localhost/condophp/uploads/' + fileData.fileName; // fileData.fileName tartalmazza a fájl nevét
-        console.log('fileUrl:', fileUrl);
+        const fileUrl = FILE_UPLOAD_URL + fileData.fileName; // fileData.fileName tartalmazza a fájl nevét
+        //console.log('fileUrl:', fileUrl);
 
         // Egy rejtett link elem létrehozása a fájl letöltéséhez
         const link = document.createElement('a');

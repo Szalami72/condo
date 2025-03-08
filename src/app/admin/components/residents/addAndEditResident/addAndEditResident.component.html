@@ -1,433 +1,385 @@
 <div class="container">
-    
     <div *ngIf="isLoading" class="loading-icon">
         <div class="d-flex justify-content-center align-items-center vh-100">
-          <div class="spinner-border" role="status">
-            <span class="visually-hidden">Töltés...</span>
-          </div>
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Töltés...</span>
+            </div>
         </div>
-      </div>
-      
-
-<div *ngIf="!isLoading">
-    <div class="modal-header">
-        <div class="text-center mt-2">
-            <h2 *ngIf="!userId">Lakó hozzáadása</h2>
-            <h2 *ngIf="userId">Lakó szerkesztése</h2>
-        </div>
-        <button
-        type="button"
-        class="btn-close"
-        aria-label="Close"
-        (click)="closeModal()"></button>
     </div>
 
-    <ng-container *ngIf="!errorMessage; else error"></ng-container>
-
-    <ng-template #error>
-        <div class="alert alert-danger text-center mt-2" role="alert">
-            {{ errorMessage }}
-          </div>
-      </ng-template>
-
-      <div class="mt-4 m-2 addSection">
-
-        <div class="row input-field mb-2">
-            <div class="col-3">
-              <label for="username" class="form-label mt-2">Név:</label>
+    <div *ngIf="!isLoading">
+        <div class="modal-header">
+            <div class="text-center mt-2">
+                <h2 *ngIf="!userId">Lakó hozzáadása</h2>
+                <h2 *ngIf="userId">Lakó szerkesztése</h2>
             </div>
-            <div class="col-9">
-              <input
-                type="text"
-                class="form-control"
-                id="username"
-                name="username"
-                [(ngModel)]="username"
-                (ngModelChange)="capitalizeName()"
-                (keypress)="allowOnlyLetters($event)"
-              >
-            </div>
-          </div>
-          
-          
-
-        <div class="row input-field mb-2">
-            <div class="col-3">
-                <label for="email" class="form-label mt-2">Email cím:</label>
-            </div>
-            <div class="col-9">
-                <input type="text" class="form-control" id="email" name="email" [(ngModel)]="email">
-            </div>
+            <button
+                type="button"
+                class="btn-close"
+                aria-label="Close"
+                (click)="closeModal()"></button>
         </div>
 
-        <div class="row input-field mb-2">
-            <div class="col-3">
-                <label for="phone" class="form-label mt-2">Telefonszám:</label>
+        <ng-container *ngIf="!errorMessage; else error"></ng-container>
+
+        <ng-template #error>
+            <div class="alert alert-danger text-center mt-2" role="alert">
+                {{ errorMessage }}
             </div>
-            <div class="col-1">
-                <input type="text" class="form-control phone-prefix" value="+36">
-            </div>
-            <div class="col-1">
-                <select id="phone-area-num" class="form-select phone-area-num" [(ngModel)]="phoneAreaNum">
-                    <option value="1">1</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option value="50">50</option>
-                    <option value="50">70</option>
-                </select>
-            </div>
-            <div class="col-7">
-                <input type="text" class="form-control phone-num" id="phoneNum" name="phoneNum" maxlength="9" [(ngModel)]="phoneNum" (ngModelChange)="formatPhone($event)" (keypress)="allowOnlyNumbers($event)">
-            </div>
-        </div>
+        </ng-template>
 
-        <div class="input-field mb-2">
-           <div class="row">
-            <div class="col-3">
-                <label class="form-label mt-2">Épület:</label>
-            </div>
-            <div class="col-9">
+        <div class="mt-4 m-2 addSection">
 
-                <input 
-                    type="text" 
-                    id="newBuilding" 
-                    class="new-data-input me-2"
-                    placeholder="új" 
-                    [(ngModel)]="newBuilding"
-                    (click)="resetRadioSelection('building')">
-                    
-
-                <label 
-                *ngFor="let buildingOption of buildingOptions" 
-                class="form-check-label radio-label" 
-                [ngClass]="{'checked-label': building === buildingOption.typeOfBuildings}">
-                <input 
-                    type="radio" 
-                    name="building" 
-                    [id]="'building' + buildingOption.typeOfBuildings" 
-                    class="form-check-input visually-hidden" 
-                    [value]="buildingOption.typeOfBuildings" 
-                    [(ngModel)]="building"
-                    (ngModelChange)="resetInputField('newBuilding')">
-                    
-                {{ buildingOption.typeOfBuildings }}
-                </label>
-            </div>
-            </div>
-        </div>
-
-        <div class="input-field mb-2">
-            <div class="row">
-             <div class="col-3">
-                 <label class="form-label mt-2">Emelet:</label>
-             </div>
-             <div class="col-9">
-
-                <input 
-                    type="text" 
-                    id="newFloor" 
-                    class="new-data-input me-2"
-                    placeholder="új" 
-                    [(ngModel)]="newFloor"
-                    (click)="resetRadioSelection('floor')">
-                    
-
-                 <label 
-                 *ngFor="let floorOption of floorOptions" 
-                 class="form-check-label radio-label" 
-                 [ngClass]="{'checked-label': floor === floorOption.typeOfFloors}">
-                 <input 
-                     type="radio" 
-                     name="floor" 
-                     [id]="'floor' + floorOption.typeOfFloors" 
-                     class="form-check-input visually-hidden" 
-                     [value]="floorOption.typeOfFloors" 
-                     [(ngModel)]="floor"
-                     (ngModelChange)="resetInputField('newFloor')">
-
-                 {{ floorOption.typeOfFloors }}
-                 </label>
-             </div>
-             </div>
-         </div>
-
-         <div class="input-field mb-2">
-            <div class="row">
-             <div class="col-3">
-                 <label class="form-label mt-2">Ajtó:</label>
-             </div>
-             <div class="col-9">
-
-                <input 
-                    type="text" 
-                    id="newDoor" 
-                    class="new-data-input me-2"
-                    placeholder="új" 
-                    [(ngModel)]="newDoor"
-                    (click)="resetRadioSelection('door')">
-                    
-
-                 <label 
-                 *ngFor="let doorOption of doorOptions" 
-                 class="form-check-label radio-label" 
-                 [ngClass]="{'checked-label': door === doorOption.typeOfDoors}">
-                 <input 
-                     type="radio" 
-                     name="door" 
-                     [id]="'door' + doorOption.typeOfDoors" 
-                     class="form-check-input visually-hidden" 
-                     [value]="doorOption.typeOfDoors " 
-                     [(ngModel)]="door"
-                     (ngModelChange)="resetInputField('newDoor')">
-                 {{ doorOption.typeOfDoors }}
-                 </label>
-             </div>
-             </div>
-         </div>
-
-         <div class="input-field mb-2">
-            <div class="row">
-                <div class="col-3">
-                    <label class="form-label mt-2">Négyzetméter:</label>
+            <div class="row input-field mb-2">
+                <div class="col-12 col-md-3">  <label for="username" class="form-label mt-2">Név:</label>
                 </div>
-                <div class="col-9">
-                    <input 
-                        type="text" 
-                        id="newSquareMeter" 
-                        class="new-data-input me-2"
-                        placeholder="új" 
-                        [(ngModel)]="newSquareMeter"
-                        (click)="resetRadioSelection('squareMeter')"
-                        (ngModelChange)="updateCommonCost()"
-                        (keypress)="allowOnlyNumbers($event)">
-                    <label 
-                        *ngFor="let squareMeterOption of squareMeterOptions" 
-                        class="form-check-label radio-label" 
-                        [ngClass]="{'checked-label': squareMeter === squareMeterOption.typeOfSquaremeters}">
-                        <input 
-                            type="radio" 
-                            name="squareMeter" 
-                            [id]="'squareMeter' + squareMeterOption.typeOfSquaremeters" 
-                            class="form-check-input visually-hidden" 
-                            [value]="squareMeterOption.typeOfSquaremeters" 
-                            [(ngModel)]="squareMeter"
-                            (ngModelChange)="updateCommonCost()">
-                            {{ squareMeterOption.typeOfSquaremeters }}
-                    </label>
+                <div class="col-12 col-md-9"> <input
+                        type="text"
+                        class="form-control"
+                        id="username"
+                        name="username"
+                        [(ngModel)]="username"
+                        (ngModelChange)="capitalizeName()"
+                        (keypress)="allowOnlyLetters($event)"
+                    >
                 </div>
             </div>
-        </div>
-        
-        <div class="input-field mb-2" *ngIf="commonCost === 'perflat' && isMeter === 1">
-            <div class="row">
-                <div class="col-3">
-                    <label class="form-label mt-2">Közös költség:</label>
-                </div>
-                <div class="col-9">
-                    <input 
-                        type="text" 
-                        id="newCommoncost" 
-                        class="new-data-input me-2"
-                        placeholder="új" 
-                        [(ngModel)]="newCommoncost"
-                        (click)="resetRadioSelection('commonCost')">
-                    <label 
-                        *ngFor="let commoncostOption of commoncostOptions" 
-                        class="form-check-label radio-label" 
-                        [ngClass]="{'checked-label': commoncostBase === commoncostOption.typeOfCommoncosts}">
-                        <input 
-                            type="radio" 
-                            name="commoncostBase"
-                            [id]="'commoncostBase' + commoncostOption.typeOfCommoncosts" 
-                            class="form-check-input visually-hidden" 
-                            [value]="commoncostOption.typeOfCommoncosts" 
-                            [(ngModel)]="commoncostBase">
-                        {{ commoncostOption.typeOfCommoncosts }}
-                    </label>
-                </div>
-            </div>
-        </div>
-        
-        
-         <div class="row input-field mb-2">
-            <div class="col-3">
-                <label for="balance" class="form-label mt-2">Egyenleg:</label>
-            </div>
-            <div class="col-9 w-25">
-                <input type="text" class="form-control" id="balance" name="balance" [(ngModel)]="balance">
-            </div>
-        </div>
-
-        <div class="row input-field mb-2">
-            <div class="col-3">
-                <label for="isMeter" class="form-label mt-2">Vízóra:</label>
-            </div>
-            <div class="col-9 w-25">
-                <select id="isMeter" class="form-select" [(ngModel)]="isMeter">
-                    <option [ngValue]="1">Van</option>
-                    <option [ngValue]="0">Nincs</option>
-                </select>
-            </div>
-        </div>
-        
-
-         <!-- ha egyéni akkor ez jelenjen meg -->
-         <div class="row input-field mb-2" *ngIf="isMeter === 1">
-            <div class="col-3">Mérőórák:</div>
-          
-            <div class="col-9 row">
-              <div class="col">
-                <input class="visually-hidden" type="checkbox" name="cold1" id="cold1" [(ngModel)]="cold1" [checked]="cold1">
-                <label for="cold1" class="selected-meters" [ngClass]="{'selected-cold1': cold1, 'disabled-label': !severally}">H1</label>
-              </div>
-          
-              <div class="col">
-                <input class="visually-hidden" type="checkbox" name="cold2" id="cold2" [(ngModel)]="cold2" [checked]="cold2">
-                <label for="cold2" class="selected-meters" [ngClass]="{'selected-cold2': cold2, 'disabled-label': !severally}">H2</label>
-              </div>
-          
-              <div class="col">
-                <input class="visually-hidden" type="checkbox" name="hot1" id="hot1" [(ngModel)]="hot1" [checked]="hot1">
-                <label for="hot1" class="selected-meters" [ngClass]="{'selected-hot1': hot1, 'disabled-label': !severally}">M1</label>
-              </div>
-          
-              <div class="col">
-                <input class="visually-hidden" type="checkbox" name="hot2" id="hot2" [(ngModel)]="hot2" [checked]="hot2">
-                <label for="hot2" class="selected-meters" [ngClass]="{'selected-hot2': hot2, 'disabled-label': !severally}">M2</label>
-              </div>
-          
-              <div class="col">
-                <input class="visually-hidden" type="checkbox" name="heating" id="heating" [(ngModel)]="heating" [checked]="heating">
-                <label for="heating" class="selected-meters" [ngClass]="{'selected-heating': heating, 'disabled-label': !severally}">Hm</label>
-              </div>
-            </div>
-          </div>
-          
-          
-          
-          
-          
-          
 
 
-        <!--  -->
-  <!-- ha egyéni akkor ne jelenjen meg -->
-  <div class="row input-field mb-2" *ngIf="isMeter === 1">
-    <div class="col-3">
-        Órák gyári száma:
-    </div>
-    <div class="col-9 row">
-        <div class="col">
-          <input type="text" class="form-control" name="cold1SerialNumber" placeholder="hideg 1" [(ngModel)]="cold1SerialNumber" [disabled]="!cold1">
-        </div>
-        <div class="col">
-          <input type="text" class="form-control" name="cold2SerialNumber" placeholder="hideg 2" [(ngModel)]="cold2SerialNumber" [disabled]="!cold2">
-        </div>
-        <div class="col">
-          <input type="text" class="form-control" name="hot1SerialNumber" placeholder="meleg 1" [(ngModel)]="hot1SerialNumber" [disabled]="!hot1">
-        </div>
-        <div class="col">
-          <input type="text" class="form-control" name="hot2SerialNumber" placeholder="meleg 2" [(ngModel)]="hot2SerialNumber" [disabled]="!hot2">
-        </div>
-        <div class="col">
-          <input type="text" class="form-control" name="heatingSerialNumber" placeholder="fűtés" [(ngModel)]="heatingSerialNumber" [disabled]="!heating">
-        </div>
-      </div>
-  </div>
-  
-        <!--  -->
-        <div class="row input-field mb-2" *ngIf="isMeter === 1">
-            <div class="col-3">
-                Utolsó állás:
+            <div class="row input-field mb-2">
+                <div class="col-12 col-md-3"> <label for="email" class="form-label mt-2">Email cím:</label>
+                </div>
+                <div class="col-12 col-md-9"> <input type="text" class="form-control" id="email" name="email" [(ngModel)]="email">
+                </div>
             </div>
-            <div class="col-9 row">
-                <div class="col">
-                  <input type="text" class="form-control" name="cold1LastValue" placeholder="hideg 1" [(ngModel)]="cold1LastValue" [disabled]="!cold1">
+
+            <div class="row input-field mb-2">
+                <div class="col-12 col-md-3"> <label for="phone" class="form-label mt-2">Telefonszám:</label>
                 </div>
-                <div class="col">
-                  <input type="text" class="form-control" name="cold2LastValue" placeholder="hideg 2" [(ngModel)]="cold2LastValue" [disabled]="!cold2">
+                <div class="col-12 col-md-9"> <div class="input-group">
+                        <span class="input-group-text">+36</span>
+                        <select id="phone-area-num" class="form-select text-end" [(ngModel)]="phoneAreaNum">
+                            <option value="1">1</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                            <option value="50">70</option>
+                        </select>
+                        <input type="text" class="form-control" id="phoneNum" name="phoneNum" maxlength="9" [(ngModel)]="phoneNum" (ngModelChange)="formatPhone($event)" (keypress)="allowOnlyNumbers($event)">
+                    </div>
                 </div>
-                <div class="col">
-                  <input type="text" class="form-control" name="hot1LastValue" placeholder="meleg 1" [(ngModel)]="hot1LastValue" [disabled]="!hot1">
+            </div>
+
+            <div class="input-field mb-2">
+                <div class="row">
+                    <div class="col-12 col-md-3"> <label class="form-label mt-2">Épület:</label>
+                    </div>
+                    <div class="col-12 col-md-9"> <input
+                            type="text"
+                            id="newBuilding"
+                            class="new-data-input me-2"
+                            placeholder="új"
+                            [(ngModel)]="newBuilding"
+                            (click)="resetRadioSelection('building')">
+
+                        <ng-container *ngIf="buildingOptions!.length > 0">
+                            <label
+                                *ngFor="let buildingOption of buildingOptions"
+                                class="form-check-label radio-label"
+                                [ngClass]="{'checked-label': building === buildingOption.typeOfbuildings}">
+                                <input
+                                    type="radio"
+                                    name="building"
+                                    [id]="'building' + buildingOption.typeOfbuildings"
+                                    class="form-check-input visually-hidden"
+                                    [value]="buildingOption.typeOfbuildings"
+                                    [(ngModel)]="building"
+                                    (ngModelChange)="resetInputField('newBuilding')">
+
+                                {{ buildingOption.typeOfbuildings }}
+                            </label>
+                        </ng-container>
+                    </div>
                 </div>
-                <div class="col">
-                  <input type="text" class="form-control" name="hot2LastValue" placeholder="meleg 2" [(ngModel)]="hot2LastValue" [disabled]="!hot2">
+            </div>
+
+            <div class="input-field mb-2">
+                <div class="row">
+                    <div class="col-12 col-md-3"> <label class="form-label mt-2">Emelet:</label>
+                    </div>
+                    <div class="col-12 col-md-9"> <input
+                            type="text"
+                            id="newFloor"
+                            class="new-data-input me-2"
+                            placeholder="új"
+                            [(ngModel)]="newFloor"
+                            (click)="resetRadioSelection('floor')">
+
+                        <ng-container *ngIf="floorOptions!.length > 0">
+                            <label
+                                *ngFor="let floorOption of floorOptions"
+                                class="form-check-label radio-label"
+                                [ngClass]="{'checked-label': floor === floorOption.typeOffloors}">
+                                <input
+                                    type="radio"
+                                    name="floor"
+                                    [id]="'floor' + floorOption.typeOffloors"
+                                    class="form-check-input visually-hidden"
+                                    [value]="floorOption.typeOffloors"
+                                    [(ngModel)]="floor"
+                                    (ngModelChange)="resetInputField('newFloor')">
+
+                                {{ floorOption.typeOffloors }}
+                            </label>
+                        </ng-container>
+                    </div>
                 </div>
-                <div class="col">
-                  <input type="text" class="form-control" name="heatingLastValue" placeholder="fűtés" [(ngModel)]="heatingLastValue" [disabled]="!heating">
+            </div>
+
+            <div class="input-field mb-2">
+                <div class="row">
+                    <div class="col-12 col-md-3"> <label class="form-label mt-2">Ajtó:</label>
+                    </div>
+                    <div class="col-12 col-md-9"> <input
+                            type="text"
+                            id="newDoor"
+                            class="new-data-input me-2"
+                            placeholder="új"
+                            [(ngModel)]="newDoor"
+                            (click)="resetRadioSelection('door')">
+
+                        <ng-container *ngIf="doorOptions!.length > 0">
+                            <label
+                                *ngFor="let doorOption of doorOptions"
+                                class="form-check-label radio-label"
+                                [ngClass]="{'checked-label': door === doorOption.typeOfdoors}">
+                                <input
+                                    type="radio"
+                                    name="door"
+                                    [id]="'door' + doorOption.typeOfdoors"
+                                    class="form-check-input visually-hidden"
+                                    [value]="doorOption.typeOfdoors"
+                                    [(ngModel)]="door"
+                                    (ngModelChange)="resetInputField('newDoor')">
+                                {{ doorOption.typeOfdoors }}
+                            </label>
+                        </ng-container>
+                    </div>
                 </div>
-              </div>
-          </div>
-       
+            </div>
 
 
-        <div class="input-field mb-2" *ngIf="isMeter === 0 && commonCost === 'perflat'">
-            <div class="row">
-                <div class="col-3">
-                    <label class="form-label mt-2">Albetéti díj:</label>
-                </div>
-                <div class="col-9">
-                    <input 
-                        type="text" 
-                        id="newSubDeposit" 
-                        class="new-data-input me-2"
-                        placeholder="új" 
-                        [(ngModel)]="newSubDeposit"
-                        (click)="resetRadioSelection('subDeposit')">
-                    <ng-container *ngFor="let subDepositOption of subDepositOptions">
-                        <label 
-                            *ngIf="subDepositOption.typeOfSubdeposits != 0"
-                            class="form-check-label radio-label" 
-                            [ngClass]="{'checked-label': subDeposit === subDepositOption.typeOfSubdeposits}">
-                            <input 
-                                type="radio" 
-                                name="subDeposit"
-                                [id]="'subDeposit' + subDepositOption.typeOfSubdeposits" 
-                                class="form-check-input visually-hidden" 
-                                [value]="subDepositOption.typeOfSubdeposits" 
-                                [(ngModel)]="subDeposit">
-                            {{ subDepositOption.typeOfSubdeposits }}
-                        </label>
-                    </ng-container>
-                </div>
-            </div>
-        </div>
-       
-        
-
-        
-        <div class="row input-field mb-2">
-            <div class="col-3">
-                <label for="adminLevel" class="form-label mt-2">Admin jogok:</label>
-            </div>
-            <div class="col-9 w-50">
-                <select id="adminLevel" class="form-select" [(ngModel)]="adminLevel">
-                    <option value="2">Nincs - lakó</option>
-                    <option value="1">Csak óraállás rögzítés</option>
-                    <option value="0">Minden jogosultság</option>
-                </select>
-            </div>
-        </div>
+            <div class="input-field mb-2">
+                <div class="row">
+                    <div class="col-12 col-md-3">
+                        <label class="form-label mt-2">Négyzetméter:</label>
+                    </div>
+                    <div class="col-12 col-md-9">
+                        <input
+                            type="text"
+                            id="newSquareMeter"
+                            class="new-data-input me-2"
+                            placeholder="új"
+                            [(ngModel)]="newSquareMeter"
+                            (click)="resetRadioSelection('squareMeter')"
+                            (ngModelChange)="updateCommonCost()"
+                            (keypress)="allowOnlyNumbers($event)">
             
-    </div>
-    <div class="modal-footer">
-        <div class="footer mt-2 mb-2 w-100 d-flex justify-content-between align-items-center">
-          <button class="btn btn-secondary" (click)="closeModal()">
-            Mégse
-          </button>
-          <button *ngIf="userId" class="btn btn-danger" (click)="deleteUser(userId)">
-            Töröl
-          </button>
-          <button class="btn btn-primary" (click)="onSave(userId)">
-            Mentés
-          </button>
+                        <ng-container *ngIf="squareMeterOptions!.length > 0">
+                            <ng-container *ngFor="let squareMeterOption of squareMeterOptions">  <ng-container *ngIf="squareMeterOption.typeOfsquaremeters != 0">  <label
+                                        class="form-check-label radio-label"
+                                        [ngClass]="{'checked-label': squareMeter === squareMeterOption.typeOfsquaremeters}">
+                                        <input
+                                            type="radio"
+                                            name="squareMeter"
+                                            [id]="'squareMeter' + squareMeterOption.typeOfsquaremeters"
+                                            class="form-check-input visually-hidden"
+                                            [value]="squareMeterOption.typeOfsquaremeters"
+                                            [(ngModel)]="squareMeter"
+                                            (ngModelChange)="updateCommonCost()">
+                                        {{ squareMeterOption.typeOfsquaremeters }}
+                                    </label>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-field mb-2" *ngIf="commonCost === 'perflat' && isMeter === 1">
+                <div class="row">
+                    <div class="col-12 col-md-3"> <label class="form-label mt-2">Közös költség:</label>
+                    </div>
+                    <div class="col-12 col-md-9"> <input
+                            type="text"
+                            id="newCommoncost"
+                            class="new-data-input me-2"
+                            placeholder="új"
+                            [(ngModel)]="newCommoncost"
+                            (click)="resetRadioSelection('commonCost')">
+
+                        <ng-container *ngIf="commoncostOptions!.length > 0">
+                            <label
+                                *ngFor="let commoncostOption of commoncostOptions"
+                                class="form-check-label radio-label"
+                                [ngClass]="{'checked-label': commoncostBase === commoncostOption.typeOfcommoncosts}">
+                                <input
+                                    type="radio"
+                                    name="commoncostBase"
+                                    [id]="'commoncostBase' + commoncostOption.typeOfcommoncosts"
+                                    class="form-check-input visually-hidden"
+                                    [value]="commoncostOption.typeOfcommoncosts"
+                                    [(ngModel)]="commoncostBase">
+                                {{ commoncostOption.typeOfcommoncosts }}
+                            </label>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row input-field mb-2">
+                <div class="col-12 col-md-3"> <label for="isMeter" class="form-label mt-2">Vízóra:</label>
+                </div>
+                <div class="col-12 col-md-9"> <select id="isMeter" class="form-select" [(ngModel)]="isMeter">
+                        <option [ngValue]="1">Van</option>
+                        <option [ngValue]="0">Nincs</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row input-field mb-2" *ngIf="isMeter === 1">
+                <div class="col-12 col-md-3">Mérőórák:</div>
+              
+                <div class="col row">
+                  <div class="col">
+                    <input class="visually-hidden" type="checkbox" name="cold1" id="cold1" [(ngModel)]="cold1" [checked]="cold1">
+                    <label for="cold1" class="selected-meters" [ngClass]="{'selected-cold1': cold1, 'disabled-label': !severally}">H1</label>
+                  </div>
+              
+                  <div class="col">
+                    <input class="visually-hidden" type="checkbox" name="cold2" id="cold2" [(ngModel)]="cold2" [checked]="cold2">
+                    <label for="cold2" class="selected-meters" [ngClass]="{'selected-cold2': cold2, 'disabled-label': !severally}">H2</label>
+                  </div>
+              
+                  <div class="col">
+                    <input class="visually-hidden" type="checkbox" name="hot1" id="hot1" [(ngModel)]="hot1" [checked]="hot1">
+                    <label for="hot1" class="selected-meters" [ngClass]="{'selected-hot1': hot1, 'disabled-label': !severally}">M1</label>
+                  </div>
+              
+                  <div class="col">
+                    <input class="visually-hidden" type="checkbox" name="hot2" id="hot2" [(ngModel)]="hot2" [checked]="hot2">
+                    <label for="hot2" class="selected-meters" [ngClass]="{'selected-hot2': hot2, 'disabled-label': !severally}">M2</label>
+                  </div>
+              
+                  <div class="col">
+                    <input class="visually-hidden" type="checkbox" name="heating" id="heating" [(ngModel)]="heating" [checked]="heating">
+                    <label for="heating" class="selected-meters" [ngClass]="{'selected-heating': heating, 'disabled-label': !severally}">Hm</label>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="row input-field mb-2" *ngIf="isMeter === 1">
+                <div class="col-12 col-md-3"> Órák gyári száma:
+                </div>
+                <div class="col-12 col-md-9 d-flex flex-column flex-md-row">
+                    <div class="col-md form-floating">  <input type="text" class="form-control" name="cold1SerialNumber" id="cold1SerialNumber" placeholder="hideg 1" [(ngModel)]="cold1SerialNumber" [disabled]="!cold1">
+                        <label for="cold1SerialNumber" class="form-label">Hideg1</label>
+                    </div>
+                    <div class="col-md form-floating">  <input type="text" class="form-control" name="cold2SerialNumber" id="cold2SerialNumber" placeholder="hideg 2" [(ngModel)]="cold2SerialNumber" [disabled]="!cold2">
+                        <label for="cold2SerialNumber" class="form-label">Hideg2</label>
+                    </div>
+                    <div class="col-md form-floating">  <input type="text" class="form-control" name="hot1SerialNumber" id="hot1SerialNumber" placeholder="meleg 1" [(ngModel)]="hot1SerialNumber" [disabled]="!hot1">
+                        <label for="hot1SerialNumber" class="form-label">Meleg1</label>
+                    </div>
+                    <div class="col-md form-floating">  <input type="text" class="form-control" name="hot2SerialNumber" id="hot2SerialNumber" placeholder="meleg 2" [(ngModel)]="hot2SerialNumber" [disabled]="!hot2">
+                        <label for="hot2SerialNumber" class="form-label">Meleg2</label>
+                    </div>
+                    <div class="col-md form-floating"> <input type="text" class="form-control" name="heatingSerialNumber" id="heatingSerialNumber" placeholder="fűtés" [(ngModel)]="heatingSerialNumber" [disabled]="!heating">
+                        <label for="heatingSerialNumber" class="form-label">Fűtés</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row input-field mb-2" *ngIf="isMeter === 1">
+                <div class="col-12 col-md-3"> Utolsó állás:
+                </div>
+                <div class="col-12 col-md-9 d-flex flex-column flex-md-row">
+                    <div class="col-md form-floating"> <input type="text" class="form-control" name="cold1LastValue" id="cold1LastValue" placeholder="hideg 1" [(ngModel)]="cold1LastValue" [disabled]="!cold1">
+                        <label for="cold1LastValue" class="form-label">Hideg1</label>
+                    </div>
+                    <div class="col-md form-floating"> <input type="text" class="form-control" name="cold2LastValue" id="cold2LastValue" placeholder="hideg 2" [(ngModel)]="cold2LastValue" [disabled]="!cold2">
+                        <label for="cold2LastValue" class="form-label">Hideg2</label>
+                    </div>
+                    <div class="col-md form-floating"> <input type="text" class="form-control" name="hot1LastValue" id="hot1LastValue" placeholder="meleg 1" [(ngModel)]="hot1LastValue" [disabled]="!hot1">
+                        <label for="hot1LastValue" class="form-label">Meleg1</label>
+                    </div>
+                    <div class="col-md form-floating"> <input type="text" class="form-control" name="hot2LastValue" id="hot2LastValue" placeholder="meleg 2" [(ngModel)]="hot2LastValue" [disabled]="!hot2">
+                        <label for="hot2LastValue" class="form-label">Meleg2</label>
+                    </div>
+                    <div class="col-md form-floating"> <input type="text" class="form-control" name="heatingLastValue" id="heatingLastValue" placeholder="fűtés" [(ngModel)]="heatingLastValue" [disabled]="!heating">
+                        <label for="heatingLastValue" class="form-label">Fűtés</label>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="input-field mb-2" *ngIf="isMeter === 0 && commonCost === 'perflat'">
+                <div class="row">
+                    <div class="col-12 col-md-3"> <label class="form-label mt-2">Albetéti díj:</label>
+                    </div>
+                    <div class="col-12 col-md-9"> <input
+                            type="text"
+                            id="newSubDeposit"
+                            class="new-data-input me-2"
+                            placeholder="új"
+                            [(ngModel)]="newSubDeposit"
+                            (click)="resetRadioSelection('subDeposit')">
+                        <ng-container *ngFor="let subDepositOption of subDepositOptions">
+                            <label
+                                *ngIf="subDepositOption.typeOfsubdeposits != 0"
+                                class="form-check-label radio-label"
+                                [ngClass]="{'checked-label': subDeposit === subDepositOption.typeOfsubdeposits}">
+                                <input
+                                    type="radio"
+                                    name="subDeposit"
+                                    [id]="'subDeposit' + subDepositOption.typeOfsubdeposits"
+                                    class="form-check-input visually-hidden"
+                                    [value]="subDepositOption.typeOfsubdeposits"
+                                    [(ngModel)]="subDeposit">
+                                {{ subDepositOption.typeOfsubdeposits }}
+                            </label>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row input-field mb-2">
+                <div class="col-12 col-md-3"> <label for="adminLevel" class="form-label mt-2">Admin jogok:</label>
+                </div>
+                <div class="col-12 col-md-9"> <select id="adminLevel" class="form-select" [(ngModel)]="adminLevel">
+                        <option value="2">Nincs - lakó</option>
+                        <option value="1">Csak óraállás rögzítés</option>
+                        <option value="0">Minden jogosultság</option>
+                    </select>
+                </div>
+            </div>
+
         </div>
-      </div>
-      
-      
-      
+        <div class="modal-footer">
+            <div class="footer mt-2 mb-2 w-100 d-flex justify-content-between align-items-center">
+                <button class="btn btn-secondary" (click)="closeModal()">
+                    Mégse
+                </button>
+                <button *ngIf="userId" class="btn btn-danger" (click)="deleteUser(userId)">
+                    Töröl
+                </button>
+                <button class="btn btn-primary" (click)="onSave(userId)">
+                    Mentés
+                </button>
+            </div>
+        </div>
     </div>
-
 </div>
-
-  

@@ -71,28 +71,29 @@
         <div *ngIf="!isLoading && prevRecords.length > 0" class="table-container">
           <h4 class="mt-4 mb-4">Előző értékek</h4>
         
-          <table class="custom-table">
+          <div class="table-responsive">  <table class="custom-table">
             <thead>
-              <tr>
-                <th>Hónap/Év</th>
-                <th *ngIf="cold1 === '1'">Hideg 1</th>
-                <th *ngIf="cold2 === '1'">Hideg 2</th>
-                <th *ngIf="hot1 === '1'">Meleg 1</th>
-                <th *ngIf="hot2 === '1'">Meleg 2</th>
-                <th *ngIf="heating === '1'">Fűtés</th>
-              </tr>
+                <tr>
+                    <th>Hónap/Év</th>
+                    <th *ngIf="cold1 === '1'">Hideg 1</th>
+                    <th *ngIf="cold2 === '1'">Hideg 2</th>
+                    <th *ngIf="hot1 === '1'">Meleg 1</th>
+                    <th *ngIf="hot2 === '1'">Meleg 2</th>
+                    <th *ngIf="heating === '1'">Fűtés</th>
+                </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let record of prevRecords">
-                <td><b>{{ reverseMonthYear(record.monthAndYear) }}</b></td>
-                <td *ngIf="cold1 === '1'">{{ record.cold1 }}</td>
-                <td *ngIf="cold2 === '1'">{{ record.cold2 }}</td>
-                <td *ngIf="hot1 === '1'">{{ record.hot1 }}</td>
-                <td *ngIf="hot2 === '1'">{{ record.hot2 }}</td>
-                <td *ngIf="heating === '1'">{{ record.heating }}</td>
-              </tr>
+                <tr *ngFor="let record of prevRecords">
+                    <td><b>{{ reverseMonthYear(record.monthAndYear) }}</b></td>
+                    <td *ngIf="cold1 === '1'">{{ record.cold1 }}</td>
+                    <td *ngIf="cold2 === '1'">{{ record.cold2 }}</td>
+                    <td *ngIf="hot1 === '1'">{{ record.hot1 }}</td>
+                    <td *ngIf="hot2 === '1'">{{ record.hot2 }}</td>
+                    <td *ngIf="heating === '1'">{{ record.heating }}</td>
+                </tr>
             </tbody>
-          </table>
+        </table>
+    </div>
         </div>
         
 

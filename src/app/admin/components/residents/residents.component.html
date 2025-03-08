@@ -40,7 +40,7 @@
 
     <div class="">
         <div class="header row cursor-pointer bg-secondary text-white p-2 mb-3">
-          <div class="col">
+          <div class="col-8">
             Rendezés:
             <span (click)="sortUsers('username')"
             [ngClass]="{'sorted-column': sortedColumn === 'username'}">
@@ -60,32 +60,30 @@
 
         
 
-        <div class="user-list row cursor-pointer pt-1 pb-1" 
-        *ngFor="let user of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize"
-        (click)="editResident(user.userId)">
-     <div class="col-12 col-md-4">
-       <b>{{ user.username }}</b>         
-     </div>
-     
-     <div class="col-12 col-md-4">
-       {{ user.email}}
-     </div>
-   
-     <div *ngIf="user.typeOfBuildings" class="col-1 col-md-1 text-end">
+        <div class="user-list row cursor-pointer pt-1 pb-1"
+    *ngFor="let user of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize"
+    (click)="editResident(user.userId)">
+  <div class="col-12 col-md-4">
+    <b>{{ user.username }}</b>         
+  </div>
+
+  <div class="col-12 col-md-4">
+    {{ user.email}}
+  </div>
+
+  <div *ngIf="user.typeOfBuildings || user.typeOfFloors || user.typeOfDoors" class="col-12 col-md-4 d-flex flex-wrap justify-content-end">
+    <div *ngIf="user.typeOfBuildings" class="me-2">
       {{ user.typeOfBuildings }}.ép
     </div>
-    
-    <div *ngIf="user.typeOfFloors" class="col-1 col-md-1 text-end">
+    <div *ngIf="user.typeOfFloors" class="me-2">
       {{ user.typeOfFloors }}.em
     </div>
-    
-    <div *ngIf="user.typeOfDoors" class="col-1 col-md-1 text-end">
+    <div *ngIf="user.typeOfDoors" class="me-2">
       {{ user.typeOfDoors }}.a
     </div>
-    
-   
+  </div>
+</div>
 
-   </div>
 
 
         </div>

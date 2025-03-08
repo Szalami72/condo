@@ -6,6 +6,7 @@ import { FilesService } from '../../../admin/services/files.service';
 import { MessageService } from '../../../shared/services/message.service';
 import { ResidentsService } from '../../../admin/services/residents.service';
 import { NotificationService } from '../../services/notification.service';
+import { FILE_UPLOAD_URL } from '../../../constans/constans';
 
 @Component({
   selector: 'app-files',
@@ -70,7 +71,7 @@ export class FilesComponent implements OnInit {
         if (response.status === 'success') {
           const fileData = response.data;
           // const fileUrl = fileData.filePath;
-          const fileUrl = 'http://localhost/condophp/uploads/' + fileData.fileName; // fileData.fileName tartalmazza a fájl nevét
+          const fileUrl = FILE_UPLOAD_URL + fileData.fileName; // fileData.fileName tartalmazza a fájl nevét
           console.log('fileUrl:', fileUrl);
   
           // Egy rejtett link elem létrehozása a fájl letöltéséhez
